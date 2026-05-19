@@ -917,25 +917,36 @@ let currentStep = 1;
 const totalSteps = 5;
 const answers = { age: null, sex: null, job: null, price: null, justification: '' };
 
-// ─── SHARED STORAGE (window.storage API — shared across all users) ───
+// ─── STORAGE (localStorage with window.storage fallback) ───
+const useWindowStorage = typeof window !== 'undefined' && window.storage && typeof window.storage.get === 'function';
+
 async function loadResults() {
   try {
-    const res = await window.storage.get(STORAGE_KEY, true); // shared=true
-    if (res && res.value) {
-      const parsed = JSON.parse(res.value);
-      // Validate shape
-      if (typeof parsed.cheap === 'number') return parsed;
+    if (useWindowStorage) {
+      const res = await window.storage.get(STORAGE_KEY, true);
+      if (res && res.value) {
+        const parsed = JSON.parse(res.value);
+        if (typeof parsed.cheap === 'number') return parsed;
+      }
+    } else {
+      const raw = localStorage.getItem(STORAGE_KEY);
+      if (raw) {
+        const parsed = JSON.parse(raw);
+        if (typeof parsed.cheap === 'number') return parsed;
+      }
     }
-  } catch(e) { /* key not set yet */ }
+  } catch(e) {}
   return { ...SEED, comments: [] };
 }
 
 async function saveResults(data) {
   try {
-    await window.storage.set(STORAGE_KEY, JSON.stringify(data), true); // shared=true
-  } catch(e) {
-    console.warn('Storage save failed:', e);
-  }
+    if (useWindowStorage) {
+      await window.storage.set(STORAGE_KEY, JSON.stringify(data), true);
+    } else {
+      localStorage.setItem(STORAGE_KEY, JSON.stringify(data));
+    }
+  } catch(e) { console.warn('Storage save failed:', e); }
 }
 
 // ─── HERO LIVE STATS ───
@@ -1049,14 +1060,25 @@ const VOTE_KEY = 'eid-survey-v3-votes';
 // Load my personal votes map: { commentId: 'up'|'down' }
 async function loadMyVotes() {
   try {
-    const res = await window.storage.get(VOTE_KEY, false);
-    if (res && res.value) return JSON.parse(res.value);
+    if (useWindowStorage) {
+      const res = await window.storage.get(VOTE_KEY, false);
+      if (res && res.value) return JSON.parse(res.value);
+    } else {
+      const raw = localStorage.getItem(VOTE_KEY);
+      if (raw) return JSON.parse(raw);
+    }
   } catch(e) {}
   return {};
 }
 
 async function saveMyVotes(votes) {
-  try { await window.storage.set(VOTE_KEY, JSON.stringify(votes), false); } catch(e) {}
+  try {
+    if (useWindowStorage) {
+      await window.storage.set(VOTE_KEY, JSON.stringify(votes), false);
+    } else {
+      localStorage.setItem(VOTE_KEY, JSON.stringify(votes));
+    }
+  } catch(e) {}
 }
 
 function getPriceColor(price) {
