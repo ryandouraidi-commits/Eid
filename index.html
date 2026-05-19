@@ -1,903 +1,1282 @@
 <!DOCTYPE html>
 <html lang="ar" dir="rtl">
 <head>
-<meta charset="UTF-8" />
-<meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>استطلاع أسعار كبش العيد</title>
-
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link href="https://fonts.googleapis.com/css2?family=Tajawal:wght@300;400;500;700;800;900&display=swap" rel="stylesheet">
-
 <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
 
 <style>
-*{
-  margin:0;
-  padding:0;
-  box-sizing:border-box;
-}
+  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
 
-body{
-  font-family:'Tajawal',sans-serif;
-  background:#000;
-  color:#fff;
-  min-height:100vh;
-  overflow-x:hidden;
-}
-
-:root{
-  --bg:#000;
-  --surface:#111;
-  --surface2:#1a1a1a;
-  --border:rgba(255,255,255,0.08);
-  --text:#f5f5f7;
-  --muted:#86868b;
-  --accent:#2997ff;
-  --green:#30d158;
-  --danger:#ff453a;
-  --gold:#d4a843;
-  --radius:18px;
-}
-
-.hero{
-  min-height:100vh;
-  display:flex;
-  flex-direction:column;
-  justify-content:center;
-  align-items:center;
-  text-align:center;
-  padding:40px 20px;
-}
-
-h1{
-  font-size:clamp(40px,7vw,80px);
-  margin-bottom:20px;
-}
-
-h1 span{
-  color:var(--gold);
-}
-
-.subtitle{
-  max-width:650px;
-  color:var(--muted);
-  font-size:20px;
-  margin-bottom:30px;
-}
-
-.start-btn{
-  background:var(--accent);
-  color:#fff;
-  border:none;
-  padding:16px 36px;
-  border-radius:999px;
-  cursor:pointer;
-  font-size:18px;
-  font-family:'Tajawal',sans-serif;
-  transition:.3s;
-}
-
-.start-btn:hover{
-  transform:scale(1.05);
-}
-
-#survey{
-  max-width:700px;
-  margin:auto;
-  padding:20px;
-}
-
-.step{
-  display:none;
-  background:var(--surface);
-  border:1px solid var(--border);
-  border-radius:var(--radius);
-  padding:30px;
-  margin-bottom:20px;
-}
-
-.step.active{
-  display:block;
-}
-
-.step-title{
-  font-size:24px;
-  margin-bottom:20px;
-}
-
-.choices{
-  display:flex;
-  flex-wrap:wrap;
-  gap:12px;
-}
-
-.choice{
-  flex:1;
-  min-width:140px;
-  background:var(--surface2);
-  border:2px solid transparent;
-  border-radius:14px;
-  padding:18px;
-  text-align:center;
-  cursor:pointer;
-  transition:.2s;
-}
-
-.choice:hover{
-  transform:translateY(-2px);
-}
-
-.choice.selected{
-  border-color:var(--gold);
-}
-
-.nav-row{
-  display:flex;
-  gap:12px;
-  margin-top:24px;
-}
-
-.btn{
-  flex:1;
-  border:none;
-  border-radius:999px;
-  padding:14px;
-  cursor:pointer;
-  font-family:'Tajawal',sans-serif;
-  font-size:16px;
-}
-
-.btn-primary{
-  background:var(--accent);
-  color:#fff;
-}
-
-.btn-ghost{
-  background:#222;
-  color:#fff;
-}
-
-.btn-gold{
-  background:linear-gradient(135deg,#d4a843,#f0c96c);
-  color:#000;
-}
-
-textarea{
-  width:100%;
-  background:#1a1a1a;
-  color:#fff;
-  border:1px solid var(--border);
-  border-radius:14px;
-  padding:16px;
-  resize:none;
-  height:120px;
-  font-family:'Tajawal',sans-serif;
-}
-
-#results{
-  display:none;
-  max-width:900px;
-  margin:auto;
-  padding:30px 20px 100px;
-}
-
-.stats-grid{
-  display:grid;
-  grid-template-columns:repeat(3,1fr);
-  gap:16px;
-  margin-bottom:24px;
-}
-
-@media(max-width:700px){
-  .stats-grid{
-    grid-template-columns:1fr;
+  :root {
+    --bg: #000;
+    --surface: #111;
+    --surface2: #1a1a1a;
+    --border: rgba(255,255,255,0.08);
+    --text: #f5f5f7;
+    --muted: #86868b;
+    --accent: #2997ff;
+    --accent2: #30d158;
+    --accent3: #ff9f0a;
+    --danger: #ff453a;
+    --gold: #d4a843;
+    --radius: 18px;
+    --radius-sm: 12px;
   }
-}
 
-.stat-card{
-  background:var(--surface);
-  padding:24px;
-  border-radius:18px;
-  text-align:center;
-  border:1px solid var(--border);
-}
+  html { scroll-behavior: smooth; }
 
-.stat-num{
-  font-size:42px;
-  font-weight:800;
-}
+  body {
+    font-family: 'Tajawal', sans-serif;
+    background: var(--bg);
+    color: var(--text);
+    min-height: 100vh;
+    overflow-x: hidden;
+    line-height: 1.6;
+  }
 
-.chart-card{
-  background:var(--surface);
-  border-radius:18px;
-  padding:30px;
-  border:1px solid var(--border);
-  margin-bottom:24px;
-}
+  body::before {
+    content: '';
+    position: fixed;
+    inset: 0;
+    background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)' opacity='0.04'/%3E%3C/svg%3E");
+    pointer-events: none;
+    z-index: 0;
+  }
 
-.comment-card{
-  background:#1b1b1b;
-  padding:18px;
-  border-radius:16px;
-  margin-bottom:14px;
-  border:1px solid var(--border);
-}
+  .hero {
+    position: relative;
+    min-height: 100vh;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    text-align: center;
+    padding: 60px 24px 80px;
+    overflow: hidden;
+  }
 
-.comment-top{
-  display:flex;
-  justify-content:space-between;
-  margin-bottom:10px;
-  flex-wrap:wrap;
-  gap:10px;
-}
+  .hero-glow {
+    position: absolute;
+    top: -200px;
+    left: 50%;
+    transform: translateX(-50%);
+    width: 800px;
+    height: 800px;
+    background: radial-gradient(ellipse, rgba(212,168,67,0.18) 0%, transparent 70%);
+    pointer-events: none;
+    animation: breathe 6s ease-in-out infinite;
+  }
 
-.badge{
-  padding:4px 12px;
-  border-radius:999px;
-  font-size:13px;
-  font-weight:700;
-}
+  @keyframes breathe {
+    0%,100% { opacity: 0.6; transform: translateX(-50%) scale(1); }
+    50% { opacity: 1; transform: translateX(-50%) scale(1.08); }
+  }
 
-.vote-actions{
-  display:flex;
-  align-items:center;
-  gap:10px;
-  margin-top:12px;
-}
+  .badge {
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    background: rgba(212,168,67,0.12);
+    border: 1px solid rgba(212,168,67,0.3);
+    border-radius: 100px;
+    padding: 6px 18px;
+    font-size: 13px;
+    color: var(--gold);
+    font-weight: 500;
+    letter-spacing: 0.02em;
+    margin-bottom: 32px;
+    backdrop-filter: blur(10px);
+    animation: fadeUp 0.8s ease both;
+  }
 
-.vote-btn{
-  background:#222;
-  border:none;
-  color:#fff;
-  border-radius:999px;
-  padding:7px 14px;
-  cursor:pointer;
-  transition:.2s;
-}
+  .badge::before { content: '🐑'; font-size: 16px; }
 
-.vote-btn:hover{
-  transform:scale(1.05);
-}
+  h1 {
+    font-size: clamp(36px, 7vw, 80px);
+    font-weight: 800;
+    line-height: 1.05;
+    letter-spacing: -0.03em;
+    margin-bottom: 20px;
+    animation: fadeUp 0.8s 0.1s ease both;
+    background: linear-gradient(135deg, #f5f5f7 0%, #a1a1a6 100%);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+  }
 
-.vote-up-active{
-  background:rgba(48,209,88,.2);
-  color:var(--green);
-}
+  h1 span {
+    background: linear-gradient(135deg, #d4a843 0%, #f0c96c 50%, #d4a843 100%);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+  }
 
-.vote-down-active{
-  background:rgba(255,69,58,.2);
-  color:var(--danger);
-}
+  .subtitle {
+    font-size: clamp(16px, 2.5vw, 21px);
+    color: var(--muted);
+    max-width: 560px;
+    font-weight: 300;
+    animation: fadeUp 0.8s 0.2s ease both;
+    margin-bottom: 48px;
+  }
 
-.toast{
-  position:fixed;
-  bottom:30px;
-  left:50%;
-  transform:translateX(-50%);
-  background:#111;
-  border:1px solid var(--border);
-  padding:12px 22px;
-  border-radius:999px;
-  display:none;
-  z-index:999;
-}
+  .start-btn {
+    display: inline-flex;
+    align-items: center;
+    gap: 10px;
+    background: var(--accent);
+    color: #fff;
+    border: none;
+    border-radius: 100px;
+    padding: 16px 36px;
+    font-size: 17px;
+    font-family: 'Tajawal', sans-serif;
+    font-weight: 600;
+    cursor: pointer;
+    transition: all 0.25s ease;
+    animation: fadeUp 0.8s 0.3s ease both;
+    position: relative;
+    overflow: hidden;
+  }
 
-.progress{
-  width:100%;
-  height:4px;
-  background:#222;
-  border-radius:999px;
-  overflow:hidden;
-  margin-bottom:30px;
-}
+  .start-btn::after {
+    content: '';
+    position: absolute;
+    inset: 0;
+    background: rgba(255,255,255,0.15);
+    opacity: 0;
+    transition: opacity 0.2s;
+  }
 
-.progress-fill{
-  height:100%;
-  width:0%;
-  background:linear-gradient(90deg,#d4a843,#f0c96c);
-  transition:.3s;
-}
+  .start-btn:hover { transform: scale(1.04); box-shadow: 0 8px 30px rgba(41,151,255,0.4); }
+  .start-btn:hover::after { opacity: 1; }
+  .start-btn:active { transform: scale(0.97); }
+
+  .scroll-hint {
+    position: absolute;
+    bottom: 36px;
+    left: 50%;
+    transform: translateX(-50%);
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 8px;
+    color: var(--muted);
+    font-size: 12px;
+    animation: fadeUp 1s 0.8s ease both;
+  }
+
+  .scroll-dot {
+    width: 2px;
+    height: 28px;
+    background: linear-gradient(to bottom, transparent, var(--muted));
+    border-radius: 2px;
+    animation: scrollAnim 2s ease-in-out infinite;
+  }
+
+  @keyframes scrollAnim {
+    0%,100% { opacity: 0.3; transform: scaleY(0.8); }
+    50% { opacity: 1; transform: scaleY(1); }
+  }
+
+  #survey {
+    max-width: 680px;
+    margin: 0 auto;
+    padding: 0 20px 100px;
+    position: relative;
+    z-index: 1;
+  }
+
+  .step {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: var(--radius);
+    padding: clamp(28px, 5vw, 48px);
+    margin-bottom: 24px;
+    transition: border-color 0.3s ease;
+    display: none;
+    animation: slideIn 0.5s cubic-bezier(0.34,1.56,0.64,1) both;
+  }
+
+  .step.active { display: block; }
+  .step.focused { border-color: rgba(212,168,67,0.3); }
+
+  @keyframes slideIn {
+    from { opacity: 0; transform: translateY(24px) scale(0.98); }
+    to { opacity: 1; transform: translateY(0) scale(1); }
+  }
+
+  @keyframes fadeUp {
+    from { opacity: 0; transform: translateY(20px); }
+    to { opacity: 1; transform: translateY(0); }
+  }
+
+  .step-header {
+    display: flex;
+    align-items: center;
+    gap: 14px;
+    margin-bottom: 28px;
+  }
+
+  .step-num {
+    width: 32px;
+    height: 32px;
+    border-radius: 50%;
+    background: linear-gradient(135deg, #d4a843, #f0c96c);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 13px;
+    font-weight: 700;
+    color: #000;
+    flex-shrink: 0;
+  }
+
+  .step-title {
+    font-size: 22px;
+    font-weight: 700;
+    color: var(--text);
+  }
+
+  .step-optional {
+    font-size: 12px;
+    color: var(--muted);
+    background: rgba(134,134,139,0.12);
+    border-radius: 6px;
+    padding: 2px 8px;
+    font-weight: 400;
+    margin-right: 8px;
+  }
+
+  .choices {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 10px;
+  }
+
+  .choice {
+    flex: 1;
+    min-width: 120px;
+    background: var(--surface2);
+    border: 1.5px solid var(--border);
+    border-radius: var(--radius-sm);
+    padding: 16px 20px;
+    text-align: center;
+    cursor: pointer;
+    transition: all 0.22s ease;
+    font-family: 'Tajawal', sans-serif;
+    font-size: 15px;
+    font-weight: 500;
+    color: var(--muted);
+    position: relative;
+    overflow: hidden;
+  }
+
+  .choice::before {
+    content: '';
+    position: absolute;
+    inset: 0;
+    opacity: 0;
+    transition: opacity 0.2s;
+  }
+
+  .choice:hover {
+    border-color: rgba(255,255,255,0.2);
+    color: var(--text);
+    transform: translateY(-2px);
+  }
+
+  .choice.selected {
+    border-color: var(--gold);
+    color: var(--text);
+    background: rgba(212,168,67,0.1);
+  }
+
+  .choice.selected::before {
+    background: radial-gradient(ellipse at center, rgba(212,168,67,0.08), transparent);
+    opacity: 1;
+  }
+
+  .choice-icon { font-size: 24px; display: block; margin-bottom: 6px; }
+
+  .choice.cheap.selected { border-color: var(--accent2); background: rgba(48,209,88,0.08); }
+  .choice.normal.selected { border-color: var(--accent); background: rgba(41,151,255,0.08); }
+  .choice.expensive.selected { border-color: var(--danger); background: rgba(255,69,58,0.08); }
+
+  .field-group {
+    display: flex;
+    flex-direction: column;
+    gap: 16px;
+  }
+
+  .field-label {
+    font-size: 13px;
+    color: var(--muted);
+    font-weight: 500;
+    margin-bottom: 8px;
+    display: block;
+  }
+
+  .field-row {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 12px;
+  }
+
+  @media (max-width: 480px) {
+    .field-row { grid-template-columns: 1fr; }
+  }
+
+  .input-wrap { position: relative; }
+
+  input[type="number"], select, textarea {
+    width: 100%;
+    background: var(--surface2);
+    border: 1.5px solid var(--border);
+    border-radius: var(--radius-sm);
+    padding: 14px 18px;
+    font-family: 'Tajawal', sans-serif;
+    font-size: 15px;
+    color: var(--text);
+    outline: none;
+    transition: border-color 0.2s ease;
+    appearance: none;
+    -webkit-appearance: none;
+  }
+
+  input[type="number"]:focus, select:focus, textarea:focus {
+    border-color: var(--gold);
+  }
+
+  textarea {
+    resize: none;
+    height: 120px;
+    line-height: 1.6;
+  }
+
+  select option { background: #1a1a1a; }
+
+  .nav-row {
+    display: flex;
+    gap: 12px;
+    margin-top: 28px;
+    justify-content: space-between;
+    align-items: center;
+  }
+
+  .btn {
+    border: none;
+    border-radius: 100px;
+    padding: 13px 28px;
+    font-family: 'Tajawal', sans-serif;
+    font-size: 15px;
+    font-weight: 600;
+    cursor: pointer;
+    transition: all 0.22s ease;
+  }
+
+  .btn-primary {
+    background: var(--accent);
+    color: #fff;
+    flex: 1;
+  }
+
+  .btn-primary:hover { background: #1a8fe8; transform: translateY(-1px); box-shadow: 0 6px 20px rgba(41,151,255,0.35); }
+
+  .btn-gold {
+    background: linear-gradient(135deg, #d4a843, #f0c96c);
+    color: #000;
+    flex: 1;
+  }
+
+  .btn-gold:hover { transform: translateY(-1px); box-shadow: 0 6px 20px rgba(212,168,67,0.4); }
+
+  .btn-ghost {
+    background: transparent;
+    color: var(--muted);
+    border: 1.5px solid var(--border);
+  }
+
+  .btn-ghost:hover { border-color: rgba(255,255,255,0.2); color: var(--text); }
+  .btn:disabled { opacity: 0.4; cursor: not-allowed; transform: none !important; }
+
+  .progress-bar {
+    width: 100%;
+    height: 3px;
+    background: var(--border);
+    border-radius: 2px;
+    margin-bottom: 32px;
+    overflow: hidden;
+  }
+
+  .progress-fill {
+    height: 100%;
+    background: linear-gradient(90deg, #d4a843, #f0c96c);
+    border-radius: 2px;
+    transition: width 0.5s cubic-bezier(0.4,0,0.2,1);
+  }
+
+  #results {
+    display: none;
+    padding: 0 20px 100px;
+    max-width: 760px;
+    margin: 0 auto;
+    animation: fadeUp 0.6s ease both;
+  }
+
+  .results-hero {
+    text-align: center;
+    padding: 60px 0 48px;
+    position: relative;
+  }
+
+  .results-icon {
+    font-size: 64px;
+    display: block;
+    margin-bottom: 20px;
+    animation: bounceIn 0.6s cubic-bezier(0.34,1.56,0.64,1) both;
+  }
+
+  @keyframes bounceIn {
+    from { transform: scale(0.3); opacity: 0; }
+    to { transform: scale(1); opacity: 1; }
+  }
+
+  .results-title {
+    font-size: clamp(28px, 5vw, 42px);
+    font-weight: 800;
+    background: linear-gradient(135deg, #d4a843, #f0c96c);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+    margin-bottom: 10px;
+  }
+
+  .results-sub { color: var(--muted); font-size: 16px; }
+
+  .stats-grid {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 16px;
+    margin-bottom: 24px;
+  }
+
+  @media (max-width: 540px) {
+    .stats-grid { grid-template-columns: 1fr; }
+  }
+
+  .stat-card {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: var(--radius);
+    padding: 24px 20px;
+    text-align: center;
+    transition: transform 0.2s;
+  }
+
+  .stat-card:hover { transform: translateY(-3px); }
+
+  .stat-num {
+    font-size: 36px;
+    font-weight: 800;
+    display: block;
+    line-height: 1;
+    margin-bottom: 8px;
+  }
+
+  .stat-label { font-size: 13px; color: var(--muted); font-weight: 500; }
+
+  .stat-card.cheap .stat-num { color: var(--accent2); }
+  .stat-card.normal .stat-num { color: var(--accent); }
+  .stat-card.expensive .stat-num { color: var(--danger); }
+
+  .chart-card {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: var(--radius);
+    padding: 32px;
+    margin-bottom: 24px;
+  }
+
+  .chart-title {
+    font-size: 18px;
+    font-weight: 700;
+    margin-bottom: 24px;
+    color: var(--text);
+  }
+
+  .chart-wrap {
+    position: relative;
+    max-width: 480px;
+    margin: 0 auto;
+  }
+
+  /* Live stats banner on hero */
+  .live-stats {
+    display: flex;
+    gap: 20px;
+    align-items: center;
+    justify-content: center;
+    flex-wrap: wrap;
+    margin-top: 20px;
+    animation: fadeUp 0.8s 0.4s ease both;
+  }
+
+  .live-pill {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    background: rgba(255,255,255,0.05);
+    border: 1px solid var(--border);
+    border-radius: 100px;
+    padding: 6px 14px;
+    font-size: 13px;
+    color: var(--muted);
+  }
+
+  .live-dot {
+    width: 6px; height: 6px;
+    border-radius: 50%;
+    background: var(--accent2);
+    animation: pulse 2s ease infinite;
+  }
+
+  @keyframes pulse {
+    0%,100% { opacity: 1; transform: scale(1); }
+    50% { opacity: 0.5; transform: scale(0.8); }
+  }
+
+  .toast {
+    position: fixed;
+    bottom: 28px;
+    left: 50%;
+    transform: translateX(-50%) translateY(100px);
+    background: rgba(30,30,30,0.95);
+    backdrop-filter: blur(20px);
+    border: 1px solid var(--border);
+    border-radius: 100px;
+    padding: 12px 24px;
+    font-size: 14px;
+    color: var(--text);
+    z-index: 9999;
+    transition: transform 0.4s cubic-bezier(0.34,1.56,0.64,1);
+    white-space: nowrap;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+  }
+
+  .toast.show { transform: translateX(-50%) translateY(0); }
+  .toast.success { border-color: rgba(48,209,88,0.4); }
+  .toast.error { border-color: rgba(255,69,58,0.4); }
+
+  .spinner {
+    width: 20px; height: 20px;
+    border: 2px solid rgba(255,255,255,0.2);
+    border-top-color: var(--accent);
+    border-radius: 50%;
+    animation: spin 0.7s linear infinite;
+    display: inline-block;
+    vertical-align: middle;
+  }
+
+  @keyframes spin { to { transform: rotate(360deg); } }
+
+  .divider {
+    width: 100%;
+    height: 1px;
+    background: linear-gradient(90deg, transparent, var(--border), transparent);
+    margin: 20px 0;
+  }
+
+  .site-footer {
+    text-align: center;
+    padding: 40px 20px;
+    color: var(--muted);
+    font-size: 13px;
+    border-top: 1px solid var(--border);
+  }
+
+  .submitting-overlay {
+    display: none;
+    position: fixed;
+    inset: 0;
+    background: rgba(0,0,0,0.7);
+    backdrop-filter: blur(10px);
+    z-index: 999;
+    align-items: center;
+    justify-content: center;
+    flex-direction: column;
+    gap: 16px;
+    color: var(--muted);
+    font-size: 16px;
+  }
+
+  /* ─── COMMENTS ─── */
+  .comment-card {
+    background: var(--surface2);
+    border: 1px solid var(--border);
+    border-radius: var(--radius-sm);
+    padding: 18px 20px;
+    margin-bottom: 12px;
+    transition: border-color 0.2s;
+  }
+  .comment-card:hover { border-color: rgba(255,255,255,0.14); }
+
+  .comment-header {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    margin-bottom: 10px;
+    flex-wrap: wrap;
+  }
+
+  .comment-badge {
+    display: inline-flex;
+    align-items: center;
+    gap: 4px;
+    border-radius: 100px;
+    padding: 3px 10px;
+    font-size: 12px;
+    font-weight: 600;
+  }
+
+  .comment-meta {
+    font-size: 12px;
+    color: var(--muted);
+  }
+
+  .comment-text {
+    color: var(--text);
+    font-size: 14px;
+    line-height: 1.7;
+    margin-bottom: 14px;
+  }
+
+  .comment-actions {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+  }
+
+  .vote-btn {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    background: rgba(255,255,255,0.04);
+    border: 1px solid var(--border);
+    border-radius: 100px;
+    padding: 5px 14px;
+    font-family: 'Tajawal', sans-serif;
+    font-size: 13px;
+    color: var(--muted);
+    cursor: pointer;
+    transition: all 0.2s ease;
+  }
+  .vote-btn:hover { border-color: rgba(255,255,255,0.2); color: var(--text); transform: scale(1.05); }
+  .vote-btn:active { transform: scale(0.95); }
+  .vote-up-active { border-color: rgba(48,209,88,0.5) !important; background: rgba(48,209,88,0.1) !important; color: var(--accent2) !important; }
+  .vote-down-active { border-color: rgba(255,69,58,0.5) !important; background: rgba(255,69,58,0.1) !important; color: var(--danger) !important; }
+
+  .vote-count { font-weight: 600; }
+
+  .vote-score {
+    font-size: 13px;
+    font-weight: 700;
+    margin-right: 4px;
+  }
 </style>
 </head>
 <body>
 
+<!-- HERO -->
 <section class="hero">
-  <h1>أسعار <span>كبش العيد</span></h1>
+  <div class="hero-glow"></div>
+  <div class="badge">عيد الأضحى المبارك ١٤٤٦</div>
+  <h1>أسعار <span>كبش العيد</span><br>كيف تراها؟</h1>
+  <p class="subtitle">استطلاع رأي موجّه للمغاربة حول أسعار الأضاحي هذا العام — شاركنا رأيك ونتائج مباشرة</p>
 
-  <p class="subtitle">
-    شارك رأيك وشاهد النتائج مباشرة مع جميع الزوار
-  </p>
+  <!-- Live counter shown on hero -->
+  <div class="live-stats" id="heroStats" style="display:none">
+    <div class="live-pill"><div class="live-dot"></div><span id="heroTotal">—</span> مشارك حتى الآن</div>
+    <div class="live-pill">🔴 غالية: <strong id="heroPct" style="color:var(--danger);margin-right:4px">—</strong></div>
+  </div>
 
-  <button class="start-btn" onclick="startSurvey()">
-    ابدأ الاستطلاع
+  <button class="start-btn" onclick="startSurvey()" style="margin-top:32px">
+    شارك رأيك الآن
+    <span>←</span>
   </button>
+  <div class="scroll-hint">
+    <div class="scroll-dot"></div>
+    <span>أو تمرر للأسفل</span>
+  </div>
 </section>
 
+<!-- SURVEY -->
 <section id="survey">
-
-  <div class="progress">
-    <div class="progress-fill" id="progressFill"></div>
+  <div class="progress-bar">
+    <div class="progress-fill" id="progressFill" style="width: 0%"></div>
   </div>
 
-  <!-- STEP 1 -->
+  <!-- STEP 1: Age -->
   <div class="step active" id="step1">
-    <div class="step-title">عمرك</div>
-
+    <div class="step-header">
+      <div class="step-num">١</div>
+      <div>
+        <div class="step-title">عمرك <span class="step-optional">اختياري</span></div>
+      </div>
+    </div>
+    <p style="color:var(--muted);font-size:14px;margin-bottom:20px;">يمكنك تخطي هذا السؤال</p>
     <div class="choices" id="ageChoices">
-      <div class="choice" onclick="selectChoice(event,'age','18-25','ageChoices')">18-25</div>
-      <div class="choice" onclick="selectChoice(event,'age','26-35','ageChoices')">26-35</div>
-      <div class="choice" onclick="selectChoice(event,'age','36-50','ageChoices')">36-50</div>
-      <div class="choice" onclick="selectChoice(event,'age','50+','ageChoices')">50+</div>
+      <div class="choice" onclick="selectChoice('age','18-25','ageChoices')">
+        <span class="choice-icon">🧑</span>18–25
+      </div>
+      <div class="choice" onclick="selectChoice('age','26-35','ageChoices')">
+        <span class="choice-icon">👨</span>26–35
+      </div>
+      <div class="choice" onclick="selectChoice('age','36-50','ageChoices')">
+        <span class="choice-icon">👨‍💼</span>36–50
+      </div>
+      <div class="choice" onclick="selectChoice('age','50+','ageChoices')">
+        <span class="choice-icon">👴</span>+50
+      </div>
     </div>
-
     <div class="nav-row">
-      <button class="btn btn-primary" onclick="nextStep()">التالي</button>
+      <button class="btn btn-ghost" onclick="skipStep()">تخطي</button>
+      <button class="btn btn-primary" onclick="nextStep()">التالي →</button>
     </div>
   </div>
 
-  <!-- STEP 2 -->
+  <!-- STEP 2: Sex -->
   <div class="step" id="step2">
-    <div class="step-title">كيف ترى الأسعار؟</div>
-
-    <div class="choices" id="priceChoices">
-      <div class="choice" onclick="selectChoice(event,'price','رخيصة','priceChoices')">💚 رخيصة</div>
-      <div class="choice" onclick="selectChoice(event,'price','عادية','priceChoices')">💙 عادية</div>
-      <div class="choice" onclick="selectChoice(event,'price','غالية','priceChoices')">🔴 غالية</div>
+    <div class="step-header">
+      <div class="step-num">٢</div>
+      <div>
+        <div class="step-title">جنسك <span class="step-optional">اختياري</span></div>
+      </div>
     </div>
-
-    <div style="color:#ff453a;margin-top:12px;display:none" id="priceError">
-      اختر رأيك أولاً
+    <div class="choices" id="sexChoices">
+      <div class="choice" onclick="selectChoice('sex','ذكر','sexChoices')">
+        <span class="choice-icon">👨</span>ذكر
+      </div>
+      <div class="choice" onclick="selectChoice('sex','أنثى','sexChoices')">
+        <span class="choice-icon">👩</span>أنثى
+      </div>
+      <div class="choice" onclick="selectChoice('sex','أفضل عدم الإفصاح','sexChoices')">
+        <span class="choice-icon">🤐</span>أفضل عدم الإفصاح
+      </div>
     </div>
-
     <div class="nav-row">
-      <button class="btn btn-ghost" onclick="prevStep()">رجوع</button>
-      <button class="btn btn-primary" onclick="nextStep()">التالي</button>
+      <button class="btn btn-ghost" onclick="prevStep()">← رجوع</button>
+      <button class="btn btn-ghost" onclick="skipStep()">تخطي</button>
+      <button class="btn btn-primary" onclick="nextStep()">التالي →</button>
     </div>
   </div>
 
-  <!-- STEP 3 -->
+  <!-- STEP 3: Job -->
   <div class="step" id="step3">
-    <div class="step-title">أضف تعليقاً</div>
-
-    <textarea id="justification" placeholder="اكتب رأيك هنا..."></textarea>
-
+    <div class="step-header">
+      <div class="step-num">٣</div>
+      <div>
+        <div class="step-title">وضعك المهني <span class="step-optional">اختياري</span></div>
+      </div>
+    </div>
+    <div class="choices" id="jobChoices" style="flex-direction:column;">
+      <div class="choice" style="text-align:right;min-width:100%" onclick="selectChoice('job','موظف / عامل','jobChoices')">
+        <span>💼 موظف / عامل</span>
+      </div>
+      <div class="choice" style="text-align:right;min-width:100%" onclick="selectChoice('job','صاحب عمل / تاجر','jobChoices')">
+        <span>🏪 صاحب عمل / تاجر</span>
+      </div>
+      <div class="choice" style="text-align:right;min-width:100%" onclick="selectChoice('job','طالب','jobChoices')">
+        <span>🎓 طالب</span>
+      </div>
+      <div class="choice" style="text-align:right;min-width:100%" onclick="selectChoice('job','بدون عمل','jobChoices')">
+        <span>🔍 بدون عمل</span>
+      </div>
+      <div class="choice" style="text-align:right;min-width:100%" onclick="selectChoice('job','متقاعد','jobChoices')">
+        <span>🏡 متقاعد</span>
+      </div>
+    </div>
     <div class="nav-row">
-      <button class="btn btn-ghost" onclick="prevStep()">رجوع</button>
-      <button class="btn btn-gold" onclick="submitSurvey()">إرسال</button>
+      <button class="btn btn-ghost" onclick="prevStep()">← رجوع</button>
+      <button class="btn btn-ghost" onclick="skipStep()">تخطي</button>
+      <button class="btn btn-primary" onclick="nextStep()">التالي →</button>
+    </div>
+  </div>
+
+  <!-- STEP 4: Price opinion (REQUIRED) -->
+  <div class="step" id="step4">
+    <div class="step-header">
+      <div class="step-num">٤</div>
+      <div class="step-title">كيف تجد أسعار كبش العيد هذا العام؟</div>
+    </div>
+    <div class="choices" id="priceChoices">
+      <div class="choice cheap" onclick="selectChoice('price','رخيصة','priceChoices','cheap')">
+        <span class="choice-icon">💚</span>رخيصة
+      </div>
+      <div class="choice normal" onclick="selectChoice('price','عادية','priceChoices','normal')">
+        <span class="choice-icon">💙</span>عادية
+      </div>
+      <div class="choice expensive" onclick="selectChoice('price','غالية','priceChoices','expensive')">
+        <span class="choice-icon">🔴</span>غالية جداً
+      </div>
+    </div>
+    <p id="priceError" style="color:var(--danger);font-size:13px;margin-top:12px;display:none;">⚠️ هذا السؤال إلزامي، رجاءً اختر إجابة</p>
+    <div class="nav-row">
+      <button class="btn btn-ghost" onclick="prevStep()">← رجوع</button>
+      <button class="btn btn-primary" onclick="nextStep()">التالي →</button>
+    </div>
+  </div>
+
+  <!-- STEP 5: Justification -->
+  <div class="step" id="step5">
+    <div class="step-header">
+      <div class="step-num">٥</div>
+      <div>
+        <div class="step-title">لماذا تعتقد ذلك؟ <span class="step-optional">اختياري</span></div>
+      </div>
+    </div>
+    <p style="color:var(--muted);font-size:14px;margin-bottom:20px;">شاركنا رأيك بحرية — تعليقك سيُرسل مع نتائج الاستطلاع</p>
+    <textarea id="justification" placeholder="مثلاً: غلاء تكاليف التربية، ضعف القدرة الشرائية، ارتفاع العرض والطلب..." dir="rtl"></textarea>
+    <div class="nav-row">
+      <button class="btn btn-ghost" onclick="prevStep()">← رجوع</button>
+      <button class="btn btn-ghost" onclick="skipStep()">تخطي وإرسال</button>
+      <button class="btn btn-gold" onclick="submitSurvey()">إرسال ✓</button>
     </div>
   </div>
 </section>
 
+<!-- RESULTS -->
 <section id="results">
+  <div class="results-hero">
+    <span class="results-icon">🐑</span>
+    <div class="results-title">شكراً لمشاركتك!</div>
+    <p class="results-sub">إليك نتائج الاستطلاع في الوقت الحقيقي</p>
+  </div>
 
   <div class="stats-grid">
-    <div class="stat-card">
-      <div class="stat-num" id="countCheap">0</div>
-      <div>💚 رخيصة</div>
+    <div class="stat-card cheap">
+      <span class="stat-num" id="countCheap">0</span>
+      <span class="stat-label">💚 رخيصة</span>
     </div>
-
-    <div class="stat-card">
-      <div class="stat-num" id="countNormal">0</div>
-      <div>💙 عادية</div>
+    <div class="stat-card normal">
+      <span class="stat-num" id="countNormal">0</span>
+      <span class="stat-label">💙 عادية</span>
     </div>
-
-    <div class="stat-card">
-      <div class="stat-num" id="countExpensive">0</div>
-      <div>🔴 غالية</div>
+    <div class="stat-card expensive">
+      <span class="stat-num" id="countExpensive">0</span>
+      <span class="stat-label">🔴 غالية</span>
     </div>
   </div>
 
   <div class="chart-card">
-    <canvas id="resultsChart"></canvas>
+    <div class="chart-title">📊 توزيع الآراء</div>
+    <div class="chart-wrap">
+      <canvas id="resultsChart"></canvas>
+    </div>
   </div>
 
-  <div class="chart-card">
-    <h2 style="margin-bottom:20px">💬 التعليقات</h2>
-
-    <div id="commentsList"></div>
+  <div class="chart-card" id="commentsSection">
+    <div class="chart-title">💬 تعليقات المشاركين</div>
+    <div id="commentsList"><p style="color:var(--muted);font-size:14px;text-align:center;padding:20px 0">لا توجد تعليقات بعد. كن أول من يعلق!</p></div>
   </div>
 
+  <div style="text-align:center;padding:20px 0">
+    <button class="btn btn-ghost" onclick="shareSurvey()">📤 شارك الاستطلاع مع أصدقائك</button>
+  </div>
 </section>
+
+<footer class="site-footer">
+  <p>استطلاع مغربي مستقل · عيد الأضحى ١٤٤٦</p>
+</footer>
 
 <div class="toast" id="toast"></div>
 
+<!-- Submitting overlay -->
+<div class="submitting-overlay" id="submittingOverlay">
+  <div class="spinner" style="width:40px;height:40px;border-width:3px"></div>
+  <span>جارٍ إرسال رأيك...</span>
+</div>
+
 <script>
+// ─── CONFIG ─────────────────────────────────────────────────────────────────
+// Replace with your confirmed FormSubmit email
+const FORM_EMAIL = 'ryandouraidi@gmail.com';
+// Shared storage key (shared=true means ALL users see the same data)
+const STORAGE_KEY = 'eid-survey-v3';
+// Seed data shown until real votes arrive
+const SEED = { cheap: 0, normal: 0, expensive: 0, comments: [] };
 
-/*
-=========================================
-GLOBAL SHARED DATABASE
-=========================================
-
-THIS WORKS FOR EVERYBODY.
-
-Uses localStorage for demo.
-If you upload to server:
-replace with Firebase / Supabase later.
-*/
-
-const STORAGE_KEY = "eid_global_votes_v1";
-
+// ─── STATE ───
 let currentStep = 1;
-const totalSteps = 3;
+const totalSteps = 5;
+const answers = { age: null, sex: null, job: null, price: null, justification: '' };
 
-const answers = {
-  age:null,
-  price:null,
-  comment:""
-};
+// ─── SHARED STORAGE (window.storage API — shared across all users) ───
+async function loadResults() {
+  try {
+    const res = await window.storage.get(STORAGE_KEY, true); // shared=true
+    if (res && res.value) {
+      const parsed = JSON.parse(res.value);
+      // Validate shape
+      if (typeof parsed.cheap === 'number') return parsed;
+    }
+  } catch(e) { /* key not set yet */ }
+  return { ...SEED, comments: [] };
+}
 
-let chart = null;
-
-/*
-=========================================
-LOAD DATABASE
-=========================================
-*/
-
-function loadData(){
-
-  const raw = localStorage.getItem(STORAGE_KEY);
-
-  if(raw){
-    return JSON.parse(raw);
+async function saveResults(data) {
+  try {
+    await window.storage.set(STORAGE_KEY, JSON.stringify(data), true); // shared=true
+  } catch(e) {
+    console.warn('Storage save failed:', e);
   }
-
-  const starter = {
-    cheap:0,
-    normal:0,
-    expensive:0,
-    comments:[]
-  };
-
-  localStorage.setItem(STORAGE_KEY, JSON.stringify(starter));
-
-  return starter;
 }
 
-function saveData(data){
-  localStorage.setItem(STORAGE_KEY, JSON.stringify(data));
+// ─── HERO LIVE STATS ───
+async function loadHeroStats() {
+  const data = await loadResults();
+  const total = data.cheap + data.normal + data.expensive;
+  const pct = total ? Math.round(data.expensive / total * 100) : 0;
+  document.getElementById('heroTotal').textContent = total.toLocaleString('ar');
+  document.getElementById('heroPct').textContent = pct + '%';
+  document.getElementById('heroStats').style.display = 'flex';
 }
 
-/*
-=========================================
-NAVIGATION
-=========================================
-*/
-
-function startSurvey(){
-
-  document.getElementById("survey")
-  .scrollIntoView({behavior:"smooth"});
-
+// ─── NAVIGATION ───
+function startSurvey() {
+  document.getElementById('survey').scrollIntoView({ behavior: 'smooth' });
   updateProgress();
 }
 
-function updateProgress(){
-
+function updateProgress() {
   const pct = ((currentStep - 1) / totalSteps) * 100;
-
-  document.getElementById("progressFill")
-  .style.width = pct + "%";
+  document.getElementById('progressFill').style.width = pct + '%';
 }
 
-function showStep(n){
-
-  document.querySelectorAll(".step")
-  .forEach(step => step.classList.remove("active"));
-
-  document.getElementById("step"+n)
-  .classList.add("active");
-
+function showStep(n) {
+  document.querySelectorAll('.step').forEach(s => s.classList.remove('active'));
+  const el = document.getElementById('step' + n);
+  if (el) {
+    el.classList.add('active');
+    el.scrollIntoView({ behavior: 'smooth', block: 'start' });
+  }
   updateProgress();
 }
 
-function nextStep(){
-
-  if(currentStep === 2 && !answers.price){
-
-    document.getElementById("priceError").style.display = "block";
-
+function nextStep() {
+  if (currentStep === 4 && !answers.price) {
+    document.getElementById('priceError').style.display = 'block';
     return;
   }
-
-  document.getElementById("priceError").style.display = "none";
-
-  if(currentStep < totalSteps){
-
-    currentStep++;
-
-    showStep(currentStep);
-  }
+  const errEl = document.getElementById('priceError');
+  if (errEl) errEl.style.display = 'none';
+  if (currentStep < totalSteps) { currentStep++; showStep(currentStep); }
 }
 
-function prevStep(){
-
-  if(currentStep > 1){
-
-    currentStep--;
-
-    showStep(currentStep);
-  }
+function prevStep() {
+  if (currentStep > 1) { currentStep--; showStep(currentStep); }
 }
 
-/*
-=========================================
-CHOICE SELECT
-=========================================
-*/
+function skipStep() {
+  if (currentStep === 5) { submitSurvey(true); return; }
+  if (currentStep < totalSteps) { currentStep++; showStep(currentStep); }
+}
 
-function selectChoice(e, field, value, groupId){
-
+// ─── CHOICE SELECTION ───
+function selectChoice(field, value, groupId) {
   answers[field] = value;
-
-  document.querySelectorAll("#"+groupId+" .choice")
-  .forEach(c => c.classList.remove("selected"));
-
-  e.currentTarget.classList.add("selected");
+  document.querySelectorAll(`#${groupId} .choice`).forEach(c => c.classList.remove('selected'));
+  event.currentTarget.classList.add('selected');
+  const errEl = document.getElementById('priceError');
+  if (errEl) errEl.style.display = 'none';
 }
 
-/*
-=========================================
-SUBMIT
-=========================================
-*/
+// ─── CHART ───
+let surveyChart = null;
 
-function submitSurvey(){
-
-  answers.comment =
-    document.getElementById("justification").value.trim();
-
-  if(!answers.price){
-
-    showToast("اختر رأيك أولاً");
-
-    return;
-  }
-
-  const data = loadData();
-
-  if(answers.price === "رخيصة"){
-    data.cheap++;
-  }
-
-  if(answers.price === "عادية"){
-    data.normal++;
-  }
-
-  if(answers.price === "غالية"){
-    data.expensive++;
-  }
-
-  if(answers.comment){
-
-    data.comments.push({
-      id:Date.now(),
-      age:answers.age,
-      price:answers.price,
-      text:answers.comment,
-      upvotes:0,
-      downvotes:0
-    });
-  }
-
-  saveData(data);
-
-  showResults();
-
-  showToast("تم إرسال التصويت بنجاح");
-}
-
-/*
-=========================================
-SHOW RESULTS
-=========================================
-*/
-
-function showResults(){
-
-  document.getElementById("survey").style.display = "none";
-
-  document.getElementById("results").style.display = "block";
-
-  const data = loadData();
-
-  document.getElementById("countCheap").textContent =
-    data.cheap;
-
-  document.getElementById("countNormal").textContent =
-    data.normal;
-
-  document.getElementById("countExpensive").textContent =
-    data.expensive;
-
-  renderChart(data);
-
-  renderComments(data);
-
-  document.getElementById("results")
-  .scrollIntoView({behavior:"smooth"});
-}
-
-/*
-=========================================
-CHART
-=========================================
-*/
-
-function renderChart(data){
-
-  const ctx =
-    document.getElementById("resultsChart");
-
-  if(chart){
-    chart.destroy();
-  }
-
-  chart = new Chart(ctx,{
-    type:"doughnut",
-
-    data:{
-      labels:[
-        "رخيصة",
-        "عادية",
-        "غالية"
-      ],
-
-      datasets:[{
-        data:[
-          data.cheap,
-          data.normal,
-          data.expensive
-        ],
-
-        backgroundColor:[
-          "#30d158",
-          "#2997ff",
-          "#ff453a"
-        ]
+function renderChart(data) {
+  const ctx = document.getElementById('resultsChart').getContext('2d');
+  if (surveyChart) surveyChart.destroy();
+  surveyChart = new Chart(ctx, {
+    type: 'doughnut',
+    data: {
+      labels: ['رخيصة 💚', 'عادية 💙', 'غالية جداً 🔴'],
+      datasets: [{
+        data: [data.cheap, data.normal, data.expensive],
+        backgroundColor: ['rgba(48,209,88,0.8)', 'rgba(41,151,255,0.8)', 'rgba(255,69,58,0.8)'],
+        borderColor: ['#30d158', '#2997ff', '#ff453a'],
+        borderWidth: 2,
+        hoverOffset: 8,
       }]
     },
-
-    options:{
-      plugins:{
-        legend:{
-          labels:{
-            color:"#fff",
-            font:{
-              family:"Tajawal"
-            }
+    options: {
+      responsive: true,
+      plugins: {
+        legend: {
+          position: 'bottom',
+          labels: {
+            color: '#86868b',
+            font: { family: 'Tajawal', size: 14 },
+            padding: 20,
           }
+        },
+        tooltip: {
+          callbacks: {
+            label: ctx => {
+              const total = ctx.dataset.data.reduce((a, b) => a + b, 0);
+              const pct = total ? Math.round(ctx.raw / total * 100) : 0;
+              return ` ${ctx.raw} صوت (${pct}%)`;
+            }
+          },
+          bodyFont: { family: 'Tajawal' },
+          titleFont: { family: 'Tajawal' }
         }
-      }
+      },
+      animation: { animateRotate: true, duration: 900 }
     }
   });
 }
 
-/*
-=========================================
-COMMENTS
-=========================================
-*/
+// ─── COMMENT VOTE STORAGE KEY ───
+const VOTE_KEY = 'eid-survey-v3-votes';
 
-function renderComments(data){
+// Load my personal votes map: { commentId: 'up'|'down' }
+async function loadMyVotes() {
+  try {
+    const res = await window.storage.get(VOTE_KEY, false);
+    if (res && res.value) return JSON.parse(res.value);
+  } catch(e) {}
+  return {};
+}
 
-  const list =
-    document.getElementById("commentsList");
+async function saveMyVotes(votes) {
+  try { await window.storage.set(VOTE_KEY, JSON.stringify(votes), false); } catch(e) {}
+}
 
-  if(data.comments.length === 0){
+function getPriceColor(price) {
+  if (price === 'رخيصة') return 'var(--accent2)';
+  if (price === 'عادية') return 'var(--accent)';
+  return 'var(--danger)';
+}
 
-    list.innerHTML =
-      "<p style='color:#999'>لا توجد تعليقات بعد</p>";
+function getPriceIcon(price) {
+  if (price === 'رخيصة') return '💚';
+  if (price === 'عادية') return '💙';
+  return '🔴';
+}
 
+function renderCommentCard(c, myVote) {
+  const upActive = myVote === 'up';
+  const downActive = myVote === 'down';
+  const score = (c.upvotes || 0) - (c.downvotes || 0);
+  const scoreColor = score > 0 ? 'var(--accent2)' : score < 0 ? 'var(--danger)' : 'var(--muted)';
+  const priceColor = getPriceColor(c.price);
+  const priceIcon = getPriceIcon(c.price);
+  const timeAgo = formatTimeAgo(c.ts);
+
+  return `
+  <div class="comment-card" id="comment-${c.id}">
+    <div class="comment-header">
+      <span class="comment-badge" style="background:${priceColor}22;color:${priceColor};border:1px solid ${priceColor}44">
+        ${priceIcon} ${c.price}
+      </span>
+      ${c.age ? `<span class="comment-meta">· ${escapeHtml(c.age)}</span>` : ''}
+      <span class="comment-meta" style="margin-right:auto">${timeAgo}</span>
+    </div>
+    <p class="comment-text">${escapeHtml(c.text)}</p>
+    <div class="comment-actions">
+      <button class="vote-btn ${upActive ? 'vote-up-active' : ''}" onclick="voteComment('${c.id}','up')" title="مفيد">
+        <span>👍</span>
+        <span class="vote-count" id="up-${c.id}">${c.upvotes || 0}</span>
+      </button>
+      <button class="vote-btn ${downActive ? 'vote-down-active' : ''}" onclick="voteComment('${c.id}','down')" title="غير مفيد">
+        <span>👎</span>
+        <span class="vote-count" id="down-${c.id}">${c.downvotes || 0}</span>
+      </button>
+      <span class="vote-score" style="color:${scoreColor}">
+        ${score > 0 ? '+' : ''}${score}
+      </span>
+    </div>
+  </div>`;
+}
+
+function formatTimeAgo(ts) {
+  if (!ts) return '';
+  const diff = Date.now() - ts;
+  const m = Math.floor(diff / 60000);
+  if (m < 1) return 'الآن';
+  if (m < 60) return `منذ ${m} دقيقة`;
+  const h = Math.floor(m / 60);
+  if (h < 24) return `منذ ${h} ساعة`;
+  return `منذ ${Math.floor(h/24)} يوم`;
+}
+
+async function renderComments(data) {
+  const myVotes = await loadMyVotes();
+  const comments = (data.comments || []).slice().reverse(); // newest first
+  const listEl = document.getElementById('commentsList');
+  if (!comments.length) {
+    listEl.innerHTML = '<p style="color:var(--muted);font-size:14px;text-align:center;padding:20px 0">لا توجد تعليقات بعد. كن أول من يعلق!</p>';
     return;
   }
-
-  list.innerHTML = "";
-
-  data.comments
-  .slice()
-  .reverse()
-  .forEach(comment => {
-
-    const score =
-      comment.upvotes - comment.downvotes;
-
-    const div =
-      document.createElement("div");
-
-    div.className = "comment-card";
-
-    div.innerHTML = `
-
-      <div class="comment-top">
-
-        <div class="badge"
-        style="
-          background:
-          ${comment.price === "غالية"
-            ? "rgba(255,69,58,.2)"
-            : comment.price === "عادية"
-            ? "rgba(41,151,255,.2)"
-            : "rgba(48,209,88,.2)"
-          };
-        ">
-
-        ${comment.price}
-
-        </div>
-
-        <div style="color:#888;font-size:13px">
-          ${comment.age || ""}
-        </div>
-
-      </div>
-
-      <div style="line-height:1.8">
-        ${escapeHtml(comment.text)}
-      </div>
-
-      <div class="vote-actions">
-
-        <button class="vote-btn"
-        onclick="vote(${comment.id},'up')">
-          👍 ${comment.upvotes}
-        </button>
-
-        <button class="vote-btn"
-        onclick="vote(${comment.id},'down')">
-          👎 ${comment.downvotes}
-        </button>
-
-        <div style="margin-right:auto">
-          Score: ${score}
-        </div>
-
-      </div>
-    `;
-
-    list.appendChild(div);
-  });
+  listEl.innerHTML = comments.map(c => renderCommentCard(c, myVotes[c.id])).join('');
 }
 
-/*
-=========================================
-VOTING SYSTEM
-=========================================
-*/
+async function voteComment(commentId, direction) {
+  const myVotes = await loadMyVotes();
+  const prev = myVotes[commentId];
 
-function vote(id, type){
+  // Toggle off if same vote
+  const newVote = prev === direction ? null : direction;
 
-  const data = loadData();
+  // Update shared data
+  const data = await loadResults();
+  const idx = (data.comments || []).findIndex(c => c.id === commentId);
+  if (idx === -1) return;
+  const c = data.comments[idx];
+  c.upvotes = c.upvotes || 0;
+  c.downvotes = c.downvotes || 0;
 
-  const comment =
-    data.comments.find(c => c.id === id);
+  // Undo previous vote
+  if (prev === 'up') c.upvotes = Math.max(0, c.upvotes - 1);
+  if (prev === 'down') c.downvotes = Math.max(0, c.downvotes - 1);
 
-  if(!comment) return;
+  // Apply new vote
+  if (newVote === 'up') c.upvotes++;
+  if (newVote === 'down') c.downvotes++;
 
-  // save personal vote locally
-  const voteKey = "vote_"+id;
+  data.comments[idx] = c;
+  await saveResults(data);
 
-  const previous =
-    localStorage.getItem(voteKey);
+  // Update personal votes
+  if (newVote) myVotes[commentId] = newVote;
+  else delete myVotes[commentId];
+  await saveMyVotes(myVotes);
 
-  if(previous === type){
-
-    // remove vote
-    if(type === "up"){
-      comment.upvotes--;
-    }else{
-      comment.downvotes--;
-    }
-
-    localStorage.removeItem(voteKey);
-
-  }else{
-
-    // remove old
-    if(previous === "up"){
-      comment.upvotes--;
-    }
-
-    if(previous === "down"){
-      comment.downvotes--;
-    }
-
-    // add new
-    if(type === "up"){
-      comment.upvotes++;
-    }else{
-      comment.downvotes++;
-    }
-
-    localStorage.setItem(voteKey, type);
+  // Update UI without full re-render
+  const score = c.upvotes - c.downvotes;
+  const scoreColor = score > 0 ? 'var(--accent2)' : score < 0 ? 'var(--danger)' : 'var(--muted)';
+  const card = document.getElementById('comment-' + commentId);
+  if (card) {
+    card.querySelector('#up-' + commentId).textContent = c.upvotes;
+    card.querySelector('#down-' + commentId).textContent = c.downvotes;
+    const scoreEl = card.querySelector('.vote-score');
+    scoreEl.textContent = (score > 0 ? '+' : '') + score;
+    scoreEl.style.color = scoreColor;
+    // Update active states
+    const btns = card.querySelectorAll('.vote-btn');
+    btns[0].className = 'vote-btn' + (newVote === 'up' ? ' vote-up-active' : '');
+    btns[1].className = 'vote-btn' + (newVote === 'down' ? ' vote-down-active' : '');
   }
+}
 
-  saveData(data);
-
+function updateResultsUI(data) {
+  animateCount('countCheap', data.cheap);
+  animateCount('countNormal', data.normal);
+  animateCount('countExpensive', data.expensive);
+  renderChart(data);
   renderComments(data);
 }
 
-/*
-=========================================
-TOAST
-=========================================
-*/
-
-function showToast(msg){
-
-  const toast =
-    document.getElementById("toast");
-
-  toast.innerText = msg;
-
-  toast.style.display = "block";
-
-  setTimeout(()=>{
-    toast.style.display = "none";
-  },3000);
-}
-
-/*
-=========================================
-UTIL
-=========================================
-*/
-
-function escapeHtml(text){
-
-  return text
-  .replace(/&/g,"&amp;")
-  .replace(/</g,"&lt;")
-  .replace(/>/g,"&gt;");
-}
-
-/*
-=========================================
-AUTO LOAD RESULTS FOR EVERYONE
-=========================================
-*/
-
-window.addEventListener("load",()=>{
-
-  const data = loadData();
-
-  if(
-    data.cheap ||
-    data.normal ||
-    data.expensive
-  ){
-    showResults();
+function animateCount(id, target) {
+  const el = document.getElementById(id);
+  const start = 0;
+  const duration = 800;
+  const startTime = performance.now();
+  function update(now) {
+    const elapsed = now - startTime;
+    const progress = Math.min(elapsed / duration, 1);
+    const ease = 1 - Math.pow(1 - progress, 3);
+    el.textContent = Math.round(start + (target - start) * ease);
+    if (progress < 1) requestAnimationFrame(update);
   }
+  requestAnimationFrame(update);
+}
+
+function escapeHtml(str) {
+  return String(str)
+    .replace(/&/g, '&amp;')
+    .replace(/</g, '&lt;')
+    .replace(/>/g, '&gt;')
+    .replace(/"/g, '&quot;');
+}
+
+// ─── SUBMIT ───
+async function submitSurvey(skipJustification = false) {
+  if (!skipJustification) {
+    answers.justification = document.getElementById('justification').value.trim();
+  }
+
+  if (!answers.price) {
+    showToast('⚠️ يجب اختيار رأيك في الأسعار', 'error');
+    currentStep = 4;
+    showStep(4);
+    return;
+  }
+
+  // Show loading overlay
+  document.getElementById('submittingOverlay').classList.add('show');
+
+  // Load current shared data, increment, save back
+  const data = await loadResults();
+  const key = answers.price === 'رخيصة' ? 'cheap' : answers.price === 'عادية' ? 'normal' : 'expensive';
+  data[key]++;
+  if (answers.justification) {
+    if (!Array.isArray(data.comments)) data.comments = [];
+    data.comments.push({
+      id: Date.now().toString(36) + Math.random().toString(36).slice(2,6),
+      price: answers.price,
+      age: answers.age || '',
+      text: answers.justification,
+      ts: Date.now(),
+      upvotes: 0,
+      downvotes: 0
+    });
+    // Keep last 50 comments max
+    if (data.comments.length > 50) data.comments = data.comments.slice(-50);
+  }
+
+  await saveResults(data);
+
+  // Hide overlay, show results
+  document.getElementById('submittingOverlay').classList.remove('show');
+  document.getElementById('survey').style.display = 'none';
+  const resultsEl = document.getElementById('results');
+  resultsEl.style.display = 'block';
+  resultsEl.scrollIntoView({ behavior: 'smooth' });
+  updateResultsUI(data);
+  showToast('✅ تم إرسال رأيك بنجاح!', 'success');
+}
+
+// ─── TOAST ───
+function showToast(msg, type = '') {
+  const t = document.getElementById('toast');
+  t.textContent = msg;
+  t.className = 'toast ' + type;
+  t.classList.add('show');
+  setTimeout(() => t.classList.remove('show'), 3500);
+}
+
+// ─── SHARE ───
+function shareSurvey() {
+  const text = 'شارك رأيك في أسعار كبش العيد هذا العام! 🐑';
+  if (navigator.share) {
+    navigator.share({ title: 'استطلاع أسعار كبش العيد', text, url: location.href }).catch(() => {});
+  } else {
+    navigator.clipboard?.writeText(location.href).then(() => showToast('📋 تم نسخ الرابط!', 'success'));
+  }
+}
+
+// ─── INIT ───
+window.addEventListener('load', () => {
+  loadHeroStats();
 });
-
-/*
-=========================================
-LIVE UPDATE EVERY 2 SECONDS
-=========================================
-*/
-
-setInterval(()=>{
-
-  if(document.getElementById("results").style.display === "block"){
-
-    const data = loadData();
-
-    renderComments(data);
-
-    document.getElementById("countCheap").textContent =
-      data.cheap;
-
-    document.getElementById("countNormal").textContent =
-      data.normal;
-
-    document.getElementById("countExpensive").textContent =
-      data.expensive;
-
-    renderChart(data);
-  }
-
-},2000);
-
 </script>
 </body>
 </html>
