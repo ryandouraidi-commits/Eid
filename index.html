@@ -1,600 +1,1297 @@
 <!DOCTYPE html>
 <html lang="ar" dir="rtl">
 <head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>استطلاع أسعار كبش العيد - عالمي</title>
-<link href="https://fonts.googleapis.com/css2?family=Tajawal:wght@300;400;500;700;800;900&display=swap" rel="stylesheet">
-<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
-<style>
-*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
-:root{
-  --bg:#000;--surface:#111;--surface2:#1a1a1a;
-  --border:rgba(255,255,255,0.08);--text:#f5f5f7;
-  --muted:#86868b;--accent:#2997ff;--accent2:#30d158;
-  --danger:#ff453a;--gold:#d4a843;
-  --radius:18px;--radius-sm:12px;
-}
-html{scroll-behavior:smooth}
-body{font-family:'Tajawal',sans-serif;background:var(--bg);color:var(--text);min-height:100vh;overflow-x:hidden;line-height:1.6}
-.hero{position:relative;min-height:100vh;display:flex;flex-direction:column;align-items:center;justify-content:center;text-align:center;padding:60px 24px 80px}
-.hero-glow{position:absolute;top:-200px;left:50%;transform:translateX(-50%);width:800px;height:800px;background:radial-gradient(ellipse,rgba(212,168,67,0.18) 0%,transparent 70%);pointer-events:none;animation:breathe 6s ease-in-out infinite}
-@keyframes breathe{0%,100%{opacity:.6;transform:translateX(-50%) scale(1)}50%{opacity:1;transform:translateX(-50%) scale(1.08)}}
-.badge{display:inline-flex;align-items:center;gap:8px;background:rgba(212,168,67,.12);border:1px solid rgba(212,168,67,.3);border-radius:100px;padding:6px 18px;font-size:13px;color:var(--gold);font-weight:500;margin-bottom:32px}
-.badge::before{content:'🐑';font-size:16px}
-h1{font-size:clamp(36px,7vw,80px);font-weight:800;line-height:1.05;letter-spacing:-.03em;margin-bottom:20px;background:linear-gradient(135deg,#f5f5f7 0%,#a1a1a6 100%);-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text}
-h1 span{background:linear-gradient(135deg,#d4a843 0%,#f0c96c 50%,#d4a843 100%);-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text}
-.subtitle{font-size:clamp(16px,2.5vw,21px);color:var(--muted);max-width:560px;font-weight:300;margin-bottom:48px}
-@keyframes fadeUp{from{opacity:0;transform:translateY(20px)}to{opacity:1;transform:translateY(0)}}
-@keyframes slideIn{from{opacity:0;transform:translateY(24px) scale(.98)}to{opacity:1;transform:translateY(0) scale(1)}}
-@keyframes bounceIn{from{transform:scale(.3);opacity:0}to{transform:scale(1);opacity:1}}
-@keyframes spin{to{transform:rotate(360deg)}}
-@keyframes pulse{0%,100%{opacity:1;transform:scale(1)}50%{opacity:.5;transform:scale(.8)}}
-.start-btn{display:inline-flex;align-items:center;gap:10px;background:var(--accent);color:#fff;border:none;border-radius:100px;padding:16px 36px;font-size:17px;font-family:'Tajawal',sans-serif;font-weight:600;cursor:pointer;transition:all .25s ease;margin-top:32px}
-.start-btn:hover{transform:scale(1.04);box-shadow:0 8px 30px rgba(41,151,255,.4)}
-.live-stats{display:flex;gap:20px;align-items:center;justify-content:center;flex-wrap:wrap;margin-top:20px}
-.live-pill{display:flex;align-items:center;gap:6px;background:rgba(255,255,255,.05);border:1px solid var(--border);border-radius:100px;padding:6px 14px;font-size:13px;color:var(--muted)}
-.live-dot{width:6px;height:6px;border-radius:50%;background:var(--accent2);animation:pulse 2s ease infinite}
-#survey{max-width:680px;margin:0 auto;padding:0 20px 100px;position:relative;z-index:1}
-.step{background:var(--surface);border:1px solid var(--border);border-radius:var(--radius);padding:clamp(28px,5vw,48px);margin-bottom:24px;display:none;animation:slideIn .5s cubic-bezier(.34,1.56,.64,1) both}
-.step.active{display:block}
-.step-header{display:flex;align-items:center;gap:14px;margin-bottom:28px}
-.step-num{width:32px;height:32px;border-radius:50%;background:linear-gradient(135deg,#d4a843,#f0c96c);display:flex;align-items:center;justify-content:center;font-size:13px;font-weight:700;color:#000;flex-shrink:0}
-.step-title{font-size:22px;font-weight:700;color:var(--text)}
-.step-optional{font-size:12px;color:var(--muted);background:rgba(134,134,139,.12);border-radius:6px;padding:2px 8px;font-weight:400;margin-right:8px}
-.choices{display:flex;flex-wrap:wrap;gap:10px}
-.choice{flex:1;min-width:120px;background:var(--surface2);border:1.5px solid var(--border);border-radius:var(--radius-sm);padding:16px 20px;text-align:center;cursor:pointer;transition:all .22s ease;font-family:'Tajawal',sans-serif;font-size:15px;font-weight:500;color:var(--muted)}
-.choice:hover{border-color:rgba(255,255,255,.2);color:var(--text);transform:translateY(-2px)}
-.choice.selected{border-color:var(--gold);color:var(--text);background:rgba(212,168,67,.1)}
-.choice.cheap.selected{border-color:var(--accent2);background:rgba(48,209,88,.08)}
-.choice.normal.selected{border-color:var(--accent);background:rgba(41,151,255,.08)}
-.choice.expensive.selected{border-color:var(--danger);background:rgba(255,69,58,.08)}
-.choice-icon{font-size:24px;display:block;margin-bottom:6px}
-textarea{width:100%;background:var(--surface2);border:1.5px solid var(--border);border-radius:var(--radius-sm);padding:14px 18px;font-family:'Tajawal',sans-serif;font-size:15px;color:var(--text);outline:none;transition:border-color .2s ease;resize:none;height:120px;line-height:1.6}
-textarea:focus{border-color:var(--gold)}
-.nav-row{display:flex;gap:12px;margin-top:28px;justify-content:space-between;align-items:center}
-.btn{border:none;border-radius:100px;padding:13px 28px;font-family:'Tajawal',sans-serif;font-size:15px;font-weight:600;cursor:pointer;transition:all .22s ease}
-.btn-primary{background:var(--accent);color:#fff;flex:1}
-.btn-primary:hover{background:#1a8fe8;transform:translateY(-1px)}
-.btn-gold{background:linear-gradient(135deg,#d4a843,#f0c96c);color:#000;flex:1}
-.btn-gold:hover{transform:translateY(-1px);box-shadow:0 6px 20px rgba(212,168,67,.4)}
-.btn-ghost{background:transparent;color:var(--muted);border:1.5px solid var(--border)}
-.btn-ghost:hover{border-color:rgba(255,255,255,.2);color:var(--text)}
-.progress-bar{width:100%;height:3px;background:var(--border);border-radius:2px;margin-bottom:32px;overflow:hidden}
-.progress-fill{height:100%;background:linear-gradient(90deg,#d4a843,#f0c96c);border-radius:2px;transition:width .5s cubic-bezier(.4,0,.2,1)}
-.results-hero{text-align:center;padding:60px 0 48px}
-.results-icon{font-size:64px;display:block;margin-bottom:20px;animation:bounceIn .6s cubic-bezier(.34,1.56,.64,1) both}
-.results-title{font-size:clamp(28px,5vw,42px);font-weight:800;background:linear-gradient(135deg,#d4a843,#f0c96c);-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text;margin-bottom:10px}
-.results-sub{color:var(--muted);font-size:16px}
-.stats-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:16px;margin-bottom:24px}
-@media(max-width:540px){.stats-grid{grid-template-columns:1fr}}
-.stat-card{background:var(--surface);border:1px solid var(--border);border-radius:var(--radius);padding:24px 20px;text-align:center;transition:transform .2s}
-.stat-card:hover{transform:translateY(-3px)}
-.stat-num{font-size:36px;font-weight:800;display:block;line-height:1;margin-bottom:8px}
-.stat-label{font-size:13px;color:var(--muted);font-weight:500}
-.stat-card.cheap .stat-num{color:var(--accent2)}
-.stat-card.normal .stat-num{color:var(--accent)}
-.stat-card.expensive .stat-num{color:var(--danger)}
-.chart-card{background:var(--surface);border:1px solid var(--border);border-radius:var(--radius);padding:32px;margin-bottom:24px}
-.chart-title{font-size:18px;font-weight:700;margin-bottom:24px;color:var(--text)}
-.chart-wrap{position:relative;max-width:480px;margin:0 auto}
-.comment-card{background:var(--surface2);border:1px solid var(--border);border-radius:var(--radius-sm);padding:18px 20px;margin-bottom:12px;transition:border-color .2s}
-.comment-card:hover{border-color:rgba(255,255,255,.14)}
-.comment-header{display:flex;align-items:center;gap:10px;margin-bottom:10px;flex-wrap:wrap}
-.comment-badge{display:inline-flex;align-items:center;gap:4px;border-radius:100px;padding:3px 10px;font-size:12px;font-weight:600}
-.comment-meta{font-size:12px;color:var(--muted)}
-.comment-text{color:var(--text);font-size:14px;line-height:1.7;margin-bottom:14px}
-.comment-actions{display:flex;align-items:center;gap:10px}
-.vote-btn{display:inline-flex;align-items:center;gap:6px;background:rgba(255,255,255,.04);border:1px solid var(--border);border-radius:100px;padding:5px 14px;font-family:'Tajawal',sans-serif;font-size:13px;color:var(--muted);cursor:pointer;transition:all .2s ease}
-.vote-btn:hover{border-color:rgba(255,255,255,.2);color:var(--text)}
-.vote-up-active{border-color:rgba(48,209,88,.5)!important;background:rgba(48,209,88,.1)!important;color:var(--accent2)!important}
-.vote-down-active{border-color:rgba(255,69,58,.5)!important;background:rgba(255,69,58,.1)!important;color:var(--danger)!important}
-.vote-count{font-weight:600}
-.vote-score{font-size:13px;font-weight:700;margin-right:4px}
-.toast{position:fixed;bottom:28px;left:50%;transform:translateX(-50%) translateY(100px);background:rgba(30,30,30,.95);backdrop-filter:blur(20px);border:1px solid var(--border);border-radius:100px;padding:12px 24px;font-size:14px;color:var(--text);z-index:9999;transition:transform .4s cubic-bezier(.34,1.56,.64,1);white-space:nowrap}
-.toast.show{transform:translateX(-50%) translateY(0)}
-.toast.success{border-color:rgba(48,209,88,.4)}
-.toast.error{border-color:rgba(255,69,58,.4)}
-.spinner{width:20px;height:20px;border:2px solid rgba(255,255,255,.2);border-top-color:var(--accent);border-radius:50%;animation:spin .7s linear infinite;display:inline-block}
-.overlay{position:fixed;inset:0;background:rgba(0,0,0,.85);backdrop-filter:blur(12px);z-index:999;display:flex;align-items:center;justify-content:center;flex-direction:column;gap:16px;color:var(--muted);font-size:16px}
-.overlay.hidden{display:none}
-.site-footer{text-align:center;padding:40px 20px;color:var(--muted);font-size:13px;border-top:1px solid var(--border)}
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>استطلاع أسعار كبش العيد - عالمي</title>
+    <meta name="description" content="شارك في الاستطلاع العالمي لأسعار كبش العيد وتعرف على آراء الناس مباشرة.">
+    <link href="https://fonts.googleapis.com/css2?family=Tajawal:wght@300;400;500;700;800&display=swap" rel="stylesheet">
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <style>
+        /* ==========================================================================
+           1. CSS VARIABLES & THEME SETUP
+           ========================================================================== */
+        :root {
+            /* Colors */
+            --bg-main: #000000;
+            --bg-surface: #0a0a0a;
+            --bg-surface-hover: #141414;
+            --bg-glass: rgba(20, 20, 20, 0.7);
+            
+            /* Typography Colors */
+            --text-primary: #ededed;
+            --text-secondary: #888888;
+            --text-inverse: #000000;
+            
+            /* Accents */
+            --accent-blue: #2997ff;
+            --accent-blue-hover: #147ce0;
+            --accent-green: #30d158;
+            --accent-red: #ff453a;
+            --accent-gold: #d4a843;
+            --accent-gold-light: #f0c96c;
+            
+            /* Borders & Shadows */
+            --border-color: rgba(255, 255, 255, 0.08);
+            --border-hover: rgba(255, 255, 255, 0.15);
+            --shadow-glass: 0 8px 32px rgba(0, 0, 0, 0.4);
+            
+            /* Sizing & Radius */
+            --radius-lg: 24px;
+            --radius-md: 16px;
+            --radius-sm: 8px;
+            --font-main: 'Tajawal', system-ui, -apple-system, sans-serif;
+            
+            /* Animations */
+            --ease-spring: cubic-bezier(0.175, 0.885, 0.32, 1.275);
+            --ease-smooth: cubic-bezier(0.4, 0, 0.2, 1);
+        }
 
-/* Admin Setup UI */
-#adminSetup {
-    display: none; max-width: 600px; margin: 80px auto; background: var(--surface2); 
-    padding: 40px 30px; border-radius: 24px; text-align: center; border: 2px dashed var(--accent);
-}
-.code-block {
-    background: #000; padding: 15px; font-size: 18px; color: var(--gold); 
-    letter-spacing: 1px; margin: 20px 0; border-radius: 12px; direction: ltr; font-family: monospace;
-}
-</style>
+        /* ==========================================================================
+           2. RESET & BASE STYLES
+           ========================================================================== */
+        *, *::before, *::after {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+        }
+
+        html {
+            scroll-behavior: smooth;
+        }
+
+        body {
+            font-family: var(--font-main);
+            background-color: var(--bg-main);
+            color: var(--text-primary);
+            min-height: 100vh;
+            overflow-x: hidden;
+            line-height: 1.6;
+            -webkit-font-smoothing: antialiased;
+            -moz-osx-font-smoothing: grayscale;
+        }
+
+        button {
+            font-family: inherit;
+            cursor: pointer;
+            outline: none;
+        }
+
+        /* ==========================================================================
+           3. LAYOUT & CONTAINERS
+           ========================================================================== */
+        .container {
+            width: 100%;
+            max-width: 720px;
+            margin: 0 auto;
+            padding: 0 20px;
+        }
+
+        .section-padding {
+            padding: 80px 0;
+        }
+
+        /* ==========================================================================
+           4. HERO SECTION
+           ========================================================================== */
+        .hero {
+            position: relative;
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            text-align: center;
+            padding: 40px 20px;
+        }
+
+        .hero-glow {
+            position: absolute;
+            top: -10%;
+            left: 50%;
+            transform: translateX(-50%);
+            width: 80vw;
+            max-width: 800px;
+            height: 80vw;
+            max-height: 800px;
+            background: radial-gradient(circle, rgba(212,168,67,0.08) 0%, transparent 60%);
+            pointer-events: none;
+            z-index: 0;
+            animation: pulseGlow 8s ease-in-out infinite alternate;
+        }
+
+        .badge {
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            background: rgba(212, 168, 67, 0.08);
+            border: 1px solid rgba(212, 168, 67, 0.2);
+            border-radius: 100px;
+            padding: 8px 20px;
+            font-size: 14px;
+            color: var(--accent-gold);
+            font-weight: 500;
+            margin-bottom: 32px;
+            backdrop-filter: blur(10px);
+            z-index: 1;
+        }
+
+        .hero h1 {
+            font-size: clamp(40px, 8vw, 72px);
+            font-weight: 800;
+            line-height: 1.1;
+            letter-spacing: -0.02em;
+            margin-bottom: 24px;
+            z-index: 1;
+        }
+
+        .text-gradient-silver {
+            background: linear-gradient(135deg, #ffffff 0%, #a1a1a6 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+
+        .text-gradient-gold {
+            background: linear-gradient(135deg, var(--accent-gold) 0%, var(--accent-gold-light) 50%, var(--accent-gold) 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+
+        .hero p.subtitle {
+            font-size: clamp(16px, 3vw, 20px);
+            color: var(--text-secondary);
+            max-width: 540px;
+            font-weight: 400;
+            margin-bottom: 48px;
+            z-index: 1;
+        }
+
+        /* Live Stats Pill */
+        .live-stats {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 12px;
+            justify-content: center;
+            margin-top: 24px;
+            z-index: 1;
+        }
+
+        .live-pill {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            background: var(--bg-surface);
+            border: 1px solid var(--border-color);
+            border-radius: 100px;
+            padding: 8px 16px;
+            font-size: 14px;
+            color: var(--text-secondary);
+        }
+
+        .live-dot {
+            width: 8px;
+            height: 8px;
+            border-radius: 50%;
+            background: var(--accent-red);
+            animation: blink 2s infinite;
+        }
+
+        /* ==========================================================================
+           5. BUTTONS
+           ========================================================================== */
+        .btn {
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            gap: 8px;
+            border: none;
+            border-radius: 100px;
+            padding: 16px 32px;
+            font-size: 16px;
+            font-weight: 700;
+            transition: all 0.3s var(--ease-smooth);
+            z-index: 1;
+        }
+
+        .btn:active {
+            transform: scale(0.96);
+        }
+
+        .btn-primary {
+            background: var(--accent-blue);
+            color: #fff;
+            box-shadow: 0 4px 20px rgba(41, 151, 255, 0.2);
+        }
+
+        .btn-primary:hover {
+            background: var(--accent-blue-hover);
+            box-shadow: 0 8px 24px rgba(41, 151, 255, 0.3);
+            transform: translateY(-2px);
+        }
+
+        .btn-gold {
+            background: linear-gradient(135deg, var(--accent-gold), var(--accent-gold-light));
+            color: var(--text-inverse);
+            box-shadow: 0 4px 20px rgba(212, 168, 67, 0.2);
+        }
+
+        .btn-gold:hover {
+            box-shadow: 0 8px 24px rgba(212, 168, 67, 0.3);
+            transform: translateY(-2px);
+        }
+
+        .btn-ghost {
+            background: transparent;
+            color: var(--text-secondary);
+            border: 1px solid var(--border-color);
+        }
+
+        .btn-ghost:hover {
+            border-color: var(--border-hover);
+            color: var(--text-primary);
+            background: rgba(255, 255, 255, 0.02);
+        }
+
+        .nav-row {
+            display: flex;
+            gap: 12px;
+            margin-top: 32px;
+            justify-content: space-between;
+        }
+        
+        .nav-row .btn {
+            flex: 1;
+            padding: 14px 24px;
+        }
+
+        /* ==========================================================================
+           6. SURVEY FORM (STEPS)
+           ========================================================================== */
+        #survey {
+            position: relative;
+            z-index: 10;
+        }
+
+        .progress-container {
+            width: 100%;
+            height: 4px;
+            background: var(--border-color);
+            border-radius: 4px;
+            margin-bottom: 40px;
+            overflow: hidden;
+        }
+
+        .progress-fill {
+            height: 100%;
+            background: linear-gradient(90deg, var(--accent-gold), var(--accent-gold-light));
+            border-radius: 4px;
+            width: 0%;
+            transition: width 0.6s var(--ease-spring);
+        }
+
+        .step {
+            background: var(--bg-surface);
+            border: 1px solid var(--border-color);
+            border-radius: var(--radius-lg);
+            padding: clamp(24px, 5vw, 40px);
+            margin-bottom: 24px;
+            display: none;
+            opacity: 0;
+            transform: translateY(20px);
+        }
+
+        .step.active {
+            display: block;
+            animation: stepIn 0.6s var(--ease-spring) forwards;
+        }
+
+        .step-header {
+            display: flex;
+            align-items: center;
+            gap: 16px;
+            margin-bottom: 32px;
+        }
+
+        .step-num {
+            width: 36px;
+            height: 36px;
+            border-radius: 50%;
+            background: rgba(212, 168, 67, 0.1);
+            color: var(--accent-gold);
+            border: 1px solid rgba(212, 168, 67, 0.2);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 16px;
+            font-weight: 700;
+            flex-shrink: 0;
+        }
+
+        .step-title {
+            font-size: clamp(18px, 4vw, 24px);
+            font-weight: 700;
+            color: var(--text-primary);
+        }
+
+        .step-optional {
+            font-size: 12px;
+            color: var(--text-secondary);
+            background: rgba(255, 255, 255, 0.05);
+            border: 1px solid var(--border-color);
+            border-radius: 6px;
+            padding: 4px 10px;
+            margin-right: 8px;
+            font-weight: 500;
+            vertical-align: middle;
+        }
+
+        /* Choices Grid */
+        .choices {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(140px, 1fr));
+            gap: 12px;
+        }
+
+        .choices.col-1 {
+            grid-template-columns: 1fr;
+        }
+
+        .choice {
+            background: var(--bg-main);
+            border: 2px solid var(--border-color);
+            border-radius: var(--radius-md);
+            padding: 20px 16px;
+            text-align: center;
+            cursor: pointer;
+            transition: all 0.2s var(--ease-smooth);
+            font-size: 16px;
+            font-weight: 600;
+            color: var(--text-secondary);
+            user-select: none;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 12px;
+        }
+
+        .choices.col-1 .choice {
+            flex-direction: row;
+            text-align: right;
+            padding: 16px 24px;
+        }
+
+        .choice:hover {
+            border-color: var(--border-hover);
+            background: var(--bg-surface-hover);
+            color: var(--text-primary);
+        }
+
+        .choice.selected {
+            border-color: var(--accent-gold);
+            background: rgba(212, 168, 67, 0.05);
+            color: var(--text-primary);
+            box-shadow: 0 4px 20px rgba(212, 168, 67, 0.1);
+            transform: translateY(-2px);
+        }
+
+        /* Specific Choice Colors */
+        .choice.cheap.selected { border-color: var(--accent-green); background: rgba(48, 209, 88, 0.05); box-shadow: 0 4px 20px rgba(48, 209, 88, 0.1); }
+        .choice.normal.selected { border-color: var(--accent-blue); background: rgba(41, 151, 255, 0.05); box-shadow: 0 4px 20px rgba(41, 151, 255, 0.1); }
+        .choice.expensive.selected { border-color: var(--accent-red); background: rgba(255, 69, 58, 0.05); box-shadow: 0 4px 20px rgba(255, 69, 58, 0.1); }
+
+        .choice-icon {
+            font-size: 28px;
+            display: block;
+        }
+
+        textarea {
+            width: 100%;
+            background: var(--bg-main);
+            border: 2px solid var(--border-color);
+            border-radius: var(--radius-md);
+            padding: 16px 20px;
+            font-family: var(--font-main);
+            font-size: 16px;
+            color: var(--text-primary);
+            outline: none;
+            transition: all 0.3s var(--ease-smooth);
+            resize: vertical;
+            min-height: 120px;
+            line-height: 1.6;
+        }
+
+        textarea:focus {
+            border-color: var(--accent-gold);
+            box-shadow: 0 0 0 4px rgba(212, 168, 67, 0.1);
+        }
+
+        textarea::placeholder {
+            color: var(--text-secondary);
+            opacity: 0.5;
+        }
+
+        /* ==========================================================================
+           7. RESULTS SECTION
+           ========================================================================== */
+        .results-hero {
+            text-align: center;
+            margin-bottom: 40px;
+        }
+
+        .results-icon {
+            font-size: 64px;
+            display: block;
+            margin-bottom: 24px;
+            animation: popIn 0.8s var(--ease-spring);
+        }
+
+        .stats-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 16px;
+            margin-bottom: 32px;
+        }
+
+        .stat-card {
+            background: var(--bg-surface);
+            border: 1px solid var(--border-color);
+            border-radius: var(--radius-lg);
+            padding: 32px 24px;
+            text-align: center;
+            transition: transform 0.3s var(--ease-smooth);
+        }
+
+        .stat-card:hover {
+            transform: translateY(-4px);
+            border-color: var(--border-hover);
+        }
+
+        .stat-num {
+            font-size: 48px;
+            font-weight: 800;
+            display: block;
+            line-height: 1;
+            margin-bottom: 12px;
+        }
+
+        .stat-label {
+            font-size: 15px;
+            color: var(--text-secondary);
+            font-weight: 600;
+        }
+
+        .stat-card.cheap .stat-num { color: var(--accent-green); }
+        .stat-card.normal .stat-num { color: var(--accent-blue); }
+        .stat-card.expensive .stat-num { color: var(--accent-red); }
+
+        .dashboard-card {
+            background: var(--bg-surface);
+            border: 1px solid var(--border-color);
+            border-radius: var(--radius-lg);
+            padding: clamp(24px, 5vw, 40px);
+            margin-bottom: 24px;
+        }
+
+        .dashboard-title {
+            font-size: 20px;
+            font-weight: 700;
+            margin-bottom: 32px;
+            display: flex;
+            align-items: center;
+            gap: 12px;
+        }
+
+        .chart-wrap {
+            position: relative;
+            max-width: 400px;
+            margin: 0 auto;
+        }
+
+        /* Comments UI */
+        .comment-card {
+            background: var(--bg-main);
+            border: 1px solid var(--border-color);
+            border-radius: var(--radius-md);
+            padding: 20px;
+            margin-bottom: 16px;
+            transition: border-color 0.2s;
+        }
+
+        .comment-card:hover {
+            border-color: var(--border-hover);
+        }
+
+        .comment-header {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            margin-bottom: 12px;
+            flex-wrap: wrap;
+        }
+
+        .comment-badge {
+            display: inline-flex;
+            align-items: center;
+            gap: 6px;
+            border-radius: 100px;
+            padding: 4px 12px;
+            font-size: 12px;
+            font-weight: 700;
+        }
+
+        .comment-meta {
+            font-size: 13px;
+            color: var(--text-secondary);
+        }
+
+        .comment-text {
+            font-size: 15px;
+            line-height: 1.8;
+            margin-bottom: 16px;
+            color: #e5e5e5;
+        }
+
+        .comment-actions {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            border-top: 1px solid var(--border-color);
+            padding-top: 16px;
+        }
+
+        .vote-btn {
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            background: var(--bg-surface);
+            border: 1px solid var(--border-color);
+            border-radius: 100px;
+            padding: 6px 16px;
+            font-size: 14px;
+            color: var(--text-secondary);
+            font-weight: 600;
+            transition: all 0.2s;
+        }
+
+        .vote-btn:hover {
+            border-color: var(--border-hover);
+            color: var(--text-primary);
+            background: var(--bg-surface-hover);
+        }
+
+        .vote-up-active { border-color: rgba(48, 209, 88, 0.4)!important; background: rgba(48, 209, 88, 0.1)!important; color: var(--accent-green)!important; }
+        .vote-down-active { border-color: rgba(255, 69, 58, 0.4)!important; background: rgba(255, 69, 58, 0.1)!important; color: var(--accent-red)!important; }
+
+        /* ==========================================================================
+           8. ADMIN SETUP & UTILITIES
+           ========================================================================== */
+        #adminSetup {
+            display: none;
+            background: var(--bg-surface);
+            padding: 40px;
+            border-radius: var(--radius-lg);
+            text-align: center;
+            border: 2px dashed var(--accent-gold);
+            margin-bottom: 40px;
+        }
+
+        .code-block {
+            background: var(--bg-main);
+            padding: 20px;
+            font-size: 16px;
+            color: var(--accent-gold);
+            margin: 24px 0;
+            border-radius: var(--radius-md);
+            direction: ltr;
+            font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, monospace;
+            border: 1px solid var(--border-color);
+        }
+
+        /* Feedback UI (Toast & Overlay) */
+        .toast {
+            position: fixed;
+            bottom: 32px;
+            left: 50%;
+            transform: translate(-50%, 100px);
+            background: var(--bg-glass);
+            backdrop-filter: blur(16px);
+            -webkit-backdrop-filter: blur(16px);
+            border: 1px solid var(--border-color);
+            border-radius: 100px;
+            padding: 14px 28px;
+            font-size: 15px;
+            font-weight: 600;
+            z-index: 9999;
+            transition: transform 0.5s var(--ease-spring);
+            box-shadow: var(--shadow-glass);
+            white-space: nowrap;
+        }
+
+        .toast.show { transform: translate(-50%, 0); }
+        .toast.success { border-color: rgba(48, 209, 88, 0.4); color: var(--accent-green); }
+        .toast.error { border-color: rgba(255, 69, 58, 0.4); color: var(--accent-red); }
+
+        .overlay {
+            position: fixed;
+            inset: 0;
+            background: rgba(0, 0, 0, 0.8);
+            backdrop-filter: blur(8px);
+            -webkit-backdrop-filter: blur(8px);
+            z-index: 9999;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            flex-direction: column;
+            gap: 20px;
+            opacity: 0;
+            pointer-events: none;
+            transition: opacity 0.3s ease;
+        }
+        
+        .overlay.active {
+            opacity: 1;
+            pointer-events: all;
+        }
+
+        .spinner {
+            width: 48px;
+            height: 48px;
+            border: 3px solid rgba(255, 255, 255, 0.1);
+            border-top-color: var(--accent-gold);
+            border-radius: 50%;
+            animation: spin 0.8s linear infinite;
+        }
+
+        .site-footer {
+            text-align: center;
+            padding: 40px 20px;
+            color: var(--text-secondary);
+            font-size: 14px;
+            border-top: 1px solid var(--border-color);
+            margin-top: 40px;
+        }
+
+        /* Animations */
+        @keyframes pulseGlow { 0% { opacity: 0.6; transform: translateX(-50%) scale(0.95); } 100% { opacity: 1; transform: translateX(-50%) scale(1.05); } }
+        @keyframes blink { 0%, 100% { opacity: 1; } 50% { opacity: 0.4; } }
+        @keyframes stepIn { from { opacity: 0; transform: translateY(20px); } to { opacity: 1; transform: translateY(0); } }
+        @keyframes popIn { from { transform: scale(0.5); opacity: 0; } to { transform: scale(1); opacity: 1; } }
+        @keyframes spin { to { transform: rotate(360deg); } }
+
+        /* Mobile Adjustments */
+        @media(max-width: 600px) {
+            .nav-row { flex-direction: column-reverse; }
+            .nav-row .btn { width: 100%; }
+        }
+    </style>
 </head>
 <body>
 
-<!-- Setup Screen (Only shows once to the admin) -->
-<div id="adminSetup">
-  <h2 style="color: var(--accent); margin-bottom: 20px;">⚙️ الإعداد السحري للتصويت العالمي</h2>
-  <p style="color: var(--text); font-size: 16px; line-height: 1.8;">لكي يرى جميع الناس نتائج بعضهم البعض، قمنا للتو بإنشاء قاعدة بيانات <strong>عالمية ومجانية بالكامل</strong> لملفك (بدون تسجيل دخول).</p>
-  
-  <p style="margin-top: 25px; color: var(--muted);">الخطوة الأخيرة: انسخ هذا المعرّف (ID):</p>
-  <div class="code-block" id="newDbId">جاري التوليد...</div>
-  
-  <p style="color: var(--muted);">ثم افتح ملف الكود الخاص بك، وابحث عن السطر 220 تقريباً، وقم بوضع المعرف بين علامتي التنصيص هكذا:</p>
-  <div class="code-block">let DATABASE_ID = "<span id="newDbIdCode" style="color: #fff"></span>";</div>
-  
-  <p style="color: var(--accent2); font-weight: bold; margin-top: 20px;">احفظ الملف ومبروك! يمكنك نشره وسيعمل التصويت للجميع فوراً 🌍.</p>
-  
-  <button onclick="skipAdminAndTest()" class="btn btn-ghost" style="margin-top: 20px; width: 100%;">تخطي وتجربة الاستطلاع الآن ←</button>
-</div>
+    <main class="container">
+        <!-- ================= ADMIN SETUP ================= -->
+        <div id="adminSetup">
+            <h2 style="color: var(--accent-gold); margin-bottom: 16px;">⚙️ إعداد قاعدة البيانات السحرية</h2>
+            <p style="color: var(--text-secondary);">تم إنشاء قاعدة بيانات مجانية خاصة بك لجمع النتائج في الوقت الفعلي.</p>
+            <p style="margin-top: 24px;">قم بنسخ هذا المعرّف (ID) وضعه في الكود (السطر 400 تقريباً):</p>
+            <div class="code-block">let DATABASE_ID = "<span id="newDbIdCode" style="color: #fff"></span>";</div>
+            <button onclick="skipAdminAndTest()" class="btn btn-ghost" style="width: 100%;">تخطي وبدء التجربة ←</button>
+        </div>
 
-<!-- Main UI -->
-<section class="hero" id="heroSection" style="display:none">
-  <div class="hero-glow"></div>
-  <div class="badge">عيد الأضحى المبارك ١٤٤٦</div>
-  <h1>أسعار <span>كبش العيد</span><br>كيف تراها؟</h1>
-  <p class="subtitle">استطلاع رأي موجّه للمغاربة حول أسعار الأضاحي هذا العام — شاركنا رأيك ونتائج مباشرة</p>
-  <div class="live-stats" id="heroStats" style="display:none">
-    <div class="live-pill"><div class="live-dot"></div><span id="heroTotal">—</span> مشارك عالمياً</div>
-    <div class="live-pill">🔴 غالية: <strong id="heroPct" style="color:var(--danger);margin-right:4px">—</strong></div>
-  </div>
-  <button class="start-btn" id="mainBtn" onclick="startSurvey()">شارك رأيك الآن ←</button>
-</section>
+        <!-- ================= HERO SECTION ================= -->
+        <section class="hero" id="heroSection" style="display:none">
+            <div class="hero-glow"></div>
+            <div class="badge">🐑 عيد الأضحى المبارك ١٤٤٦</div>
+            <h1 class="text-gradient-silver">أسعار <span class="text-gradient-gold">كبش العيد</span><br>كيف تراها؟</h1>
+            <p class="subtitle">استطلاع رأي مستقل وتفاعلي — شاركنا رأيك واكتشف ما يفكر فيه الآخرون فوراً.</p>
+            
+            <div class="live-stats" id="heroStats" style="display:none">
+                <div class="live-pill"><div class="live-dot"></div><span id="heroTotal">0</span> مشارك</div>
+                <div class="live-pill">🔴 غالية: <strong id="heroPct" style="color:var(--accent-red); margin-right:4px">0%</strong></div>
+            </div>
+            
+            <button class="btn btn-primary" id="mainBtn" onclick="startSurvey()" style="margin-top: 40px; padding: 18px 40px; font-size: 18px;">
+                شارك رأيك الآن ←
+            </button>
+        </section>
 
-<!-- Survey Flow -->
-<section id="survey" style="display:none">
-  <div id="surveyInner">
-    <div class="progress-bar"><div class="progress-fill" id="progressFill" style="width:0%"></div></div>
+        <!-- ================= SURVEY FLOW ================= -->
+        <section id="survey" class="section-padding" style="display:none">
+            <div class="progress-container">
+                <div class="progress-fill" id="progressFill"></div>
+            </div>
 
-    <div class="step active" id="step1">
-      <div class="step-header"><div class="step-num">١</div><div class="step-title">عمرك <span class="step-optional">اختياري</span></div></div>
-      <div class="choices" id="ageChoices">
-        <div class="choice" onclick="selectChoice('age','18-25','ageChoices',this)"><span class="choice-icon">🧑</span>18–25</div>
-        <div class="choice" onclick="selectChoice('age','26-35','ageChoices',this)"><span class="choice-icon">👨</span>26–35</div>
-        <div class="choice" onclick="selectChoice('age','36-50','ageChoices',this)"><span class="choice-icon">👨‍💼</span>36–50</div>
-        <div class="choice" onclick="selectChoice('age','50+','ageChoices',this)"><span class="choice-icon">👴</span>+50</div>
-      </div>
-      <div class="nav-row">
-        <button class="btn btn-ghost" onclick="skipStep()">تخطي</button>
-        <button class="btn btn-primary" onclick="nextStep()">التالي →</button>
-      </div>
+            <!-- Step 1 -->
+            <div class="step active" id="step1">
+                <div class="step-header">
+                    <div class="step-num">١</div>
+                    <div class="step-title">كم عمرك؟ <span class="step-optional">اختياري</span></div>
+                </div>
+                <div class="choices" id="ageChoices">
+                    <div class="choice" onclick="selectChoice('age','18-25','ageChoices',this)"><span class="choice-icon">🧑</span>18 – 25</div>
+                    <div class="choice" onclick="selectChoice('age','26-35','ageChoices',this)"><span class="choice-icon">👨</span>26 – 35</div>
+                    <div class="choice" onclick="selectChoice('age','36-50','ageChoices',this)"><span class="choice-icon">👨‍💼</span>36 – 50</div>
+                    <div class="choice" onclick="selectChoice('age','50+','ageChoices',this)"><span class="choice-icon">👴</span>+50</div>
+                </div>
+                <div class="nav-row">
+                    <button class="btn btn-ghost" onclick="skipStep()">تخطي</button>
+                    <button class="btn btn-primary" onclick="nextStep()">التالي ←</button>
+                </div>
+            </div>
+
+            <!-- Step 2 -->
+            <div class="step" id="step2">
+                <div class="step-header">
+                    <div class="step-num">٢</div>
+                    <div class="step-title">ما هو جنسك؟ <span class="step-optional">اختياري</span></div>
+                </div>
+                <div class="choices" id="sexChoices">
+                    <div class="choice" onclick="selectChoice('sex','ذكر','sexChoices',this)"><span class="choice-icon">👨</span>ذكر</div>
+                    <div class="choice" onclick="selectChoice('sex','أنثى','sexChoices',this)"><span class="choice-icon">👩</span>أنثى</div>
+                    <div class="choice" onclick="selectChoice('sex','غير مفصح','sexChoices',this)"><span class="choice-icon">🤐</span>أفضل عدم الإفصاح</div>
+                </div>
+                <div class="nav-row">
+                    <button class="btn btn-ghost" onclick="prevStep()">→ رجوع</button>
+                    <button class="btn btn-primary" onclick="nextStep()">التالي ←</button>
+                </div>
+            </div>
+
+            <!-- Step 3 -->
+            <div class="step" id="step3">
+                <div class="step-header">
+                    <div class="step-num">٣</div>
+                    <div class="step-title">وضعك المهني الحالي <span class="step-optional">اختياري</span></div>
+                </div>
+                <div class="choices col-1" id="jobChoices">
+                    <div class="choice" onclick="selectChoice('job','موظف / عامل','jobChoices',this)"><span class="choice-icon">💼</span> موظف / عامل</div>
+                    <div class="choice" onclick="selectChoice('job','صاحب عمل / تاجر','jobChoices',this)"><span class="choice-icon">🏪</span> صاحب عمل / تاجر</div>
+                    <div class="choice" onclick="selectChoice('job','طالب','jobChoices',this)"><span class="choice-icon">🎓</span> طالب</div>
+                    <div class="choice" onclick="selectChoice('job','متقاعد / بدون عمل','jobChoices',this)"><span class="choice-icon">🏡</span> متقاعد / بدون عمل</div>
+                </div>
+                <div class="nav-row">
+                    <button class="btn btn-ghost" onclick="prevStep()">→ رجوع</button>
+                    <button class="btn btn-primary" onclick="nextStep()">التالي ←</button>
+                </div>
+            </div>
+
+            <!-- Step 4 (Required) -->
+            <div class="step" id="step4">
+                <div class="step-header">
+                    <div class="step-num">٤</div>
+                    <div class="step-title">كيف تجد أسعار كبش العيد هذا العام؟</div>
+                </div>
+                <div class="choices" id="priceChoices">
+                    <div class="choice cheap" onclick="selectChoice('price','رخيصة','priceChoices',this)"><span class="choice-icon">💚</span>رخيصة</div>
+                    <div class="choice normal" onclick="selectChoice('price','عادية','priceChoices',this)"><span class="choice-icon">💙</span>عادية</div>
+                    <div class="choice expensive" onclick="selectChoice('price','غالية','priceChoices',this)"><span class="choice-icon">🔴</span>غالية جداً</div>
+                </div>
+                <p id="priceError" style="color:var(--accent-red); font-size:14px; margin-top:16px; display:none; font-weight:600;">⚠️ يرجى تحديد اختيارك قبل المتابعة</p>
+                <div class="nav-row">
+                    <button class="btn btn-ghost" onclick="prevStep()">→ رجوع</button>
+                    <button class="btn btn-primary" onclick="nextStep()">التالي ←</button>
+                </div>
+            </div>
+
+            <!-- Step 5 -->
+            <div class="step" id="step5">
+                <div class="step-header">
+                    <div class="step-num">٥</div>
+                    <div class="step-title">لماذا تعتقد ذلك؟ <span class="step-optional">اختياري</span></div>
+                </div>
+                <textarea id="justification" placeholder="اكتب رأيك بحرية هنا... مثلاً: غلاء تكاليف التربية، ضعف القدرة الشرائية..." dir="rtl"></textarea>
+                <div class="nav-row">
+                    <button class="btn btn-ghost" onclick="prevStep()">→ رجوع</button>
+                    <button class="btn btn-gold" onclick="submitSurvey()">إرسال النتيجة ✓</button>
+                </div>
+            </div>
+        </section>
+
+        <!-- ================= RESULTS SECTION ================= -->
+        <section id="results" class="section-padding" style="display:none">
+            <div class="results-hero">
+                <span class="results-icon">🌍</span>
+                <h2 class="text-gradient-gold" style="font-size: 36px; font-weight: 800; margin-bottom: 12px;" id="resultsTitle">شكراً لمشاركتك!</h2>
+                <p style="color: var(--text-secondary); font-size: 16px;">إليك الإحصائيات المباشرة بناءً على آراء المشاركين</p>
+            </div>
+
+            <div class="stats-grid">
+                <div class="stat-card cheap">
+                    <span class="stat-num" id="countCheap">0</span>
+                    <span class="stat-label">💚 يراها رخيصة</span>
+                </div>
+                <div class="stat-card normal">
+                    <span class="stat-num" id="countNormal">0</span>
+                    <span class="stat-label">💙 يراها عادية</span>
+                </div>
+                <div class="stat-card expensive">
+                    <span class="stat-num" id="countExpensive">0</span>
+                    <span class="stat-label">🔴 يراها غالية</span>
+                </div>
+            </div>
+
+            <div class="dashboard-card">
+                <h3 class="dashboard-title">📊 التوزيع الإحصائي</h3>
+                <div class="chart-wrap"><canvas id="resultsChart"></canvas></div>
+            </div>
+
+            <div class="dashboard-card">
+                <h3 class="dashboard-title">💬 نبض الشارع (تعليقات)</h3>
+                <div id="commentsList">
+                    <p style="color:var(--text-secondary); text-align:center; padding:32px 0;">لا توجد تعليقات حتى الآن، كن أول من يعلق!</p>
+                </div>
+            </div>
+
+            <div style="text-align: center; margin-top: 40px;">
+                <button class="btn btn-ghost" onclick="shareSurvey()">📤 شارك الاستطلاع مع أصدقائك</button>
+            </div>
+        </section>
+    </main>
+
+    <footer class="site-footer">
+        <p>استطلاع مستقل · بُني بشغف لتوضيح الصورة · عيد الأضحى ١٤٤٦</p>
+    </footer>
+
+    <!-- Utilities -->
+    <div class="toast" id="toast"></div>
+    
+    <div class="overlay" id="loadingOverlay">
+        <div class="spinner"></div>
+        <span id="loadingMsg" style="color: #fff; font-weight: 600; font-size: 16px; letter-spacing: 0.5px;">جارٍ التحميل...</span>
     </div>
 
-    <div class="step" id="step2">
-      <div class="step-header"><div class="step-num">٢</div><div class="step-title">جنسك <span class="step-optional">اختياري</span></div></div>
-      <div class="choices" id="sexChoices">
-        <div class="choice" onclick="selectChoice('sex','ذكر','sexChoices',this)"><span class="choice-icon">👨</span>ذكر</div>
-        <div class="choice" onclick="selectChoice('sex','أنثى','sexChoices',this)"><span class="choice-icon">👩</span>أنثى</div>
-        <div class="choice" onclick="selectChoice('sex','أفضل عدم الإفصاح','sexChoices',this)"><span class="choice-icon">🤐</span>أفضل عدم الإفصاح</div>
-      </div>
-      <div class="nav-row">
-        <button class="btn btn-ghost" onclick="prevStep()">← رجوع</button>
-        <button class="btn btn-ghost" onclick="skipStep()">تخطي</button>
-        <button class="btn btn-primary" onclick="nextStep()">التالي →</button>
-      </div>
-    </div>
+    <script>
+        /* ==========================================================================
+           1. CONFIGURATION & STATE
+           ========================================================================== */
+        // ضع المعرف (ID) الخاص بك هنا
+        let DATABASE_ID = "41c06260e8ed01fa68e3"; 
+        const NPOINT_API = "https://api.npoint.io/";
 
-    <div class="step" id="step3">
-      <div class="step-header"><div class="step-num">٣</div><div class="step-title">وضعك المهني <span class="step-optional">اختياري</span></div></div>
-      <div class="choices" id="jobChoices" style="flex-direction:column">
-        <div class="choice" style="text-align:right;min-width:100%" onclick="selectChoice('job','موظف / عامل','jobChoices',this)">💼 موظف / عامل</div>
-        <div class="choice" style="text-align:right;min-width:100%" onclick="selectChoice('job','صاحب عمل / تاجر','jobChoices',this)">🏪 صاحب عمل / تاجر</div>
-        <div class="choice" style="text-align:right;min-width:100%" onclick="selectChoice('job','طالب','jobChoices',this)">🎓 طالب</div>
-        <div class="choice" style="text-align:right;min-width:100%" onclick="selectChoice('job','بدون عمل','jobChoices',this)">🔍 بدون عمل</div>
-        <div class="choice" style="text-align:right;min-width:100%" onclick="selectChoice('job','متقاعد','jobChoices',this)">🏡 متقاعد</div>
-      </div>
-      <div class="nav-row">
-        <button class="btn btn-ghost" onclick="prevStep()">← رجوع</button>
-        <button class="btn btn-ghost" onclick="skipStep()">تخطي</button>
-        <button class="btn btn-primary" onclick="nextStep()">التالي →</button>
-      </div>
-    </div>
+        const state = {
+            step: 1,
+            totalSteps: 5,
+            answers: { age: null, sex: null, job: null, price: null },
+            chartInstance: null
+        };
 
-    <div class="step" id="step4">
-      <div class="step-header"><div class="step-num">٤</div><div class="step-title">كيف تجد أسعار كبش العيد هذا العام؟</div></div>
-      <div class="choices" id="priceChoices">
-        <div class="choice cheap" onclick="selectChoice('price','رخيصة','priceChoices',this)"><span class="choice-icon">💚</span>رخيصة</div>
-        <div class="choice normal" onclick="selectChoice('price','عادية','priceChoices',this)"><span class="choice-icon">💙</span>عادية</div>
-        <div class="choice expensive" onclick="selectChoice('price','غالية','priceChoices',this)"><span class="choice-icon">🔴</span>غالية جداً</div>
-      </div>
-      <p id="priceError" style="color:var(--danger);font-size:13px;margin-top:12px;display:none">⚠️ هذا السؤال إلزامي، رجاءً اختر إجابة</p>
-      <div class="nav-row">
-        <button class="btn btn-ghost" onclick="prevStep()">← رجوع</button>
-        <button class="btn btn-primary" onclick="nextStep()">التالي →</button>
-      </div>
-    </div>
+        /* ==========================================================================
+           2. INITIALIZATION & DATABASE LOGIC
+           ========================================================================== */
+        window.addEventListener('load', async () => {
+            if (DATABASE_ID && DATABASE_ID !== "") {
+                await loadGlobalStats();
+            } else {
+                handleAdminSetup();
+            }
+        });
 
-    <div class="step" id="step5">
-      <div class="step-header"><div class="step-num">٥</div><div class="step-title">لماذا تعتقد ذلك؟ <span class="step-optional">اختياري</span></div></div>
-      <p style="color:var(--muted);font-size:14px;margin-bottom:20px">شاركنا رأيك بحرية</p>
-      <textarea id="justification" placeholder="مثلاً: غلاء تكاليف التربية، ضعف القدرة الشرائية..." dir="rtl"></textarea>
-      <div class="nav-row">
-        <button class="btn btn-ghost" onclick="prevStep()">← رجوع</button>
-        <button class="btn btn-ghost" onclick="submitSurvey(true)">تخطي وإرسال</button>
-        <button class="btn btn-gold" onclick="submitSurvey(false)">إرسال ✓</button>
-      </div>
-    </div>
-  </div>
-</section>
+        async function handleAdminSetup() {
+            let localId = localStorage.getItem('magic_db_id');
+            if (!localId) {
+                showLoading("جاري تهيئة قاعدة بياناتك السحابية...");
+                try {
+                    const res = await fetch(NPOINT_API, {
+                        method: 'POST',
+                        headers: { 'Content-Type': 'application/json' },
+                        body: JSON.stringify({ cheap: 0, normal: 0, expensive: 0, comments: [] })
+                    });
+                    const data = await res.json();
+                    localId = data.id;
+                    localStorage.setItem('magic_db_id', localId);
+                    hideLoading();
+                } catch(e) {
+                    hideLoading();
+                    showToast("فشل الاتصال، تحقق من الانترنت.", "error");
+                    return;
+                }
+            }
+            document.getElementById('newDbIdCode').innerText = localId;
+            document.getElementById('adminSetup').style.display = 'block';
+        }
 
-<!-- Results -->
-<section id="results" style="display:none">
-  <div style="max-width:760px;margin:0 auto;padding:0 20px 100px">
-    <div class="results-hero">
-      <span class="results-icon">🌍</span>
-      <div class="results-title" id="resultsTitle">شكراً لمشاركتك!</div>
-      <p class="results-sub">هذه هي النتائج العالمية المباشرة</p>
-    </div>
-    <div class="stats-grid">
-      <div class="stat-card cheap"><span class="stat-num" id="countCheap">0</span><span class="stat-label">💚 رخيصة</span></div>
-      <div class="stat-card normal"><span class="stat-num" id="countNormal">0</span><span class="stat-label">💙 عادية</span></div>
-      <div class="stat-card expensive"><span class="stat-num" id="countExpensive">0</span><span class="stat-label">🔴 غالية</span></div>
-    </div>
-    <div class="chart-card">
-      <div class="chart-title">📊 توزيع الآراء</div>
-      <div class="chart-wrap"><canvas id="resultsChart"></canvas></div>
-    </div>
-    <div class="chart-card">
-      <div class="chart-title">💬 تعليقات المشاركين</div>
-      <div id="commentsList"><p style="color:var(--muted);font-size:14px;text-align:center;padding:20px 0">لا توجد تعليقات بعد.</p></div>
-    </div>
-    <div style="display:flex;gap:12px;flex-wrap:wrap;justify-content:center;padding:20px 0">
-      <button class="btn btn-ghost" onclick="shareSurvey()">📤 شارك الرابط</button>
-    </div>
-  </div>
-</section>
+        function skipAdminAndTest() {
+            DATABASE_ID = localStorage.getItem('magic_db_id');
+            document.getElementById('adminSetup').style.display = 'none';
+            loadGlobalStats();
+        }
 
-<footer class="site-footer"><p>استطلاع مغربي مستقل · عيد الأضحى ١٤٤٦</p></footer>
-<div class="toast" id="toast"></div>
-<div class="overlay hidden" id="loadingOverlay">
-  <div class="spinner" style="width:44px;height:44px;border-width:3px"></div>
-  <span id="loadingMsg" style="margin-top: 15px; font-weight: bold;">جارٍ التحميل...</span>
-</div>
+        async function getVotesData() {
+            const res = await fetch(`${NPOINT_API}${DATABASE_ID}?_=${Date.now()}`);
+            return await res.json();
+        }
 
-<script>
-// =========================================================================
-// 🚀 THE MAGIC SETUP: PASTE YOUR ID HERE ONCE IT GENERATES
-// =========================================================================
-let DATABASE_ID = "41c06260e8ed01fa68e3"; // <-- Paste ID here between the quotes
-// =========================================================================
+        async function updateVotesData(newData) {
+            await fetch(`${NPOINT_API}${DATABASE_ID}`, {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify(newData)
+            });
+        }
 
-const NPOINT_API = "https://api.npoint.io/";
+        /* ==========================================================================
+           3. HERO & STATISTICS LOADER
+           ========================================================================== */
+        async function loadGlobalStats() {
+            document.getElementById('heroSection').style.display = 'flex';
+            
+            // Check Return User
+            if (localStorage.getItem('has_voted_global')) {
+                const btn = document.getElementById('mainBtn');
+                btn.innerHTML = "عرض النتائج المباشرة 📊";
+                btn.className = "btn btn-gold";
+                btn.onclick = async () => {
+                    document.getElementById('heroSection').style.display = 'none';
+                    showLoading("نجلب أحدث البيانات...");
+                    const data = await getVotesData();
+                    hideLoading();
+                    displayResultsUI(data);
+                };
+            }
 
-// ════════════════════════════════════════════════════════════════
-//  SYSTEM INIT (MAGIC DATABASE GENERATOR)
-// ════════════════════════════════════════════════════════════════
-window.addEventListener('load', async () => {
-    if (DATABASE_ID !== "") {
-        // ID is present, run normally for everyone!
-        await loadGlobalStats();
-    } else {
-        // ID is empty! Auto-generate one for the Admin using npoint (No accounts required)
-        let localGeneratedId = localStorage.getItem('magic_db_id');
-        
-        if (!localGeneratedId) {
-            showLoading("جاري بناء قاعدة بياناتك المجانية...");
             try {
-                // Create an anonymous JSON bin
-                let res = await fetch(NPOINT_API, {
-                    method: 'POST',
-                    headers: { 'Content-Type': 'application/json' },
-                    body: JSON.stringify({ cheap: 0, normal: 0, expensive: 0, comments: [] })
-                });
-                let data = await res.json();
-                localGeneratedId = data.id;
-                localStorage.setItem('magic_db_id', localGeneratedId);
-                hideLoading();
-            } catch(e) {
-                hideLoading();
-                alert("حدث خطأ في الاتصال بالانترنت، يرجى تحديث الصفحة.");
+                const data = await getVotesData();
+                const total = (data.cheap || 0) + (data.normal || 0) + (data.expensive || 0);
+                if (total > 0) {
+                    document.getElementById('heroTotal').textContent = total.toLocaleString('ar');
+                    document.getElementById('heroPct').textContent = Math.round((data.expensive / total) * 100) + '%';
+                    document.getElementById('heroStats').style.display = 'flex';
+                }
+            } catch(e) { console.warn("Failed silent fetch", e); }
+        }
+
+        /* ==========================================================================
+           4. SURVEY NAVIGATION LOGIC
+           ========================================================================== */
+        function startSurvey() {
+            document.getElementById('survey').style.display = 'block';
+            document.getElementById('survey').scrollIntoView({ behavior: 'smooth' });
+            updateProgress();
+        }
+
+        function updateProgress() {
+            const pct = ((state.step - 1) / (state.totalSteps - 1)) * 100;
+            document.getElementById('progressFill').style.width = `${pct}%`;
+        }
+
+        function showStep(n) {
+            document.querySelectorAll('.step').forEach(s => s.classList.remove('active'));
+            const el = document.getElementById(`step${n}`);
+            if (el) {
+                el.classList.add('active');
+                el.scrollIntoView({ behavior: 'smooth', block: 'center' });
+            }
+            updateProgress();
+        }
+
+        function nextStep() {
+            if (state.step === 4 && !state.answers.price) {
+                document.getElementById('priceError').style.display = 'block';
                 return;
             }
+            if (state.step < state.totalSteps) {
+                state.step++;
+                showStep(state.step);
+            }
+        }
+
+        function prevStep() {
+            if (state.step > 1) {
+                state.step--;
+                showStep(state.step);
+            }
+        }
+
+        function skipStep() {
+            if (state.step < state.totalSteps) {
+                state.step++;
+                showStep(state.step);
+            }
+        }
+
+        function selectChoice(field, value, groupId, el) {
+            state.answers[field] = value;
+            document.querySelectorAll(`#${groupId} .choice`).forEach(c => c.classList.remove('selected'));
+            el.classList.add('selected');
+            const err = document.getElementById('priceError');
+            if (err) err.style.display = 'none';
+        }
+
+        /* ==========================================================================
+           5. DATA SUBMISSION
+           ========================================================================== */
+        async function submitSurvey() {
+            if (!state.answers.price) {
+                showToast('عذراً، يجب تحديد رأيك في السعر أولاً', 'error');
+                state.step = 4;
+                showStep(4);
+                return;
+            }
+
+            const commentText = document.getElementById('justification').value.trim();
+            showLoading('نحفظ مشاركتك في السحابة...');
+
+            try {
+                let globalData = await getVotesData();
+                
+                // Aggregate votes
+                const keyMap = { 'رخيصة': 'cheap', 'عادية': 'normal', 'غالية': 'expensive' };
+                const voteKey = keyMap[state.answers.price];
+                globalData[voteKey] = (globalData[voteKey] || 0) + 1;
+
+                // Append Comment
+                if (commentText) {
+                    if (!Array.isArray(globalData.comments)) globalData.comments = [];
+                    globalData.comments.push({
+                        id: 'cm_' + Date.now().toString(36) + Math.random().toString(36).substring(2, 5),
+                        price: state.answers.price,
+                        age: state.answers.age || '',
+                        job: state.answers.job || '',
+                        text: commentText,
+                        ts: Date.now(),
+                        upvotes: 0,
+                        downvotes: 0
+                    });
+                    if (globalData.comments.length > 50) globalData.comments.shift(); // Keep limit
+                }
+
+                await updateVotesData(globalData);
+                localStorage.setItem('has_voted_global', 'true');
+                
+                hideLoading();
+                showToast('تم تسجيل صوتك بنجاح!', 'success');
+                displayResultsUI(globalData);
+
+            } catch (error) {
+                hideLoading();
+                showToast('حدث خطأ أثناء الإرسال، حاول مجدداً', 'error');
+                console.error(error);
+            }
+        }
+
+        /* ==========================================================================
+           6. RESULTS & CHART RENDERING
+           ========================================================================== */
+        function displayResultsUI(data) {
+            document.getElementById('heroSection').style.display = 'none';
+            document.getElementById('survey').style.display = 'none';
+            
+            const resultsSection = document.getElementById('results');
+            resultsSection.style.display = 'block';
+            window.scrollTo({ top: 0, behavior: 'smooth' });
+
+            animateCounter('countCheap', data.cheap || 0);
+            animateCounter('countNormal', data.normal || 0);
+            animateCounter('countExpensive', data.expensive || 0);
+
+            renderChart(data);
+            renderComments(data);
+        }
+
+        function renderChart(data) {
+            const ctx = document.getElementById('resultsChart').getContext('2d');
+            if (state.chartInstance) state.chartInstance.destroy();
+
+            Chart.defaults.color = '#888888';
+            Chart.defaults.font.family = "'Tajawal', sans-serif";
+
+            state.chartInstance = new Chart(ctx, {
+                type: 'doughnut',
+                data: {
+                    labels: ['رخيصة', 'عادية', 'غالية'],
+                    datasets: [{
+                        data: [data.cheap || 0, data.normal || 0, data.expensive || 0],
+                        backgroundColor: ['#10b981', '#3b82f6', '#ef4444'],
+                        borderWidth: 0,
+                        hoverOffset: 12
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    cutout: '70%',
+                    plugins: {
+                        legend: { position: 'bottom', labels: { padding: 24, font: { size: 15, weight: 600 } } },
+                        tooltip: {
+                            backgroundColor: 'rgba(0,0,0,0.8)',
+                            padding: 12,
+                            titleFont: { size: 14 },
+                            bodyFont: { size: 15, weight: 'bold' },
+                            callbacks: {
+                                label: (ctx) => {
+                                    const total = ctx.dataset.data.reduce((a, b) => a + b, 0);
+                                    const pct = total ? Math.round((ctx.raw / total) * 100) : 0;
+                                    return ` ${ctx.raw} صوت (${pct}%)`;
+                                }
+                            }
+                        }
+                    },
+                    animation: { animateScale: true, animateRotate: true, duration: 1200, easing: 'easeOutQuart' }
+                }
+            });
+        }
+
+        /* ==========================================================================
+           7. COMMENTS & VOTING SYSTEM (Fixed & Completed logic)
+           ========================================================================== */
+        const escapeHTML = str => String(str || '').replace(/[&<>'"]/g, 
+            tag => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', "'": '&#39;', '"': '&quot;' }[tag]));
+
+        function renderComments(data) {
+            const myVotes = JSON.parse(localStorage.getItem('my_likes') || '{}');
+            const list = (data.comments || []).slice().reverse();
+            const container = document.getElementById('commentsList');
+            
+            if (!list.length) {
+                container.innerHTML = '<p style="color:var(--text-secondary); text-align:center; padding:32px 0;">لا توجد تعليقات حتى الآن.</p>';
+                return;
+            }
+
+            container.innerHTML = list.map(c => {
+                const userVote = myVotes[c.id];
+                const score = (c.upvotes || 0) - (c.downvotes || 0);
+                const scoreColor = score > 0 ? 'var(--accent-green)' : score < 0 ? 'var(--accent-red)' : 'var(--text-secondary)';
+                
+                // Determine Badge Colors
+                const pColor = c.price === 'رخيصة' ? 'var(--accent-green)' : c.price === 'عادية' ? 'var(--accent-blue)' : 'var(--accent-red)';
+                const pIcon = c.price === 'رخيصة' ? '💚' : c.price === 'عادية' ? '💙' : '🔴';
+
+                const meta = [c.age, c.job].filter(Boolean).map(escapeHTML).join(' • ');
+
+                return `
+                <div class="comment-card" id="comment-${c.id}">
+                    <div class="comment-header">
+                        <span class="comment-badge" style="background:${pColor}15; color:${pColor}; border: 1px solid ${pColor}30;">
+                            ${pIcon} ${escapeHTML(c.price)}
+                        </span>
+                        ${meta ? `<span class="comment-meta">${meta}</span>` : ''}
+                        <span class="comment-meta" style="margin-right:auto">${timeAgo(c.ts)}</span>
+                    </div>
+                    <p class="comment-text">${escapeHTML(c.text)}</p>
+                    <div class="comment-actions">
+                        <button class="vote-btn ${userVote === 'up' ? 'vote-up-active' : ''}" onclick="voteComment('${c.id}','up')">
+                            👍 <span id="up-${c.id}">${c.upvotes || 0}</span>
+                        </button>
+                        <button class="vote-btn ${userVote === 'down' ? 'vote-down-active' : ''}" onclick="voteComment('${c.id}','down')">
+                            👎 <span id="down-${c.id}">${c.downvotes || 0}</span>
+                        </button>
+                        <span style="font-weight:700; margin-right:auto; color:${scoreColor}" id="score-${c.id}">
+                            ${score > 0 ? '+' : ''}${score}
+                        </span>
+                    </div>
+                </div>`;
+            }).join('');
+        }
+
+        async function voteComment(commentId, direction) {
+            const myVotes = JSON.parse(localStorage.getItem('my_likes') || '{}');
+            const prev = myVotes[commentId];
+            const newVote = prev === direction ? null : direction;
+            
+            showLoading('جاري تحديث التقييم...');
+            
+            try {
+                const data = await getVotesData();
+                const idx = (data.comments || []).findIndex(c => c.id === commentId);
+                if (idx === -1) { hideLoading(); return; }
+
+                const c = data.comments[idx];
+                c.upvotes = c.upvotes || 0; 
+                c.downvotes = c.downvotes || 0;
+                
+                // Remove old vote logic
+                if (prev === 'up') c.upvotes = Math.max(0, c.upvotes - 1);
+                if (prev === 'down') c.downvotes = Math.max(0, c.downvotes - 1);
+                
+                // Add new vote logic
+                if (newVote === 'up') c.upvotes++;
+                if (newVote === 'down') c.downvotes++;
+                
+                data.comments[idx] = c;
+                await updateVotesData(data);
+                
+                // Update Local Storage
+                if (newVote) myVotes[commentId] = newVote; 
+                else delete myVotes[commentId];
+                localStorage.setItem('my_likes', JSON.stringify(myVotes));
+                
+                // Update UI directly (Optimistic update)
+                document.getElementById(`up-${commentId}`).textContent = c.upvotes;
+                document.getElementById(`down-${commentId}`).textContent = c.downvotes;
+                
+                const score = c.upvotes - c.downvotes;
+                const scoreEl = document.getElementById(`score-${commentId}`);
+                scoreEl.textContent = (score > 0 ? '+' : '') + score;
+                scoreEl.style.color = score > 0 ? 'var(--accent-green)' : score < 0 ? 'var(--accent-red)' : 'var(--text-secondary)';
+                
+                // Toggle Button Classes
+                const card = document.getElementById(`comment-${commentId}`);
+                const btns = card.querySelectorAll('.vote-btn');
+                btns[0].classList.toggle('vote-up-active', newVote === 'up');
+                btns[1].classList.toggle('vote-down-active', newVote === 'down');
+                
+                hideLoading();
+            } catch (err) {
+                hideLoading();
+                showToast('خطأ في الاتصال بالشبكة', 'error');
+            }
+        }
+
+        /* ==========================================================================
+           8. HELPERS (UI, Time, Animations)
+           ========================================================================== */
+        function showLoading(msg) {
+            document.getElementById('loadingMsg').textContent = msg;
+            document.getElementById('loadingOverlay').classList.add('active');
         }
         
-        // Show the Admin Screen
-        document.getElementById('newDbId').innerText = localGeneratedId;
-        document.getElementById('newDbIdCode').innerText = localGeneratedId;
-        document.getElementById('adminSetup').style.display = 'block';
-    }
-});
-
-function skipAdminAndTest() {
-    DATABASE_ID = localStorage.getItem('magic_db_id');
-    document.getElementById('adminSetup').style.display = 'none';
-    loadGlobalStats();
-}
-
-// ════════════════════════════════════════════════════════════════
-//  DATABASE FETCH / UPDATE
-// ════════════════════════════════════════════════════════════════
-async function getVotesData() {
-    let res = await fetch(NPOINT_API + DATABASE_ID + "?nocache=" + Date.now());
-    return await res.json();
-}
-
-async function updateVotesData(newData) {
-    await fetch(NPOINT_API + DATABASE_ID, {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify(newData)
-    });
-}
-
-// ════════════════════════════════════════════════════════════════
-//  HERO & LIVE STATS
-// ════════════════════════════════════════════════════════════════
-async function loadGlobalStats() {
-    document.getElementById('heroSection').style.display = 'flex';
-    
-    // Check if this user already voted to prevent spam
-    if (localStorage.getItem('has_voted_global')) {
-        let btn = document.getElementById('mainBtn');
-        btn.innerText = "شاهد النتائج المباشرة 📊";
-        btn.classList.remove('btn-primary');
-        btn.classList.add('btn-gold');
-        btn.onclick = async () => {
-            document.getElementById('heroSection').style.display = 'none';
-            document.getElementById('resultsTitle').innerText = "النتائج المباشرة";
-            showLoading("جاري جلب بيانات العالم...");
-            let data = await getVotesData();
-            hideLoading();
-            displayResultsUI(data);
-        };
-    }
-
-    try {
-        const d = await getVotesData();
-        const total = (d.cheap || 0) + (d.normal || 0) + (d.expensive || 0);
-        if (total > 0) {
-            document.getElementById('heroTotal').textContent = total.toLocaleString('ar');
-            document.getElementById('heroPct').textContent = Math.round((d.expensive/total)*100) + '%';
-            document.getElementById('heroStats').style.display = 'flex';
+        function hideLoading() {
+            document.getElementById('loadingOverlay').classList.remove('active');
         }
-    } catch(e) { console.warn("Could not load initial stats", e); }
-}
 
-// ════════════════════════════════════════════════════════════════
-//  SURVEY NAVIGATION
-// ════════════════════════════════════════════════════════════════
-let currentStep = 1;
-const totalSteps = 5;
-const answers = { age:null, sex:null, job:null, price:null };
+        let toastTimeout;
+        function showToast(msg, type = 'success') {
+            const toast = document.getElementById('toast');
+            toast.textContent = msg;
+            toast.className = `toast show ${type}`;
+            clearTimeout(toastTimeout);
+            toastTimeout = setTimeout(() => toast.classList.remove('show'), 3000);
+        }
 
-function startSurvey() {
-  document.getElementById('survey').style.display = 'block';
-  document.getElementById('survey').scrollIntoView({ behavior:'smooth' });
-  updateProgress();
-}
+        function animateCounter(id, endVal) {
+            const el = document.getElementById(id);
+            let startVal = 0;
+            const duration = 1500;
+            const stepTime = Math.abs(Math.floor(duration / (endVal || 1)));
+            
+            if(endVal === 0) { el.textContent = 0; return; }
+            
+            const timer = setInterval(() => {
+                startVal += 1;
+                el.textContent = startVal;
+                if (startVal >= endVal) clearInterval(timer);
+            }, stepTime);
+        }
 
-function updateProgress() { document.getElementById('progressFill').style.width = ((currentStep-1)/totalSteps*100)+'%'; }
+        function timeAgo(ts) {
+            if (!ts) return '';
+            const m = Math.floor((Date.now() - ts) / 60000);
+            if (m < 1) return 'الآن';
+            if (m < 60) return `منذ ${m} دقيقة`;
+            const h = Math.floor(m / 60);
+            if (h < 24) return `منذ ${h} ساعة`;
+            return `منذ ${Math.floor(h / 24)} يوم`;
+        }
 
-function showStep(n) {
-  document.querySelectorAll('.step').forEach(s=>s.classList.remove('active'));
-  const el = document.getElementById('step'+n);
-  if (el) { el.classList.add('active'); el.scrollIntoView({behavior:'smooth',block:'start'}); }
-  updateProgress();
-}
-
-function nextStep() {
-  if (currentStep===4 && !answers.price) { document.getElementById('priceError').style.display='block'; return; }
-  const e=document.getElementById('priceError'); if(e) e.style.display='none';
-  if (currentStep<totalSteps) { currentStep++; showStep(currentStep); }
-}
-function prevStep() { if(currentStep>1){currentStep--;showStep(currentStep);} }
-function skipStep() { if(currentStep<totalSteps){currentStep++;showStep(currentStep);} }
-
-function selectChoice(field,value,groupId,el) {
-  answers[field]=value;
-  document.querySelectorAll('#'+groupId+' .choice').forEach(c=>c.classList.remove('selected'));
-  el.classList.add('selected');
-  const e=document.getElementById('priceError'); if(e) e.style.display='none';
-}
-
-// ════════════════════════════════════════════════════════════════
-//  SUBMIT TO GLOBAL DATABASE
-// ════════════════════════════════════════════════════════════════
-async function submitSurvey(skipJustification) {
-  const txt = skipJustification ? '' : document.getElementById('justification').value.trim();
-  if (!answers.price) {
-    showToast('⚠️ اختر رأيك في الأسعار أولاً','error');
-    currentStep=4; showStep(4); return;
-  }
-  
-  showLoading('يتم إرسال صوتك ليتصل بقاعدة البيانات العالمية...');
-  
-  try {
-    // 1. Fetch current global data
-    let globalData = await getVotesData();
-    
-    // 2. Add our new vote
-    const key = answers.price==='رخيصة' ? 'cheap' : answers.price==='عادية' ? 'normal' : 'expensive';
-    globalData[key] = (globalData[key] || 0) + 1;
-    
-    // 3. Add comment if exists
-    if (txt) {
-      if (!Array.isArray(globalData.comments)) globalData.comments=[];
-      globalData.comments.push({
-        id: Date.now().toString(36)+Math.random().toString(36).slice(2,6),
-        price:answers.price, age:answers.age||'', text:txt, ts:Date.now(), upvotes:0, downvotes:0
-      });
-      // Keep only last 100 comments to avoid massive file sizes
-      if (globalData.comments.length>100) globalData.comments=globalData.comments.slice(-100);
-    }
-    
-    // 4. Update Database
-    await updateVotesData(globalData);
-    
-    // 5. Mark user as voted to prevent spam
-    localStorage.setItem('has_voted_global', 'true');
-    hideLoading();
-
-    // 6. Show results
-    displayResultsUI(globalData);
-    showToast('✅ تم إرسال رأيك وتحديث الإحصائيات!','success');
-    
-  } catch(e) {
-    hideLoading();
-    console.error(e);
-    showToast('❌ فشل الاتصال بقاعدة البيانات','error');
-  }
-}
-
-// ════════════════════════════════════════════════════════════════
-//  UI RENDERING (CHARTS & COMMENTS)
-// ════════════════════════════════════════════════════════════════
-function displayResultsUI(data) {
-    document.getElementById('heroSection').style.display='none';
-    document.getElementById('survey').style.display='none';
-    const r = document.getElementById('results');
-    r.style.display = 'block';
-    r.scrollIntoView({behavior:'smooth'});
-
-    animateCount('countCheap', data.cheap || 0);
-    animateCount('countNormal', data.normal || 0);
-    animateCount('countExpensive', data.expensive || 0);
-    
-    renderChart(data);
-    renderComments(data);
-}
-
-let chart=null;
-function renderChart(d){
-  const ctx=document.getElementById('resultsChart').getContext('2d');
-  if(chart) chart.destroy();
-  chart=new Chart(ctx,{
-    type:'doughnut',
-    data:{
-      labels:['رخيصة 💚','عادية 💙','غالية جداً 🔴'],
-      datasets:[{
-        data:[d.cheap||0, d.normal||0, d.expensive||0],
-        backgroundColor:['rgba(48,209,88,.8)','rgba(41,151,255,.8)','rgba(255,69,58,.8)'],
-        borderColor:['#30d158','#2997ff','#ff453a'],
-        borderWidth:2,hoverOffset:8
-      }]
-    },
-    options:{
-      responsive:true,
-      plugins:{
-        legend:{position:'bottom',labels:{color:'#86868b',font:{family:'Tajawal',size:14},padding:20}},
-        tooltip:{callbacks:{label:c=>{
-          const t=c.dataset.data.reduce((a,b)=>a+b,0);
-          const p=t?Math.round(c.raw/t*100):0;
-          return ' '+c.raw+' صوت ('+p+'%)';
-        }},bodyFont:{family:'Tajawal'},titleFont:{family:'Tajawal'}}
-      },
-      animation:{animateRotate:true,duration:900}
-    }
-  });
-}
-
-function getLocalVotes(){ try{return JSON.parse(localStorage.getItem('my_likes')||'{}')}catch(e){return{}} }
-function saveLocalVotes(v){ localStorage.setItem('my_likes',JSON.stringify(v)) }
-
-const esc=s=>String(s||'').replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;');
-function timeAgo(ts){
-  if(!ts) return '';
-  const m=Math.floor((Date.now()-ts)/60000);
-  if(m<1) return 'الآن';
-  if(m<60) return 'منذ '+m+' دقيقة';
-  const h=Math.floor(m/60);
-  if(h<24) return 'منذ '+h+' ساعة';
-  return 'منذ '+Math.floor(h/24)+' يوم';
-}
-const pc=p=>p==='رخيصة'?'var(--accent2)':p==='عادية'?'var(--accent)':'var(--danger)';
-const pi=p=>p==='رخيصة'?'💚':p==='عادية'?'💙':'🔴';
-
-function renderComments(data){
-  const myV=getLocalVotes();
-  const list=(data.comments||[]).slice().reverse();
-  const el=document.getElementById('commentsList');
-  if(!list.length){el.innerHTML='<p style="color:var(--muted);font-size:14px;text-align:center;padding:20px 0">لا توجد تعليقات بعد.</p>';return;}
-  
-  el.innerHTML=list.map(c=>{
-    const v=myV[c.id], sc=(c.upvotes||0)-(c.downvotes||0);
-    const scColor=sc>0?'var(--accent2)':sc<0?'var(--danger)':'var(--muted)';
-    const pColor=pc(c.price);
-    return `<div class="comment-card" id="comment-${c.id}">
-      <div class="comment-header">
-        <span class="comment-badge" style="background:${pColor}22;color:${pColor};border:1px solid ${pColor}44">${pi(c.price)} ${esc(c.price)}</span>
-        ${c.age?`<span class="comment-meta">· ${esc(c.age)}</span>`:''}
-        <span class="comment-meta" style="margin-right:auto">${timeAgo(c.ts)}</span>
-      </div>
-      <p class="comment-text">${esc(c.text)}</p>
-      <div class="comment-actions">
-        <button class="vote-btn ${v==='up'?'vote-up-active':''}" onclick="voteComment('${c.id}','up')">👍 <span class="vote-count" id="up-${c.id}">${c.upvotes||0}</span></button>
-        <button class="vote-btn ${v==='down'?'vote-down-active':''}" onclick="voteComment('${c.id}','down')">👎 <span class="vote-count" id="down-${c.id}">${c.downvotes||0}</span></button>
-        <span class="vote-score" style="color:${scColor}" id="score-${c.id}">${sc>0?'+':''}${sc}</span>
-      </div>
-    </div>`;
-  }).join('');
-}
-
-async function voteComment(commentId, direction) {
-  const myVotes=getLocalVotes();
-  const prev=myVotes[commentId];
-  const newVote=prev===direction?null:direction;
-  showLoading('جارٍ تحديث الإعجابات عالمياً...');
-  
-  try {
-    const data = await getVotesData();
-    const idx = (data.comments||[]).findIndex(c=>c.id===commentId);
-    if(idx===-1){hideLoading();return;}
-    
-    const c=data.comments[idx];
-    c.upvotes=c.upvotes||0; c.downvotes=c.downvotes||0;
-    if(prev==='up') c.upvotes=Math.max(0,c.upvotes-1);
-    if(prev==='down') c.downvotes=Math.max(0,c.downvotes-1);
-    if(newVote==='up') c.upvotes++;
-    if(newVote==='down') c.downvotes++;
-    data.comments[idx]=c;
-    
-    await updateVotesData(data);
-    
-    if(newVote) myVotes[commentId]=newVote; else delete myVotes[commentId];
-    saveLocalVotes(myVotes);
-    hideLoading();
-    
-    const score=c.upvotes-c.downvotes;
-    const scColor=score>0?'var(--accent2)':score<0?'var(--danger)':'var(--muted)';
-    const card=document.getElementById('comment-'+commentId);
-    if(card){
-      document.getElementById('up-'+commentId).textContent=c.upvotes;
-      document.getElementById('down-'+commentId).textContent=c.downvotes;
-      const s=document.getElementById('score-'+commentId);
-      s.textContent=(score>0?'+':'')+score; s.style.color=scColor;
-      const btns=card.querySelectorAll('.vote-btn');
-      btns[0].className='vote-btn'+(newVote==='up'?' vote-up-active':'');
-      btns[1].className='vote-btn'+(newVote==='down'?' vote-down-active':'');
-    }
-  } catch(e){ hideLoading(); console.error(e); showToast('❌ فشل التحديث','error'); }
-}
-
-// ════════════════════════════════════════════════════════════════
-//  UTILITIES
-// ════════════════════════════════════════════════════════════════
-function animateCount(id,target){
-  const el=document.getElementById(id);
-  const t0=performance.now();
-  function upd(now){
-    const p=Math.min((now-t0)/800,1);
-    const ease=1-Math.pow(1-p,3);
-    el.textContent=Math.round(target*ease);
-    if(p<1) requestAnimationFrame(upd);
-  }
-  requestAnimationFrame(upd);
-}
-function showLoading(m){document.getElementById('loadingMsg').textContent=m||'جارٍ التحميل...';document.getElementById('loadingOverlay').classList.remove('hidden');}
-function hideLoading(){document.getElementById('loadingOverlay').classList.add('hidden');}
-function showToast(msg,type){
-  const t=document.getElementById('toast');
-  t.textContent=msg; t.className='toast '+(type||''); t.classList.add('show');
-  setTimeout(()=>t.classList.remove('show'),4000);
-}
-function shareSurvey(){
-  if(navigator.share){navigator.share({title:'استطلاع أسعار كبش العيد',url:location.href}).catch(()=>{});}
-  else navigator.clipboard&&navigator.clipboard.writeText(location.href).then(()=>showToast('📋 تم نسخ الرابط!','success'));
-}
-</script>
+        function shareSurvey() {
+            if (navigator.share) {
+                navigator.share({
+                    title: 'استطلاع أسعار كبش العيد',
+                    text: 'شارك برأيك في استطلاع أسعار أضاحي العيد واطلع على النتائج مباشرة!',
+                    url: window.location.href
+                }).catch(console.error);
+            } else {
+                navigator.clipboard.writeText(window.location.href);
+                showToast('تم نسخ الرابط بنجاح! 📋');
+            }
+        }
+    </script>
 </body>
 </html>
