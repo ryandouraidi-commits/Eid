@@ -134,7 +134,7 @@ textarea:focus{border-color:var(--gold)}
   <div class="hero-glow"></div>
   <div class="badge">عيد الأضحى المبارك ١٤٤٦</div>
   <h1>أسعار <span>كبش العيد</span><br>كيف تراها؟</h1>
-  <p class="subtitle">استطلاع رأي موجّه للمغاربة حول أسعار الأضاحي هذا العام — شاركنا رأيك </p>
+  <p class="subtitle">استطلاع رأي موجّه للمغاربة حول أسعار الأضاحي هذا العام — شاركنا رأيك ونتائج مباشرة</p>
   <div class="live-stats" id="heroStats" style="display:none">
     <div class="live-pill"><div class="live-dot"></div><span id="heroTotal">—</span> مشارك عالمياً</div>
     <div class="live-pill">🔴 غالية: <strong id="heroPct" style="color:var(--danger);margin-right:4px">—</strong></div>
@@ -224,7 +224,7 @@ textarea:focus{border-color:var(--gold)}
     <div class="results-hero">
       <span class="results-icon">🌍</span>
       <div class="results-title" id="resultsTitle">شكراً لمشاركتك!</div>
-      <p class="results-sub">هذه هي النتائج بناءً على آراء المشاركين</p>
+      <p class="results-sub">هذه هي النتائج العالمية المباشرة</p>
     </div>
     <div class="stats-grid">
       <div class="stat-card cheap"><span class="stat-num" id="countCheap">0</span><span class="stat-label">💚 رخيصة</span></div>
@@ -566,6 +566,62 @@ async function voteComment(commentId, direction) {
     }
   } catch(e) {
     hideLoading();
+  }
+}
+
+// ════════════════════════════════════════════════════════════════
+//  MISSING HELPER FUNCTIONS (ADDED)
+// ════════════════════════════════════════════════════════════════
+
+function animateCount(id, end) {
+  let start = 0;
+  const duration = 1500; // 1.5 seconds animation
+  const stepTime = Math.abs(Math.floor(duration / (end || 1)));
+  const obj = document.getElementById(id);
+  
+  if (!obj) return;
+  if (end === 0) { obj.textContent = "0"; return; }
+  
+  const timer = setInterval(() => {
+    start += 1;
+    obj.textContent = start;
+    if (start >= end) {
+      clearInterval(timer);
+      obj.textContent = end;
+    }
+  }, stepTime);
+}
+
+function showLoading(msg) {
+  const textEl = document.getElementById('loadingMsg');
+  if (textEl) textEl.textContent = msg || 'جارٍ التحميل...';
+  document.getElementById('loadingOverlay').classList.remove('hidden');
+}
+
+function hideLoading() {
+  document.getElementById('loadingOverlay').classList.add('hidden');
+}
+
+function showToast(msg, type) {
+  const toast = document.getElementById('toast');
+  toast.textContent = msg;
+  toast.className = 'toast show ' + (type || '');
+  setTimeout(() => {
+    toast.classList.remove('show');
+  }, 3500);
+}
+
+function shareSurvey() {
+  if (navigator.share) {
+    navigator.share({
+      title: 'استطلاع أسعار كبش العيد',
+      text: 'شارك رأيك في أسعار كبش العيد لهذا العام وشاهد النتائج العالمية!',
+      url: window.location.href
+    }).catch(console.error);
+  } else {
+    // Fallback if browser doesn't support native sharing
+    navigator.clipboard.writeText(window.location.href);
+    showToast('تم نسخ رابط الاستطلاع بنجاح!', 'success');
   }
 }
 </script>
