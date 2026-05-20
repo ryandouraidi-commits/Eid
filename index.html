@@ -160,6 +160,8 @@ textarea:focus{border-color:var(--gold)}
   width: 100%;
   height: 100%;
   border: 0;
+  /* منع المستخدمين من التفاعل أو تشغيل الفيديو */
+  pointer-events: none; 
 }
 .media-title {
   padding: 18px 20px;
@@ -174,6 +176,8 @@ textarea:focus{border-color:var(--gold)}
 
 /* Enhanced Navigation Buttons */
 .carousel-btn {
+  /* إخفاء أزرار التبديل تماماً لمنع التنقل بين الفيديوهات */
+  display: none !important;
   position: absolute;
   top: 50%;
   transform: translateY(-50%);
@@ -185,24 +189,16 @@ textarea:focus{border-color:var(--gold)}
   height: 48px;
   cursor: pointer;
   z-index: 10;
-  display: flex;
   align-items: center;
   justify-content: center;
   font-size: 20px;
   backdrop-filter: blur(8px);
   transition: all 0.2s ease;
 }
-.carousel-btn:hover { background: var(--accent); border-color: var(--accent); color: #fff; }
-.carousel-btn.next { right: 16px; } 
-.carousel-btn.prev { left: 16px; }
-@media (max-width: 576px) {
-  .carousel-btn { width: 38px; height: 38px; font-size: 16px; }
-  .carousel-btn.next { right: 8px; }
-  .carousel-btn.prev { left: 8px; }
-}
 
 .carousel-indicators {
-  display: flex;
+  /* إخفاء مؤشرات التنقل تماماً */
+  display: none !important;
   justify-content: center;
   gap: 10px;
   padding: 18px;
@@ -386,19 +382,19 @@ textarea:focus{border-color:var(--gold)}
           <div class="video-responsive-wrapper">
             <iframe src="https://drive.google.com/file/d/1NvQyZcQgBWh-_eZJqbx_YEhp2m8YPT75/preview" allow="autoplay; encrypted-media" allowfullscreen></iframe>
           </div>
-          <div class="media-title">جولة ميدانية داخل السوق الأسبوعي للأضاحي</div>
+          <div class="media-title">جولة ميدانية داخل السوق الأسبوعي للأضاحي (مغلق حالياً)</div>
         </div>
         <div class="carousel-slide">
           <div class="video-responsive-wrapper">
             <iframe src="https://drive.google.com/file/d/1Ig67KqOC5unp3UL2q-V8KKSbJkipG8q_/preview" allow="autoplay; encrypted-media" allowfullscreen></iframe>
           </div>
-          <div class="media-title">تصريحات الكسابة ومُربي الماشية حول تكلفة الأعلاف</div>
+          <div class="media-title">تصريحات الكسابة ومُربي الماشية حول تكلفة الأعلاف (مغلق حالياً)</div>
         </div>
         <div class="carousel-slide">
           <div class="video-responsive-wrapper">
             <iframe src="https://drive.google.com/file/d/1OCcH9EYA2U3BFQwbBhrhzr7TKxuZcws_/preview" allow="autoplay; encrypted-media" allowfullscreen></iframe>
           </div>
-          <div class="media-title">انطباعات المواطنين وتقييم القدرة الشرائية في الأسواق</div>
+          <div class="media-title">انطباعات المواطنين وتقييم القدرة الشرائية في الأسواق (مغلق حالياً)</div>
         </div>
       </div>
     </div>
