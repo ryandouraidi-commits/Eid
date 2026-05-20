@@ -309,7 +309,7 @@ function skipAdminAndTest() {
 //  DATABASE FETCH / UPDATE
 // ════════════════════════════════════════════════════════════════
 async function getVotesData() {
-    let res = await fetch(NPOINT_API + DATABASE_ID);
+    let res = await fetch(NPOINT_API + DATABASE_ID + "?nocache=" + Date.now());
     return await res.json();
 }
 
