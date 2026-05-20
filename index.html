@@ -230,17 +230,13 @@ textarea:focus{border-color:var(--gold)}
   padding: clamp(20px, 4vw, 32px);
 }
 .audio-player-container {
-  background: var(--surface2);
-  padding: 16px;
-  border-radius: 100px;
+  background: #000;
+  border-radius: var(--radius-sm);
   border: 1px solid var(--border);
+  overflow: hidden;
   display: flex;
   align-items: center;
   justify-content: center;
-}
-audio {
-  width: 100%;
-  outline: none;
 }
 </style>
 </head>
@@ -418,10 +414,7 @@ audio {
     <div class="chart-title" style="margin-bottom: 12px; font-size: 18px;">التحليل الاقتصادي للصوتيات</div>
     <p style="color:var(--muted); font-size:14px; margin-bottom: 20px;">حوار صوتي مفصل ومستفيض مع باحث في الاقتصاد الزراعي يناقش أبعاد تقلبات الأسعار والتوقعات المستقبلية لحركة السوق.</p>
     <div class="audio-player-container">
-      <audio controls>
-        <source src="https://docs.google.com/uc?export=download&id=1s6FE4SvGKVFTqcxxfLd1TtjtSsqc55r3" type="audio/mpeg">
-        المتصفح الخاص بك لا يدعم تشغيل المقطع الصوتي.
-      </audio>
+      <iframe src="https://drive.google.com/file/d/1s6FE4SvGKVFTqcxxfLd1TtjtSsqc55r3/preview" width="100%" height="140" allow="autoplay" style="border:none;"></iframe>
     </div>
   </div>
 
@@ -808,15 +801,11 @@ function updateCarousel() {
 }
 
 function stopAllMedia() {
-  // Reload iframes to stop video stream playback completely on exit
-  document.querySelectorAll('.video-responsive-wrapper iframe').forEach(frame => {
+  // Reload iframes to stop video/audio stream playback completely on exit
+  document.querySelectorAll('iframe').forEach(frame => {
     const src = frame.src;
     frame.src = '';
     frame.src = src;
-  });
-  document.querySelectorAll('audio').forEach(audio => {
-    audio.pause();
-    audio.currentTime = 0;
   });
 }
 </script>
