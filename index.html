@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>استطلاع أسعار كبش العيد - عالمي</title>
+<title>استطلاع أسعار كبش العيد - تقرير حصري</title>
 <link href="https://fonts.googleapis.com/css2?family=Tajawal:wght@300;400;500;700;800;900&display=swap" rel="stylesheet">
 <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
 <style>
@@ -20,14 +20,11 @@ body{font-family:'Tajawal',sans-serif;background:var(--bg);color:var(--text);min
 .hero{position:relative;min-height:100vh;display:flex;flex-direction:column;align-items:center;justify-content:center;text-align:center;padding:60px 24px 80px}
 .hero-glow{position:absolute;top:-200px;left:50%;transform:translateX(-50%);width:800px;height:800px;background:radial-gradient(ellipse,rgba(212,168,67,0.18) 0%,transparent 70%);pointer-events:none;animation:breathe 6s ease-in-out infinite}
 @keyframes breathe{0%,100%{opacity:.6;transform:translateX(-50%) scale(1)}50%{opacity:1;transform:translateX(-50%) scale(1.08)}}
-.badge{display:inline-flex;align-items:center;gap:8px;background:rgba(212,168,67,.12);border:1px solid rgba(212,168,67,.3);border-radius:100px;padding:6px 18px;font-size:13px;color:var(--gold);font-weight:500;margin-bottom:32px}
-.badge::before{content:'🐑';font-size:16px}
+.badge{display:inline-flex;align-items:center;gap:8px;background:rgba(212,168,67,.12);border:1px solid rgba(212,168,67,.3);border-radius:100px;padding:6px 18px;font-size:13px;color:var(--gold);font-weight:500;margin-bottom:32px;letter-spacing:0.5px}
 h1{font-size:clamp(36px,7vw,80px);font-weight:800;line-height:1.05;letter-spacing:-.03em;margin-bottom:20px;background:linear-gradient(135deg,#f5f5f7 0%,#a1a1a6 100%);-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text}
 h1 span{background:linear-gradient(135deg,#d4a843 0%,#f0c96c 50%,#d4a843 100%);-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text}
 .subtitle{font-size:clamp(16px,2.5vw,21px);color:var(--muted);max-width:560px;font-weight:300;margin-bottom:48px}
-@keyframes fadeUp{from{opacity:0;transform:translateY(20px)}to{opacity:1;transform:translateY(0)}}
 @keyframes slideIn{from{opacity:0;transform:translateY(24px) scale(.98)}to{opacity:1;transform:translateY(0) scale(1)}}
-@keyframes bounceIn{from{transform:scale(.3);opacity:0}to{transform:scale(1);opacity:1}}
 @keyframes spin{to{transform:rotate(360deg)}}
 @keyframes pulse{0%,100%{opacity:1;transform:scale(1)}50%{opacity:.5;transform:scale(.8)}}
 .start-btn{display:inline-flex;align-items:center;gap:10px;background:var(--accent);color:#fff;border:none;border-radius:100px;padding:16px 36px;font-size:17px;font-family:'Tajawal',sans-serif;font-weight:600;cursor:pointer;transition:all .25s ease;margin-top:32px}
@@ -43,17 +40,16 @@ h1 span{background:linear-gradient(135deg,#d4a843 0%,#f0c96c 50%,#d4a843 100%);-
 .step-title{font-size:22px;font-weight:700;color:var(--text)}
 .step-optional{font-size:12px;color:var(--muted);background:rgba(134,134,139,.12);border-radius:6px;padding:2px 8px;font-weight:400;margin-right:8px}
 .choices{display:flex;flex-wrap:wrap;gap:10px}
-.choice{flex:1;min-width:120px;background:var(--surface2);border:1.5px solid var(--border);border-radius:var(--radius-sm);padding:16px 20px;text-align:center;cursor:pointer;transition:all .22s ease;font-family:'Tajawal',sans-serif;font-size:15px;font-weight:500;color:var(--muted)}
+.choice{flex:1;min-width:120px;background:var(--surface2);border:1.5px solid var(--border);border-radius:var(--radius-sm);padding:20px 16px;text-align:center;cursor:pointer;transition:all .22s ease;font-family:'Tajawal',sans-serif;font-size:16px;font-weight:600;color:var(--muted)}
 .choice:hover{border-color:rgba(255,255,255,.2);color:var(--text);transform:translateY(-2px)}
 .choice.selected{border-color:var(--gold);color:var(--text);background:rgba(212,168,67,.1)}
 .choice.cheap.selected{border-color:var(--accent2);background:rgba(48,209,88,.08)}
 .choice.normal.selected{border-color:var(--accent);background:rgba(41,151,255,.08)}
 .choice.expensive.selected{border-color:var(--danger);background:rgba(255,69,58,.08)}
-.choice-icon{font-size:24px;display:block;margin-bottom:6px}
 textarea{width:100%;background:var(--surface2);border:1.5px solid var(--border);border-radius:var(--radius-sm);padding:14px 18px;font-family:'Tajawal',sans-serif;font-size:15px;color:var(--text);outline:none;transition:border-color .2s ease;resize:none;height:120px;line-height:1.6}
 textarea:focus{border-color:var(--gold)}
 .nav-row{display:flex;gap:12px;margin-top:28px;justify-content:space-between;align-items:center}
-.btn{border:none;border-radius:100px;padding:13px 28px;font-family:'Tajawal',sans-serif;font-size:15px;font-weight:600;cursor:pointer;transition:all .22s ease}
+.btn{border:none;border-radius:100px;padding:13px 28px;font-family:'Tajawal',sans-serif;font-size:15px;font-weight:600;cursor:pointer;transition:all .22s ease;display:inline-flex;align-items:center;justify-content:center;gap:8px}
 .btn-primary{background:var(--accent);color:#fff;flex:1}
 .btn-primary:hover{background:#1a8fe8;transform:translateY(-1px)}
 .btn-gold{background:linear-gradient(135deg,#d4a843,#f0c96c);color:#000;flex:1}
@@ -63,7 +59,6 @@ textarea:focus{border-color:var(--gold)}
 .progress-bar{width:100%;height:3px;background:var(--border);border-radius:2px;margin-bottom:32px;overflow:hidden}
 .progress-fill{height:100%;background:linear-gradient(90deg,#d4a843,#f0c96c);border-radius:2px;transition:width .5s cubic-bezier(.4,0,.2,1)}
 .results-hero{text-align:center;padding:60px 0 48px}
-.results-icon{font-size:64px;display:block;margin-bottom:20px;animation:bounceIn .6s cubic-bezier(.34,1.56,.64,1) both}
 .results-title{font-size:clamp(28px,5vw,42px);font-weight:800;background:linear-gradient(135deg,#d4a843,#f0c96c);-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text;margin-bottom:10px}
 .results-sub{color:var(--muted);font-size:16px}
 .stats-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:16px;margin-bottom:24px}
@@ -71,27 +66,26 @@ textarea:focus{border-color:var(--gold)}
 .stat-card{background:var(--surface);border:1px solid var(--border);border-radius:var(--radius);padding:24px 20px;text-align:center;transition:transform .2s}
 .stat-card:hover{transform:translateY(-3px)}
 .stat-num{font-size:36px;font-weight:800;display:block;line-height:1;margin-bottom:8px}
-.stat-label{font-size:13px;color:var(--muted);font-weight:500}
-.stat-card.cheap .stat-num{color:var(--accent2)}
-.stat-card.normal .stat-num{color:var(--accent)}
-.stat-card.expensive .stat-num{color:var(--danger)}
+.stat-label{font-size:14px;font-weight:600}
+.stat-card.cheap .stat-num, .stat-card.cheap .stat-label{color:var(--accent2)}
+.stat-card.normal .stat-num, .stat-card.normal .stat-label{color:var(--accent)}
+.stat-card.expensive .stat-num, .stat-card.expensive .stat-label{color:var(--danger)}
 .chart-card{background:var(--surface);border:1px solid var(--border);border-radius:var(--radius);padding:32px;margin-bottom:24px}
-.chart-title{font-size:18px;font-weight:700;margin-bottom:24px;color:var(--text)}
+.chart-title{font-size:18px;font-weight:700;margin-bottom:24px;color:var(--text);border-bottom:1px solid var(--border);padding-bottom:12px}
 .chart-wrap{position:relative;max-width:480px;margin:0 auto}
 .comment-card{background:var(--surface2);border:1px solid var(--border);border-radius:var(--radius-sm);padding:18px 20px;margin-bottom:12px;transition:border-color .2s}
 .comment-card:hover{border-color:rgba(255,255,255,.14)}
 .comment-header{display:flex;align-items:center;gap:10px;margin-bottom:10px;flex-wrap:wrap}
-.comment-badge{display:inline-flex;align-items:center;gap:4px;border-radius:100px;padding:3px 10px;font-size:12px;font-weight:600}
+.comment-badge{display:inline-flex;align-items:center;gap:4px;border-radius:100px;padding:4px 12px;font-size:12px;font-weight:700}
 .comment-meta{font-size:12px;color:var(--muted)}
-.comment-text{color:var(--text);font-size:14px;line-height:1.7;margin-bottom:14px}
+.comment-text{color:var(--text);font-size:15px;line-height:1.7;margin-bottom:14px}
 .comment-actions{display:flex;align-items:center;gap:10px}
-.vote-btn{display:inline-flex;align-items:center;gap:6px;background:rgba(255,255,255,.04);border:1px solid var(--border);border-radius:100px;padding:5px 14px;font-family:'Tajawal',sans-serif;font-size:13px;color:var(--muted);cursor:pointer;transition:all .2s ease}
+.vote-btn{display:inline-flex;align-items:center;gap:6px;background:rgba(255,255,255,.04);border:1px solid var(--border);border-radius:100px;padding:6px 16px;font-family:'Tajawal',sans-serif;font-size:13px;color:var(--muted);cursor:pointer;transition:all .2s ease;font-weight:600}
 .vote-btn:hover{border-color:rgba(255,255,255,.2);color:var(--text)}
 .vote-up-active{border-color:rgba(48,209,88,.5)!important;background:rgba(48,209,88,.1)!important;color:var(--accent2)!important}
 .vote-down-active{border-color:rgba(255,69,58,.5)!important;background:rgba(255,69,58,.1)!important;color:var(--danger)!important}
-.vote-count{font-weight:600}
-.vote-score{font-size:13px;font-weight:700;margin-right:4px}
-.toast{position:fixed;bottom:28px;left:50%;transform:translateX(-50%) translateY(100px);background:rgba(30,30,30,.95);backdrop-filter:blur(20px);border:1px solid var(--border);border-radius:100px;padding:12px 24px;font-size:14px;color:var(--text);z-index:9999;transition:transform .4s cubic-bezier(.34,1.56,.64,1);white-space:nowrap}
+.vote-count{font-weight:700}
+.toast{position:fixed;bottom:28px;left:50%;transform:translateX(-50%) translateY(100px);background:rgba(30,30,30,.95);backdrop-filter:blur(20px);border:1px solid var(--border);border-radius:100px;padding:12px 24px;font-size:14px;color:var(--text);z-index:9999;transition:transform .4s cubic-bezier(.34,1.56,.64,1);white-space:nowrap;font-weight:500}
 .toast.show{transform:translateX(-50%) translateY(0)}
 .toast.success{border-color:rgba(48,209,88,.4)}
 .toast.error{border-color:rgba(255,69,58,.4)}
@@ -103,52 +97,133 @@ textarea:focus{border-color:var(--gold)}
 /* Admin Setup UI */
 #adminSetup {
   display: none; max-width: 600px; margin: 80px auto; background: var(--surface2); 
-  padding: 40px 30px; border-radius: 24px; text-align: center; border: 2px dashed var(--accent);
+  padding: 40px 30px; border-radius: 24px; text-align: center; border: 1px solid var(--border);
 }
 .code-block {
   background: #000; padding: 15px; font-size: 18px; color: var(--gold); 
   letter-spacing: 1px; margin: 20px 0; border-radius: 12px; direction: ltr; font-family: monospace;
 }
 
-/* Reportage Media Custom Styles */
-.media-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(240px, 1fr)); gap: 20px; margin-top: 24px; }
-.media-card { background: var(--surface2); border: 1px solid var(--border); border-radius: var(--radius-sm); overflow: hidden; }
-.media-card video { width: 100%; aspect-ratio: 16/9; background: #000; outline: none; }
-.media-title { padding: 14px; font-size: 14px; font-weight: 600; color: var(--text); border-top: 1px solid var(--border); }
+/* ---------------------------------------------------
+   Reportage Media Styles (Carousel & Audio)
+   --------------------------------------------------- */
+.carousel-wrapper {
+  position: relative;
+  width: 100%;
+  max-width: 820px;
+  margin: 0 auto;
+  background: var(--surface2);
+  border: 1px solid var(--border);
+  border-radius: var(--radius-sm);
+  overflow: hidden;
+}
+.carousel-track {
+  display: flex;
+  transition: transform 0.5s cubic-bezier(0.25, 1, 0.5, 1);
+  /* Force direction LTR internally to make translateX calculations logical */
+  direction: ltr; 
+}
+.carousel-slide {
+  min-width: 100%;
+  box-sizing: border-box;
+  display: flex;
+  flex-direction: column;
+}
+.carousel-slide video {
+  width: 100%;
+  aspect-ratio: 16/9;
+  background: #000;
+  outline: none;
+  border: none;
+}
+.media-title {
+  padding: 16px 20px;
+  font-size: 16px;
+  font-weight: 600;
+  color: var(--text);
+  border-top: 1px solid var(--border);
+  text-align: center;
+  direction: rtl;
+}
+/* Navigation Buttons */
+.carousel-btn {
+  position: absolute;
+  top: 40%;
+  transform: translateY(-50%);
+  background: rgba(0, 0, 0, 0.65);
+  color: #fff;
+  border: 1px solid rgba(255,255,255,0.1);
+  border-radius: 50%;
+  width: 44px;
+  height: 44px;
+  cursor: pointer;
+  z-index: 10;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 18px;
+  backdrop-filter: blur(5px);
+  transition: all 0.2s ease;
+}
+.carousel-btn:hover { background: var(--accent); border-color: var(--accent); transform: translateY(-50%) scale(1.05); }
+.carousel-btn.next { right: 15px; } /* Points Right, goes to next visually */
+.carousel-btn.prev { left: 15px; }  /* Points Left, goes to prev visually */
+
+.carousel-indicators {
+  display: flex;
+  justify-content: center;
+  gap: 10px;
+  padding: 16px;
+  background: var(--surface);
+  border-top: 1px solid var(--border);
+  direction: rtl;
+}
+.indicator {
+  width: 10px;
+  height: 10px;
+  border-radius: 50%;
+  background: rgba(255,255,255,0.2);
+  cursor: pointer;
+  transition: background 0.3s, transform 0.3s;
+}
+.indicator:hover { background: rgba(255,255,255,0.4); }
+.indicator.active { background: var(--gold); transform: scale(1.2); }
+
+.audio-card {
+  margin-top: 30px;
+  background: var(--surface2);
+  border: 1px solid var(--border);
+  border-radius: var(--radius-sm);
+  padding: 24px;
+}
 </style>
 </head>
 <body>
 
 <!-- Setup Screen (Only shows once to the admin) -->
 <div id="adminSetup">
-  <h2 style="color: var(--accent); margin-bottom: 20px;">⚙️ الإعداد السحري للتصويت العالمي</h2>
-  <p style="color: var(--text); font-size: 16px; line-height: 1.8;">لكي يرى جميع الناس نتائج بعضهم البعض، قمنا للتو بإنشاء قاعدة بيانات <strong>عالمية ومجانية بالكامل</strong> لملفك (بدون تسجيل دخول).</p>
+  <h2 style="color: var(--text); margin-bottom: 20px;">إعداد قاعدة البيانات</h2>
+  <p style="color: var(--muted); font-size: 16px; line-height: 1.8;">نظام قواعد البيانات اللامركزية. لضمان مزامنة النتائج لجميع الزوار، يرجى نسخ المعرّف التالي:</p>
   
-  <p style="margin-top: 25px; color: var(--muted);">الخطوة الأخيرة: انسخ هذا المعرّف (ID):</p>
   <div class="code-block" id="newDbId">جاري التوليد...</div>
   
-  <p style="color: var(--muted);">ثم افتح ملف الكود الخاص بك، وابحث عن السطر 220 تقريباً، وقم بوضع المعرف بين علامتي التنصيص هكذا:</p>
-  <div class="code-block">let DATABASE_ID = "<span id="newDbIdCode" style="color: #fff"></span>";</div>
+  <p style="color: var(--muted);">أضف هذا المعرّف لمتغير DATABASE_ID في الملف المصدري (حوالي السطر 220).</p>
   
-  <p style="color: var(--accent2); font-weight: bold; margin-top: 20px;">احفظ الملف ومبروك! يمكنك نشره وسيعمل التصويت للجميع فوراً 🌍.</p>
-  
-  <button onclick="skipAdminAndTest()" class="btn btn-ghost" style="margin-top: 20px; width: 100%;">تخطي وتجربة الاستطلاع الآن ←</button>
+  <button onclick="skipAdminAndTest()" class="btn btn-ghost" style="margin-top: 20px; width: 100%;">المتابعة لتجربة المنصة</button>
 </div>
 
 <!-- Main UI -->
 <section class="hero" id="heroSection" style="display:none">
   <div class="hero-glow"></div>
-  <div class="badge">عيد الأضحى المبارك ١٤٤٦</div>
+  <div class="badge">تقرير عيد الأضحى ١٤٤٦</div>
   <h1>أسعار <span>كبش العيد</span><br>كيف تراها؟</h1>
-  <p class="subtitle">استطلاع رأي موجّه للمغاربة حول أسعار الأضاحي هذا العام — شاركنا رأيك ونتائج مباشرة</p>
+  <p class="subtitle">استطلاع رأي وطني موجّه للمغاربة لتقييم ومناقشة أسعار الأضاحي في الأسواق الحالية.</p>
   <div class="live-stats" id="heroStats" style="display:none">
-    <div class="live-pill"><div class="live-dot"></div><span id="heroTotal">—</span> مشارك عالمياً</div>
-    <div class="live-pill">🔴 غالية: <strong id="heroPct" style="color:var(--danger);margin-right:4px">—</strong></div>
+    <div class="live-pill"><div class="live-dot"></div><span id="heroTotal">—</span> مشارك</div>
+    <div class="live-pill" style="color:var(--danger)">غالية جداً: <strong id="heroPct" style="margin-right:4px">—</strong></div>
   </div>
-  <button class="start-btn" id="mainBtn" onclick="startSurvey()">شارك رأيك الآن ←</button>
-  
-  <!-- أضفنا زر للذهاب للروبورتاج مباشرة من الرئيسية -->
-  <button class="btn btn-ghost" style="margin-top: 16px;" onclick="showReportage()">📺 شاهد الروبورتاج الحصري</button>
+  <button class="start-btn" id="mainBtn" onclick="startSurvey()">المشاركة في الاستطلاع</button>
+  <button class="btn btn-ghost" style="margin-top: 16px;" onclick="showReportage()">عرض الروبورتاج الميداني</button>
 </section>
 
 <!-- Survey Flow -->
@@ -157,71 +232,71 @@ textarea:focus{border-color:var(--gold)}
     <div class="progress-bar"><div class="progress-fill" id="progressFill" style="width:0%"></div></div>
 
     <div class="step active" id="step1">
-      <div class="step-header"><div class="step-num">١</div><div class="step-title">عمرك <span class="step-optional">اختياري</span></div></div>
+      <div class="step-header"><div class="step-num">١</div><div class="step-title">الفئة العمرية <span class="step-optional">اختياري</span></div></div>
       <div class="choices" id="ageChoices">
-        <div class="choice" onclick="selectChoice('age','18-25','ageChoices',this)"><span class="choice-icon">🧑</span>18–25</div>
-        <div class="choice" onclick="selectChoice('age','26-35','ageChoices',this)"><span class="choice-icon">👨</span>26–35</div>
-        <div class="choice" onclick="selectChoice('age','36-50','ageChoices',this)"><span class="choice-icon">👨‍💼</span>36–50</div>
-        <div class="choice" onclick="selectChoice('age','50+','ageChoices',this)"><span class="choice-icon">👴</span>+50</div>
+        <div class="choice" onclick="selectChoice('age','18-25','ageChoices',this)">18–25 سنة</div>
+        <div class="choice" onclick="selectChoice('age','26-35','ageChoices',this)">26–35 سنة</div>
+        <div class="choice" onclick="selectChoice('age','36-50','ageChoices',this)">36–50 سنة</div>
+        <div class="choice" onclick="selectChoice('age','50+','ageChoices',this)">أكثر من 50 سنة</div>
       </div>
       <div class="nav-row">
         <button class="btn btn-ghost" onclick="skipStep()">تخطي</button>
-        <button class="btn btn-primary" onclick="nextStep()">التالي →</button>
+        <button class="btn btn-primary" onclick="nextStep()">التالي</button>
       </div>
     </div>
 
     <div class="step" id="step2">
-      <div class="step-header"><div class="step-num">٢</div><div class="step-title">جنسك <span class="step-optional">اختياري</span></div></div>
+      <div class="step-header"><div class="step-num">٢</div><div class="step-title">الجنس <span class="step-optional">اختياري</span></div></div>
       <div class="choices" id="sexChoices">
-        <div class="choice" onclick="selectChoice('sex','ذكر','sexChoices',this)"><span class="choice-icon">👨</span>ذكر</div>
-        <div class="choice" onclick="selectChoice('sex','أنثى','sexChoices',this)"><span class="choice-icon">👩</span>أنثى</div>
-        <div class="choice" onclick="selectChoice('sex','أفضل عدم الإفصاح','sexChoices',this)"><span class="choice-icon">🤐</span>أفضل عدم الإفصاح</div>
+        <div class="choice" onclick="selectChoice('sex','ذكر','sexChoices',this)">ذكر</div>
+        <div class="choice" onclick="selectChoice('sex','أنثى','sexChoices',this)">أنثى</div>
+        <div class="choice" onclick="selectChoice('sex','عدم الإفصاح','sexChoices',this)">أفضل عدم الإفصاح</div>
       </div>
       <div class="nav-row">
-        <button class="btn btn-ghost" onclick="prevStep()">← رجوع</button>
+        <button class="btn btn-ghost" onclick="prevStep()">رجوع</button>
         <button class="btn btn-ghost" onclick="skipStep()">تخطي</button>
-        <button class="btn btn-primary" onclick="nextStep()">التالي →</button>
+        <button class="btn btn-primary" onclick="nextStep()">التالي</button>
       </div>
     </div>
 
     <div class="step" id="step3">
-      <div class="step-header"><div class="step-num">٣</div><div class="step-title">وضعك المهني <span class="step-optional">اختياري</span></div></div>
+      <div class="step-header"><div class="step-num">٣</div><div class="step-title">الوضع المهني <span class="step-optional">اختياري</span></div></div>
       <div class="choices" id="jobChoices" style="flex-direction:column">
-        <div class="choice" style="text-align:right;min-width:100%" onclick="selectChoice('job','موظف / عامل','jobChoices',this)">💼 موظف / عامل</div>
-        <div class="choice" style="text-align:right;min-width:100%" onclick="selectChoice('job','صاحب عمل / تاجر','jobChoices',this)">🏪 صاحب عمل / تاجر</div>
-        <div class="choice" style="text-align:right;min-width:100%" onclick="selectChoice('job','طالب','jobChoices',this)">🎓 طالب</div>
-        <div class="choice" style="text-align:right;min-width:100%" onclick="selectChoice('job','بدون عمل','jobChoices',this)">🔍 بدون عمل</div>
-        <div class="choice" style="text-align:right;min-width:100%" onclick="selectChoice('job','متقاعد','jobChoices',this)">🏡 متقاعد</div>
+        <div class="choice" style="text-align:right;min-width:100%" onclick="selectChoice('job','موظف / عامل','jobChoices',this)">موظف أو عامل</div>
+        <div class="choice" style="text-align:right;min-width:100%" onclick="selectChoice('job','صاحب عمل / تاجر','jobChoices',this)">صاحب عمل أو تاجر</div>
+        <div class="choice" style="text-align:right;min-width:100%" onclick="selectChoice('job','طالب','jobChoices',this)">طالب</div>
+        <div class="choice" style="text-align:right;min-width:100%" onclick="selectChoice('job','بدون عمل','jobChoices',this)">باحث عن عمل</div>
+        <div class="choice" style="text-align:right;min-width:100%" onclick="selectChoice('job','متقاعد','jobChoices',this)">متقاعد</div>
       </div>
       <div class="nav-row">
-        <button class="btn btn-ghost" onclick="prevStep()">← رجوع</button>
+        <button class="btn btn-ghost" onclick="prevStep()">رجوع</button>
         <button class="btn btn-ghost" onclick="skipStep()">تخطي</button>
-        <button class="btn btn-primary" onclick="nextStep()">التالي →</button>
+        <button class="btn btn-primary" onclick="nextStep()">التالي</button>
       </div>
     </div>
 
     <div class="step" id="step4">
-      <div class="step-header"><div class="step-num">٤</div><div class="step-title">كيف تجد أسعار كبش العيد هذا العام؟</div></div>
+      <div class="step-header"><div class="step-num">٤</div><div class="step-title">تقييمك لمستوى أسعار كبش العيد هذا العام؟</div></div>
       <div class="choices" id="priceChoices">
-        <div class="choice cheap" onclick="selectChoice('price','رخيصة','priceChoices',this)"><span class="choice-icon">💚</span>رخيصة</div>
-        <div class="choice normal" onclick="selectChoice('price','عادية','priceChoices',this)"><span class="choice-icon">💙</span>عادية</div>
-        <div class="choice expensive" onclick="selectChoice('price','غالية','priceChoices',this)"><span class="choice-icon">🔴</span>غالية جداً</div>
+        <div class="choice cheap" onclick="selectChoice('price','رخيصة','priceChoices',this)">رخيصة أو في المتناول</div>
+        <div class="choice normal" onclick="selectChoice('price','عادية','priceChoices',this)">عادية ومناسبة</div>
+        <div class="choice expensive" onclick="selectChoice('price','غالية','priceChoices',this)">مرتفعة وغالية جداً</div>
       </div>
-      <p id="priceError" style="color:var(--danger);font-size:13px;margin-top:12px;display:none">⚠️ هذا السؤال إلزامي، رجاءً اختر إجابة</p>
+      <p id="priceError" style="color:var(--danger);font-size:13px;margin-top:12px;display:none">هذا الحقل إلزامي، يرجى اختيار تقييم للأسعار.</p>
       <div class="nav-row">
-        <button class="btn btn-ghost" onclick="prevStep()">← رجوع</button>
-        <button class="btn btn-primary" onclick="nextStep()">التالي →</button>
+        <button class="btn btn-ghost" onclick="prevStep()">رجوع</button>
+        <button class="btn btn-primary" onclick="nextStep()">التالي</button>
       </div>
     </div>
 
     <div class="step" id="step5">
-      <div class="step-header"><div class="step-num">٥</div><div class="step-title">لماذا تعتقد ذلك؟ <span class="step-optional">اختياري</span></div></div>
-      <p style="color:var(--muted);font-size:14px;margin-bottom:20px">شاركنا رأيك بحرية</p>
-      <textarea id="justification" placeholder="مثلاً: غلاء تكاليف التربية، ضعف القدرة الشرائية..." dir="rtl"></textarea>
+      <div class="step-header"><div class="step-num">٥</div><div class="step-title">التبرير والتفاصيل <span class="step-optional">اختياري</span></div></div>
+      <p style="color:var(--muted);font-size:14px;margin-bottom:20px">شاركنا بملاحظاتك الشخصية حول السوق أو الأسباب الكامنة وراء هذا التقييم.</p>
+      <textarea id="justification" placeholder="اكتب تعليقك هنا..." dir="rtl"></textarea>
       <div class="nav-row">
-        <button class="btn btn-ghost" onclick="prevStep()">← رجوع</button>
+        <button class="btn btn-ghost" onclick="prevStep()">رجوع</button>
         <button class="btn btn-ghost" onclick="submitSurvey(true)">تخطي وإرسال</button>
-        <button class="btn btn-gold" onclick="submitSurvey(false)">إرسال ✓</button>
+        <button class="btn btn-gold" onclick="submitSurvey(false)">تأكيد الإرسال</button>
       </div>
     </div>
   </div>
@@ -231,113 +306,119 @@ textarea:focus{border-color:var(--gold)}
 <section id="results" style="display:none">
   <div style="max-width:760px;margin:0 auto;padding:0 20px 100px">
     <div class="results-hero">
-      <span class="results-icon">🌍</span>
-      <div class="results-title" id="resultsTitle">شكراً لمشاركتك!</div>
-      <p class="results-sub">هذه هي النتائج العالمية المباشرة</p>
-    </div>
-    <div class="stats-grid">
-      <div class="stat-card cheap"><span class="stat-num" id="countCheap">0</span><span class="stat-label">💚 رخيصة</span></div>
-      <div class="stat-card normal"><span class="stat-num" id="countNormal">0</span><span class="stat-label">💙 عادية</span></div>
-      <div class="stat-card expensive"><span class="stat-num" id="countExpensive">0</span><span class="stat-label">🔴 غالية</span></div>
-    </div>
-    <div class="chart-card">
-      <div class="chart-title">📊 توزيع الآراء</div>
-      <div class="chart-wrap"><canvas id="resultsChart"></canvas></div>
-    </div>
-    <div class="chart-card">
-      <div class="chart-title">💬 تعليقات المشاركين</div>
-      <div id="commentsList"><p style="color:var(--muted);font-size:14px;text-align:center;padding:20px 0">لا توجد تعليقات بعد.</p></div>
+      <div class="results-title" id="resultsTitle">شكراً لمشاركتك</div>
+      <p class="results-sub">إليك النتائج والإحصائيات المباشرة للاستطلاع</p>
     </div>
     
-    <!-- الأزرار المضافة حديثاً في قسم النتائج -->
+    <div class="stats-grid">
+      <div class="stat-card cheap"><span class="stat-num" id="countCheap">0</span><span class="stat-label">رخيصة ومناسبة</span></div>
+      <div class="stat-card normal"><span class="stat-num" id="countNormal">0</span><span class="stat-label">عادية ومستقرة</span></div>
+      <div class="stat-card expensive"><span class="stat-num" id="countExpensive">0</span><span class="stat-label">مرتفعة جداً</span></div>
+    </div>
+    
+    <div class="chart-card">
+      <div class="chart-title">التمثيل البياني للآراء</div>
+      <div class="chart-wrap"><canvas id="resultsChart"></canvas></div>
+    </div>
+    
+    <div class="chart-card">
+      <div class="chart-title">تعليقات وآراء المشاركين</div>
+      <div id="commentsList"><p style="color:var(--muted);font-size:14px;text-align:center;padding:20px 0">لا توجد تعليقات حتى الآن.</p></div>
+    </div>
+    
     <div style="display:flex;gap:12px;flex-wrap:wrap;justify-content:center;padding:20px 0">
-      <button class="btn btn-primary" onclick="showReportage()">📺 شاهد الروبورتاج</button>
-      <button class="btn btn-ghost" onclick="shareSurvey()">📤 شارك الرابط</button>
-      <button class="btn btn-ghost" onclick="returnToHome()">🏠 العودة للرئيسية</button>
+      <button class="btn btn-primary" onclick="showReportage()">عرض الروبورتاج</button>
+      <button class="btn btn-ghost" onclick="shareSurvey()">مشاركة الاستطلاع</button>
+      <button class="btn btn-ghost" onclick="returnToHome()">الرئيسية</button>
     </div>
   </div>
 </section>
 
-<!-- صفحة الروبورتاج الجديدة (Reportage Section) -->
+<!-- Reportage Section -->
 <section id="reportage" style="display:none">
   <div style="max-width:860px;margin:0 auto;padding:60px 20px 100px">
     
     <!-- Text Introduction -->
-    <div class="chart-card" style="text-align: right;">
-      <div class="chart-title" style="color: var(--gold); font-size: 24px; text-align: center;">روبورتاج حصري: أصداء أسواق المواشي 🐑</div>
-      <p style="color: var(--text); font-size: 16px; line-height: 1.8; margin-top: 16px;">
-        قمنا بجولة استطلاعية مكثفة داخل أهم الأسواق المغربية لرصد أجواء التحضيرات لعيد الأضحى المبارك. استمعنا لآراء <strong>الكسابة (المُربين)</strong> حول تكاليف الأعلاف والتنقل، ونقلنا انطباعات <strong>المواطنين</strong> وملاحظاتهم حول تباين الأسعار هذا العام.
-        <br><br>
-        شاهد الفيديوهات الحصرية أدناه واستمع للتسجيل الصوتي التحليلي لفهم واقع السوق.
+    <div class="chart-card" style="text-align: right; border-top: 3px solid var(--gold);">
+      <div class="chart-title" style="color: var(--text); font-size: 24px; text-align: center; border:none;">روبورتاج استقصائي: واقع أسواق المواشي</div>
+      <p style="color: var(--muted); font-size: 16px; line-height: 1.8; margin-top: 8px;">
+        في إطار متابعتنا الحثيثة للتحضيرات لعيد الأضحى، قمنا بجولة ميدانية مكثفة داخل أبرز الأسواق المغربية لرصد التوجهات العامة للأسعار. 
+        التقينا بالمُربين والكسابة للوقوف على التحديات المتعلقة بتكاليف الأعلاف وسلاسل التوريد، كما استقينا آراء المواطنين لتقييم مدى تطابق الأسعار مع القدرة الشرائية.
       </p>
     </div>
 
-    <!-- 3 Videos Grid -->
-    <div class="media-grid">
-      <!-- Video 1 -->
-      <div class="media-card">
-        <!-- ضع مسار الفيديو الحقيقي داخل src -->
-        <video controls poster="https://via.placeholder.com/400x225/111/fff?text=صورة+غلاف+الفيديو">
-          <source src="your-video-1.mp4" type="video/mp4">
-        </video>
-        <div class="media-title">🎥 آراء المواطنين حول الأسعار</div>
+    <!-- Video Carousel Section -->
+    <div class="carousel-wrapper">
+      <button class="carousel-btn next" onclick="moveSlide(1)">&#10095;</button> <!-- Arrow Right -->
+      <button class="carousel-btn prev" onclick="moveSlide(-1)">&#10094;</button> <!-- Arrow Left -->
+      
+      <div class="carousel-track" id="carouselTrack">
+        <!-- Video Slide 1 -->
+        <div class="carousel-slide">
+          <video controls poster="https://via.placeholder.com/800x450/111/fff?text=صورة+الغلاف+1">
+            <source src="video1.mp4" type="video/mp4">
+          </video>
+          <div class="media-title">جولة ميدانية داخل السوق الأسبوعي</div>
+        </div>
+        <!-- Video Slide 2 -->
+        <div class="carousel-slide">
+          <video controls poster="https://via.placeholder.com/800x450/111/fff?text=صورة+الغلاف+2">
+            <source src="video2.mp4" type="video/mp4">
+          </video>
+          <div class="media-title">تصريحات الكسابة حول تكلفة الأعلاف</div>
+        </div>
+        <!-- Video Slide 3 -->
+        <div class="carousel-slide">
+          <video controls poster="https://via.placeholder.com/800x450/111/fff?text=صورة+الغلاف+3">
+            <source src="video3.mp4" type="video/mp4">
+          </video>
+          <div class="media-title">انطباعات المواطنين وتقييم القدرة الشرائية</div>
+        </div>
       </div>
       
-      <!-- Video 2 -->
-      <div class="media-card">
-        <!-- ضع مسار الفيديو الحقيقي داخل src -->
-        <video controls poster="https://via.placeholder.com/400x225/111/fff?text=صورة+غلاف+الفيديو">
-          <source src="your-video-2.mp4" type="video/mp4">
-        </video>
-        <div class="media-title">🎥 آراء المواطنين حول الأسعار</div>
-      </div>
-
-      <!-- Video 3 -->
-      <div class="media-card">
-        <!-- ضع مسار الفيديو الحقيقي داخل src -->
-        <video controls poster="https://via.placeholder.com/400x225/111/fff?text=صورة+غلاف+الفيديو">
-          <source src="your-video-3.mp4" type="video/mp4">
-        </video>
-        <div class="media-title">🎥 آراء المواطنين حول الأسعار</div>
+      <!-- Indicators -->
+      <div class="carousel-indicators" id="carouselIndicators">
+        <div class="indicator active" onclick="goToSlide(0)"></div>
+        <div class="indicator" onclick="goToSlide(1)"></div>
+        <div class="indicator" onclick="goToSlide(2)"></div>
       </div>
     </div>
 
-    <!-- 1 Audio Section -->
-    <div class="chart-card" style="margin-top: 24px;">
-      <div class="chart-title" style="margin-bottom: 15px;"> تسجيل صوتي:</div>
-      
-      <!-- ضع مسار الصوت الحقيقي داخل src -->
+    <!-- Audio Section -->
+    <div class="audio-card">
+      <div class="chart-title" style="margin-bottom: 12px; font-size: 18px;">التحليل الاقتصادي للصوتيات</div>
+      <p style="color:var(--muted); font-size:14px; margin-bottom: 20px;">حوار صوتي مفصل مع باحث في الاقتصاد الزراعي يناقش أبعاد تقلبات الأسعار والتوقعات المستقبلية للسوق.</p>
       <audio controls style="width: 100%; outline: none; border-radius: 100px;">
-        <source src="your-audio.mp3" type="audio/mpeg">
-        متصفحك لا يدعم تشغيل المقطع الصوتي.
+        <source src="audio.mp3" type="audio/mpeg">
+        المتصفح الخاص بك لا يدعم تشغيل المقطع الصوتي.
       </audio>
     </div>
 
     <!-- Navigation Back -->
-    <div style="text-align: center; margin-top: 30px;">
-      <button class="btn btn-ghost" onclick="returnToHome()"> العودة للصفحة الرئيسية</button>
+    <div style="text-align: center; margin-top: 40px;">
+      <button class="btn btn-ghost" onclick="returnToHome()">العودة للصفحة الرئيسية</button>
     </div>
   </div>
 </section>
 
-<footer class="site-footer"><p>استطلاع مغربي مستقل · عيد الأضحى ١٤٤٦</p></footer>
+<footer class="site-footer"><p>تقرير واستطلاع مستقل · إحصائيات عامة ١٤٤٦</p></footer>
 <div class="toast" id="toast"></div>
 <div class="overlay hidden" id="loadingOverlay">
   <div class="spinner" style="width:44px;height:44px;border-width:3px"></div>
-  <span id="loadingMsg" style="margin-top: 15px; font-weight: bold;">جارٍ التحميل...</span>
+  <span id="loadingMsg" style="margin-top: 15px; font-weight: bold; font-size: 14px;">يتم معالجة البيانات...</span>
 </div>
 
 <script>
 // =========================================================================
-// 🚀 THE MAGIC SETUP: PASTE YOUR ID HERE ONCE IT GENERATES
+// 🚀 DATABASE ID
 // =========================================================================
-let DATABASE_ID = "41c06260e8ed01fa68e3"; // <-- Paste ID here between the quotes
+let DATABASE_ID = "41c06260e8ed01fa68e3"; // <-- Paste ID here
 // =========================================================================
 
 const NPOINT_API = "https://api.npoint.io/";
 
 // ════════════════════════════════════════════════════════════════
-//  SYSTEM INIT (MAGIC DATABASE GENERATOR)
+//  SYSTEM INIT
 // ════════════════════════════════════════════════════════════════
 window.addEventListener('load', async () => {
   if (DATABASE_ID !== "") {
@@ -345,7 +426,7 @@ window.addEventListener('load', async () => {
   } else {
     let localGeneratedId = localStorage.getItem('magic_db_id');
     if (!localGeneratedId) {
-      showLoading("جاري بناء قاعدة بياناتك المجانية...");
+      showLoading("إعداد قاعدة البيانات...");
       try {
         let res = await fetch(NPOINT_API, {
           method: 'POST',
@@ -358,12 +439,11 @@ window.addEventListener('load', async () => {
         hideLoading();
       } catch(e) {
         hideLoading();
-        alert("حدث خطأ في الاتصال بالانترنت، يرجى تحديث الصفحة.");
+        alert("فشل الاتصال بالشبكة، يرجى تحديث الصفحة.");
         return;
       }
     }
     document.getElementById('newDbId').innerText = localGeneratedId;
-    document.getElementById('newDbIdCode').innerText = localGeneratedId;
     document.getElementById('adminSetup').style.display = 'block';
   }
 });
@@ -374,9 +454,6 @@ function skipAdminAndTest() {
   loadGlobalStats();
 }
 
-// ════════════════════════════════════════════════════════════════
-//  DATABASE FETCH / UPDATE
-// ════════════════════════════════════════════════════════════════
 async function getVotesData() {
   let res = await fetch(NPOINT_API + DATABASE_ID + "?nocache=" + Date.now());
   return await res.json();
@@ -398,13 +475,15 @@ async function loadGlobalStats() {
   
   if (localStorage.getItem('has_voted_global')) {
     let btn = document.getElementById('mainBtn');
-    btn.innerText = "شاهد النتائج المباشرة 📊";
+    btn.innerText = "عرض النتائج والإحصائيات";
     btn.classList.remove('btn-primary');
-    btn.classList.add('btn-gold');
+    btn.classList.add('btn-ghost');
+    btn.style.borderColor = "var(--gold)";
+    btn.style.color = "var(--gold)";
     btn.onclick = async () => {
       document.getElementById('heroSection').style.display = 'none';
-      document.getElementById('resultsTitle').innerText = "النتائج المباشرة";
-      showLoading("جاري جلب بيانات العالم...");
+      document.getElementById('resultsTitle').innerText = "نتائج الاستطلاع المباشرة";
+      showLoading("يتم جلب الإحصائيات...");
       let data = await getVotesData();
       hideLoading();
       displayResultsUI(data);
@@ -460,16 +539,16 @@ function selectChoice(field,value,groupId,el) {
 }
 
 // ════════════════════════════════════════════════════════════════
-//  SUBMIT TO GLOBAL DATABASE
+//  SUBMIT TO DATABASE
 // ════════════════════════════════════════════════════════════════
 async function submitSurvey(skipJustification) {
   const txt = skipJustification ? '' : document.getElementById('justification').value.trim();
   if (!answers.price) {
-    showToast('⚠️ اختر رأيك في الأسعار أولاً','error');
+    showToast('يرجى تحديد رأيك في مستوى الأسعار للتقدم','error');
     currentStep=4; showStep(4); return;
   }
   
-  showLoading('يتم إرسال صوتك ليتصل بقاعدة البيانات العالمية...');
+  showLoading('جاري تسجيل مساهمتك...');
   
   try {
     let globalData = await getVotesData();
@@ -489,11 +568,11 @@ async function submitSurvey(skipJustification) {
     localStorage.setItem('has_voted_global', 'true');
     hideLoading();
     displayResultsUI(globalData);
-    showToast('✅ تم إرسال رأيك وتحديث الإحصائيات!','success');
+    showToast('تم تسجيل تقييمك بنجاح','success');
   } catch(e) {
     hideLoading();
     console.error(e);
-    showToast('❌ فشل الاتصال بقاعدة البيانات','error');
+    showToast('حدث خطأ أثناء الاتصال بالقاعدة','error');
   }
 }
 
@@ -522,7 +601,7 @@ function renderChart(d){
   chart=new Chart(ctx,{
     type:'doughnut',
     data:{
-      labels:['رخيصة 💚','عادية 💙','غالية جداً 🔴'],
+      labels:['رخيصة','عادية','غالية جداً'],
       datasets:[{
         data:[d.cheap||0, d.normal||0, d.expensive||0],
         backgroundColor:['rgba(48,209,88,.8)','rgba(41,151,255,.8)','rgba(255,69,58,.8)'],
@@ -537,7 +616,7 @@ function renderChart(d){
         tooltip:{callbacks:{label:c=>{
           const t=c.dataset.data.reduce((a,b)=>a+b,0);
           const p=t?Math.round(c.raw/t*100):0;
-          return ' '+c.raw+' صوت ('+p+'%)';
+          return ' '+c.raw+' مشاركة ('+p+'%)';
         }},bodyFont:{family:'Tajawal'},titleFont:{family:'Tajawal'}}
       },
       animation:{animateRotate:true,duration:900}
@@ -559,13 +638,12 @@ function timeAgo(ts){
   return 'منذ '+Math.floor(h/24)+' يوم';
 }
 const pc=p=>p==='رخيصة'?'var(--accent2)':p==='عادية'?'var(--accent)':'var(--danger)';
-const pi=p=>p==='رخيصة'?'💚':p==='عادية'?'💙':'🔴';
 
 function renderComments(data){
   const myV=getLocalVotes();
   const list=(data.comments||[]).slice().reverse();
   const el=document.getElementById('commentsList');
-  if(!list.length){el.innerHTML='<p style="color:var(--muted);font-size:14px;text-align:center;padding:20px 0">لا توجد تعليقات بعد.</p>';return;}
+  if(!list.length){el.innerHTML='<p style="color:var(--muted);font-size:14px;text-align:center;padding:20px 0">لا توجد تعليقات حتى الآن.</p>';return;}
   
   el.innerHTML=list.map(c=>{
     const v=myV[c.id], sc=(c.upvotes||0)-(c.downvotes||0);
@@ -573,15 +651,14 @@ function renderComments(data){
     const pColor=pc(c.price);
     return `<div class="comment-card" id="comment-${c.id}">
       <div class="comment-header">
-        <span class="comment-badge" style="background:${pColor}22;color:${pColor};border:1px solid ${pColor}44">${pi(c.price)} ${esc(c.price)}</span>
+        <span class="comment-badge" style="background:${pColor}22;color:${pColor};border:1px solid ${pColor}44">${esc(c.price)}</span>
         ${c.age?`<span class="comment-meta">· ${esc(c.age)}</span>`:''}
         <span class="comment-meta" style="margin-right:auto">${timeAgo(c.ts)}</span>
       </div>
       <p class="comment-text">${esc(c.text)}</p>
       <div class="comment-actions">
-        <button class="vote-btn ${v==='up'?'vote-up-active':''}" onclick="voteComment('${c.id}','up')">👍 <span class="vote-count" id="up-${c.id}">${c.upvotes||0}</span></button>
-        <button class="vote-btn ${v==='down'?'vote-down-active':''}" onclick="voteComment('${c.id}','down')">👎 <span class="vote-count" id="down-${c.id}">${c.downvotes||0}</span></button>
-        <span class="vote-score" style="color:${scColor}" id="score-${c.id}">${sc>0?'+':''}${sc}</span>
+        <button class="vote-btn ${v==='up'?'vote-up-active':''}" onclick="voteComment('${c.id}','up')">أوافق <span class="vote-count" id="up-${c.id}">${c.upvotes||0}</span></button>
+        <button class="vote-btn ${v==='down'?'vote-down-active':''}" onclick="voteComment('${c.id}','down')">أعارض <span class="vote-count" id="down-${c.id}">${c.downvotes||0}</span></button>
       </div>
     </div>`;
   }).join('');
@@ -591,7 +668,7 @@ async function voteComment(commentId, direction) {
   const myVotes=getLocalVotes();
   const prev=myVotes[commentId];
   const newVote=prev===direction?null:direction;
-  showLoading('جارٍ تحديث الإعجابات عالمياً...');
+  showLoading('تسجيل التفاعل...');
   
   try {
     const data = await getVotesData();
@@ -612,14 +689,16 @@ async function voteComment(commentId, direction) {
     saveLocalVotes(myVotes);
     hideLoading();
     
-    const score=c.upvotes-c.downvotes;
-    const scColor=score>0?'var(--accent2)':score<0?'var(--danger)':'var(--muted)';
     const card=document.getElementById('comment-'+commentId);
     if(card){
       document.getElementById('up-'+commentId).textContent=c.upvotes;
       document.getElementById('down-'+commentId).textContent=c.downvotes;
-      const s=document.getElementById('score-'+commentId);
-      s.textContent=(score>0?'+':'')+score; s.style.color=scColor;
+      
+      // Update UI classes
+      const upBtn = card.querySelector(`button[onclick*="'up'"]`);
+      const downBtn = card.querySelector(`button[onclick*="'down'"]`);
+      upBtn.className = `vote-btn ${newVote === 'up' ? 'vote-up-active' : ''}`;
+      downBtn.className = `vote-btn ${newVote === 'down' ? 'vote-down-active' : ''}`;
     }
   } catch(e) {
     hideLoading();
@@ -627,10 +706,8 @@ async function voteComment(commentId, direction) {
 }
 
 // ════════════════════════════════════════════════════════════════
-//  HELPERS, ANIMATIONS & NEW NAVIGATION FUNCTIONS
+//  HELPERS & ANIMATIONS
 // ════════════════════════════════════════════════════════════════
-
-// (1) إصلاح الدالة المقطوعة AnimateCount
 function animateCount(id, end) {
   let start = 0;
   const duration = 1500; 
@@ -651,16 +728,11 @@ function animateCount(id, end) {
   }, 16);
 }
 
-// (2) دوال التحميل والتنبيهات (Loading & Toasts)
 function showLoading(msg) {
-  document.getElementById('loadingMsg').innerText = msg || 'جارٍ التحميل...';
+  document.getElementById('loadingMsg').innerText = msg || 'يتم التحميل...';
   document.getElementById('loadingOverlay').classList.remove('hidden');
 }
-
-function hideLoading() {
-  document.getElementById('loadingOverlay').classList.add('hidden');
-}
-
+function hideLoading() { document.getElementById('loadingOverlay').classList.add('hidden'); }
 function showToast(msg, type='success') {
   const t = document.getElementById('toast');
   t.innerText = msg;
@@ -668,27 +740,22 @@ function showToast(msg, type='success') {
   setTimeout(() => t.className = 'toast', 3000);
 }
 
-// (3) دالة مشاركة الرابط
 function shareSurvey() {
   if (navigator.share) {
-    navigator.share({
-      title: 'استطلاع أسعار كبش العيد',
-      url: window.location.href
-    }).catch(console.error);
+    navigator.share({ title: 'تقرير أسعار كبش العيد', url: window.location.href }).catch(console.error);
   } else {
     navigator.clipboard.writeText(window.location.href);
-    showToast('تم نسخ الرابط بنجاح! 📋', 'success');
+    showToast('تم نسخ الرابط للحافظة', 'success');
   }
 }
 
-// (4) دوال التنقل الجديدة (الرئيسية والروبورتاج)
 function returnToHome() {
   document.getElementById('results').style.display = 'none';
   document.getElementById('reportage').style.display = 'none';
   document.getElementById('survey').style.display = 'none';
-  
   document.getElementById('heroSection').style.display = 'flex';
   window.scrollTo({top: 0, behavior: 'smooth'});
+  pauseAllVideos();
 }
 
 function showReportage() {
@@ -699,8 +766,48 @@ function showReportage() {
   const rep = document.getElementById('reportage');
   rep.style.display = 'block';
   rep.scrollIntoView({behavior: 'smooth'});
+  updateCarousel(); // Initialize layout
 }
 
+// ════════════════════════════════════════════════════════════════
+//  CAROUSEL LOGIC
+// ════════════════════════════════════════════════════════════════
+let currentSlide = 0;
+const totalSlides = 3;
+
+function moveSlide(direction) {
+  currentSlide += direction;
+  if (currentSlide < 0) currentSlide = totalSlides - 1;
+  if (currentSlide >= totalSlides) currentSlide = 0;
+  updateCarousel();
+}
+
+function goToSlide(index) {
+  currentSlide = index;
+  updateCarousel();
+}
+
+function updateCarousel() {
+  const track = document.getElementById('carouselTrack');
+  // Internal track is LTR to simplify logic, so translating -100% moves to next slide
+  track.style.transform = `translateX(-${currentSlide * 100}%)`;
+  
+  const indicators = document.querySelectorAll('.indicator');
+  indicators.forEach((ind, index) => {
+    ind.classList.toggle('active', index === currentSlide);
+  });
+  
+  pauseAllVideos();
+}
+
+function pauseAllVideos() {
+  document.querySelectorAll('video').forEach(video => {
+    video.pause();
+  });
+  document.querySelectorAll('audio').forEach(audio => {
+    audio.pause();
+  });
+}
 </script>
 </body>
 </html>
