@@ -4,250 +4,132 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>استطلاع أسعار كبش العيد</title>
-<link rel="preconnect" href="https://fonts.googleapis.com">
 <link href="https://fonts.googleapis.com/css2?family=Tajawal:wght@300;400;500;700;800;900&display=swap" rel="stylesheet">
 <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
 <style>
-  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
-  :root {
-    --bg: #000; --surface: #111; --surface2: #1a1a1a;
-    --border: rgba(255,255,255,0.08); --text: #f5f5f7;
-    --muted: #86868b; --accent: #2997ff; --accent2: #30d158;
-    --accent3: #ff9f0a; --danger: #ff453a; --gold: #d4a843;
-    --radius: 18px; --radius-sm: 12px;
-  }
-  html { scroll-behavior: smooth; }
-  body {
-    font-family: 'Tajawal', sans-serif; background: var(--bg);
-    color: var(--text); min-height: 100vh; overflow-x: hidden; line-height: 1.6;
-  }
-  .hero {
-    position: relative; min-height: 100vh; display: flex;
-    flex-direction: column; align-items: center; justify-content: center;
-    text-align: center; padding: 60px 24px 80px; overflow: hidden;
-  }
-  .hero-glow {
-    position: absolute; top: -200px; left: 50%; transform: translateX(-50%);
-    width: 800px; height: 800px;
-    background: radial-gradient(ellipse, rgba(212,168,67,0.18) 0%, transparent 70%);
-    pointer-events: none; animation: breathe 6s ease-in-out infinite;
-  }
-  @keyframes breathe {
-    0%,100% { opacity: 0.6; transform: translateX(-50%) scale(1); }
-    50% { opacity: 1; transform: translateX(-50%) scale(1.08); }
-  }
-  .badge {
-    display: inline-flex; align-items: center; gap: 8px;
-    background: rgba(212,168,67,0.12); border: 1px solid rgba(212,168,67,0.3);
-    border-radius: 100px; padding: 6px 18px; font-size: 13px; color: var(--gold);
-    font-weight: 500; margin-bottom: 32px; backdrop-filter: blur(10px);
-    animation: fadeUp 0.8s ease both;
-  }
-  .badge::before { content: '🐑'; font-size: 16px; }
-  h1 {
-    font-size: clamp(36px, 7vw, 80px); font-weight: 800; line-height: 1.05;
-    letter-spacing: -0.03em; margin-bottom: 20px; animation: fadeUp 0.8s 0.1s ease both;
-    background: linear-gradient(135deg, #f5f5f7 0%, #a1a1a6 100%);
-    -webkit-background-clip: text; -webkit-text-fill-color: transparent; background-clip: text;
-  }
-  h1 span {
-    background: linear-gradient(135deg, #d4a843 0%, #f0c96c 50%, #d4a843 100%);
-    -webkit-background-clip: text; -webkit-text-fill-color: transparent; background-clip: text;
-  }
-  .subtitle {
-    font-size: clamp(16px, 2.5vw, 21px); color: var(--muted); max-width: 560px;
-    font-weight: 300; animation: fadeUp 0.8s 0.2s ease both; margin-bottom: 48px;
-  }
-  .start-btn {
-    display: inline-flex; align-items: center; gap: 10px; background: var(--accent);
-    color: #fff; border: none; border-radius: 100px; padding: 16px 36px;
-    font-size: 17px; font-family: 'Tajawal', sans-serif; font-weight: 600;
-    cursor: pointer; transition: all 0.25s ease; animation: fadeUp 0.8s 0.3s ease both;
-  }
-  .start-btn:hover { transform: scale(1.04); box-shadow: 0 8px 30px rgba(41,151,255,0.4); }
-  .start-btn:active { transform: scale(0.97); }
-  @keyframes fadeUp {
-    from { opacity: 0; transform: translateY(20px); }
-    to { opacity: 1; transform: translateY(0); }
-  }
-  .live-stats {
-    display: flex; gap: 20px; align-items: center; justify-content: center;
-    flex-wrap: wrap; margin-top: 20px; animation: fadeUp 0.8s 0.4s ease both;
-  }
-  .live-pill {
-    display: flex; align-items: center; gap: 6px;
-    background: rgba(255,255,255,0.05); border: 1px solid var(--border);
-    border-radius: 100px; padding: 6px 14px; font-size: 13px; color: var(--muted);
-  }
-  .live-dot {
-    width: 6px; height: 6px; border-radius: 50%; background: var(--accent2);
-    animation: pulse 2s ease infinite;
-  }
-  @keyframes pulse {
-    0%,100% { opacity: 1; transform: scale(1); }
-    50% { opacity: 0.5; transform: scale(0.8); }
-  }
-  #survey {
-    max-width: 680px; margin: 0 auto; padding: 0 20px 100px;
-    position: relative; z-index: 1;
-  }
-  .step {
-    background: var(--surface); border: 1px solid var(--border);
-    border-radius: var(--radius); padding: clamp(28px, 5vw, 48px);
-    margin-bottom: 24px; display: none;
-    animation: slideIn 0.5s cubic-bezier(0.34,1.56,0.64,1) both;
-  }
-  .step.active { display: block; }
-  @keyframes slideIn {
-    from { opacity: 0; transform: translateY(24px) scale(0.98); }
-    to { opacity: 1; transform: translateY(0) scale(1); }
-  }
-  .step-header { display: flex; align-items: center; gap: 14px; margin-bottom: 28px; }
-  .step-num {
-    width: 32px; height: 32px; border-radius: 50%;
-    background: linear-gradient(135deg, #d4a843, #f0c96c);
-    display: flex; align-items: center; justify-content: center;
-    font-size: 13px; font-weight: 700; color: #000; flex-shrink: 0;
-  }
-  .step-title { font-size: 22px; font-weight: 700; color: var(--text); }
-  .step-optional {
-    font-size: 12px; color: var(--muted); background: rgba(134,134,139,0.12);
-    border-radius: 6px; padding: 2px 8px; font-weight: 400; margin-right: 8px;
-  }
-  .choices { display: flex; flex-wrap: wrap; gap: 10px; }
-  .choice {
-    flex: 1; min-width: 120px; background: var(--surface2);
-    border: 1.5px solid var(--border); border-radius: var(--radius-sm);
-    padding: 16px 20px; text-align: center; cursor: pointer;
-    transition: all 0.22s ease; font-family: 'Tajawal', sans-serif;
-    font-size: 15px; font-weight: 500; color: var(--muted);
-  }
-  .choice:hover { border-color: rgba(255,255,255,0.2); color: var(--text); transform: translateY(-2px); }
-  .choice.selected { border-color: var(--gold); color: var(--text); background: rgba(212,168,67,0.1); }
-  .choice.cheap.selected { border-color: var(--accent2); background: rgba(48,209,88,0.08); }
-  .choice.normal.selected { border-color: var(--accent); background: rgba(41,151,255,0.08); }
-  .choice.expensive.selected { border-color: var(--danger); background: rgba(255,69,58,0.08); }
-  .choice-icon { font-size: 24px; display: block; margin-bottom: 6px; }
-  .field-row { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; }
-  @media (max-width: 480px) { .field-row { grid-template-columns: 1fr; } }
-  input[type="number"], select, textarea {
-    width: 100%; background: var(--surface2); border: 1.5px solid var(--border);
-    border-radius: var(--radius-sm); padding: 14px 18px;
-    font-family: 'Tajawal', sans-serif; font-size: 15px; color: var(--text);
-    outline: none; transition: border-color 0.2s ease; appearance: none;
-  }
-  input[type="number"]:focus, select:focus, textarea:focus { border-color: var(--gold); }
-  textarea { resize: none; height: 120px; line-height: 1.6; }
-  select option { background: #1a1a1a; }
-  .nav-row {
-    display: flex; gap: 12px; margin-top: 28px;
-    justify-content: space-between; align-items: center;
-  }
-  .btn {
-    border: none; border-radius: 100px; padding: 13px 28px;
-    font-family: 'Tajawal', sans-serif; font-size: 15px;
-    font-weight: 600; cursor: pointer; transition: all 0.22s ease;
-  }
-  .btn-primary { background: var(--accent); color: #fff; flex: 1; }
-  .btn-primary:hover { background: #1a8fe8; transform: translateY(-1px); box-shadow: 0 6px 20px rgba(41,151,255,0.35); }
-  .btn-gold { background: linear-gradient(135deg, #d4a843, #f0c96c); color: #000; flex: 1; }
-  .btn-gold:hover { transform: translateY(-1px); box-shadow: 0 6px 20px rgba(212,168,67,0.4); }
-  .btn-ghost { background: transparent; color: var(--muted); border: 1.5px solid var(--border); }
-  .btn-ghost:hover { border-color: rgba(255,255,255,0.2); color: var(--text); }
-  .btn:disabled { opacity: 0.4; cursor: not-allowed; transform: none !important; }
-  .progress-bar {
-    width: 100%; height: 3px; background: var(--border);
-    border-radius: 2px; margin-bottom: 32px; overflow: hidden;
-  }
-  .progress-fill {
-    height: 100%; background: linear-gradient(90deg, #d4a843, #f0c96c);
-    border-radius: 2px; transition: width 0.5s cubic-bezier(0.4,0,0.2,1);
-  }
-  #results {
-    display: none; padding: 0 20px 100px;
-    max-width: 760px; margin: 0 auto; animation: fadeUp 0.6s ease both;
-  }
-  .results-hero { text-align: center; padding: 60px 0 48px; }
-  .results-icon { font-size: 64px; display: block; margin-bottom: 20px; animation: bounceIn 0.6s cubic-bezier(0.34,1.56,0.64,1) both; }
-  @keyframes bounceIn { from { transform: scale(0.3); opacity: 0; } to { transform: scale(1); opacity: 1; } }
-  .results-title {
-    font-size: clamp(28px, 5vw, 42px); font-weight: 800;
-    background: linear-gradient(135deg, #d4a843, #f0c96c);
-    -webkit-background-clip: text; -webkit-text-fill-color: transparent;
-    background-clip: text; margin-bottom: 10px;
-  }
-  .results-sub { color: var(--muted); font-size: 16px; }
-  .stats-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 16px; margin-bottom: 24px; }
-  @media (max-width: 540px) { .stats-grid { grid-template-columns: 1fr; } }
-  .stat-card {
-    background: var(--surface); border: 1px solid var(--border);
-    border-radius: var(--radius); padding: 24px 20px; text-align: center; transition: transform 0.2s;
-  }
-  .stat-card:hover { transform: translateY(-3px); }
-  .stat-num { font-size: 36px; font-weight: 800; display: block; line-height: 1; margin-bottom: 8px; }
-  .stat-label { font-size: 13px; color: var(--muted); font-weight: 500; }
-  .stat-card.cheap .stat-num { color: var(--accent2); }
-  .stat-card.normal .stat-num { color: var(--accent); }
-  .stat-card.expensive .stat-num { color: var(--danger); }
-  .chart-card {
-    background: var(--surface); border: 1px solid var(--border);
-    border-radius: var(--radius); padding: 32px; margin-bottom: 24px;
-  }
-  .chart-title { font-size: 18px; font-weight: 700; margin-bottom: 24px; color: var(--text); }
-  .chart-wrap { position: relative; max-width: 480px; margin: 0 auto; }
-  .comment-card {
-    background: var(--surface2); border: 1px solid var(--border);
-    border-radius: var(--radius-sm); padding: 18px 20px; margin-bottom: 12px; transition: border-color 0.2s;
-  }
-  .comment-card:hover { border-color: rgba(255,255,255,0.14); }
-  .comment-header { display: flex; align-items: center; gap: 10px; margin-bottom: 10px; flex-wrap: wrap; }
-  .comment-badge { display: inline-flex; align-items: center; gap: 4px; border-radius: 100px; padding: 3px 10px; font-size: 12px; font-weight: 600; }
-  .comment-meta { font-size: 12px; color: var(--muted); }
-  .comment-text { color: var(--text); font-size: 14px; line-height: 1.7; margin-bottom: 14px; }
-  .comment-actions { display: flex; align-items: center; gap: 10px; }
-  .vote-btn {
-    display: inline-flex; align-items: center; gap: 6px;
-    background: rgba(255,255,255,0.04); border: 1px solid var(--border);
-    border-radius: 100px; padding: 5px 14px; font-family: 'Tajawal', sans-serif;
-    font-size: 13px; color: var(--muted); cursor: pointer; transition: all 0.2s ease;
-  }
-  .vote-btn:hover { border-color: rgba(255,255,255,0.2); color: var(--text); transform: scale(1.05); }
-  .vote-up-active { border-color: rgba(48,209,88,0.5) !important; background: rgba(48,209,88,0.1) !important; color: var(--accent2) !important; }
-  .vote-down-active { border-color: rgba(255,69,58,0.5) !important; background: rgba(255,69,58,0.1) !important; color: var(--danger) !important; }
-  .vote-count { font-weight: 600; }
-  .vote-score { font-size: 13px; font-weight: 700; margin-right: 4px; }
-  .toast {
-    position: fixed; bottom: 28px; left: 50%;
-    transform: translateX(-50%) translateY(100px);
-    background: rgba(30,30,30,0.95); backdrop-filter: blur(20px);
-    border: 1px solid var(--border); border-radius: 100px;
-    padding: 12px 24px; font-size: 14px; color: var(--text);
-    z-index: 9999; transition: transform 0.4s cubic-bezier(0.34,1.56,0.64,1);
-    white-space: nowrap;
-  }
-  .toast.show { transform: translateX(-50%) translateY(0); }
-  .toast.success { border-color: rgba(48,209,88,0.4); }
-  .toast.error { border-color: rgba(255,69,58,0.4); }
-  .spinner {
-    width: 20px; height: 20px; border: 2px solid rgba(255,255,255,0.2);
-    border-top-color: var(--accent); border-radius: 50%;
-    animation: spin 0.7s linear infinite; display: inline-block;
-  }
-  @keyframes spin { to { transform: rotate(360deg); } }
-  .loading-overlay {
-    position: fixed; inset: 0; background: rgba(0,0,0,0.7);
-    backdrop-filter: blur(10px); z-index: 999;
-    display: flex; align-items: center; justify-content: center;
-    flex-direction: column; gap: 16px; color: var(--muted); font-size: 16px;
-  }
-  .loading-overlay.hidden { display: none; }
-  .site-footer { text-align: center; padding: 40px 20px; color: var(--muted); font-size: 13px; border-top: 1px solid var(--border); }
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+:root{
+  --bg:#000;--surface:#111;--surface2:#1a1a1a;
+  --border:rgba(255,255,255,0.08);--text:#f5f5f7;
+  --muted:#86868b;--accent:#2997ff;--accent2:#30d158;
+  --danger:#ff453a;--gold:#d4a843;
+  --radius:18px;--radius-sm:12px;
+}
+html{scroll-behavior:smooth}
+body{font-family:'Tajawal',sans-serif;background:var(--bg);color:var(--text);min-height:100vh;overflow-x:hidden;line-height:1.6}
+.hero{position:relative;min-height:100vh;display:flex;flex-direction:column;align-items:center;justify-content:center;text-align:center;padding:60px 24px 80px}
+.hero-glow{position:absolute;top:-200px;left:50%;transform:translateX(-50%);width:800px;height:800px;background:radial-gradient(ellipse,rgba(212,168,67,0.18) 0%,transparent 70%);pointer-events:none;animation:breathe 6s ease-in-out infinite}
+@keyframes breathe{0%,100%{opacity:.6;transform:translateX(-50%) scale(1)}50%{opacity:1;transform:translateX(-50%) scale(1.08)}}
+.badge{display:inline-flex;align-items:center;gap:8px;background:rgba(212,168,67,.12);border:1px solid rgba(212,168,67,.3);border-radius:100px;padding:6px 18px;font-size:13px;color:var(--gold);font-weight:500;margin-bottom:32px}
+.badge::before{content:'🐑';font-size:16px}
+h1{font-size:clamp(36px,7vw,80px);font-weight:800;line-height:1.05;letter-spacing:-.03em;margin-bottom:20px;background:linear-gradient(135deg,#f5f5f7 0%,#a1a1a6 100%);-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text}
+h1 span{background:linear-gradient(135deg,#d4a843 0%,#f0c96c 50%,#d4a843 100%);-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text}
+.subtitle{font-size:clamp(16px,2.5vw,21px);color:var(--muted);max-width:560px;font-weight:300;margin-bottom:48px}
+@keyframes fadeUp{from{opacity:0;transform:translateY(20px)}to{opacity:1;transform:translateY(0)}}
+@keyframes slideIn{from{opacity:0;transform:translateY(24px) scale(.98)}to{opacity:1;transform:translateY(0) scale(1)}}
+@keyframes bounceIn{from{transform:scale(.3);opacity:0}to{transform:scale(1);opacity:1}}
+@keyframes spin{to{transform:rotate(360deg)}}
+@keyframes pulse{0%,100%{opacity:1;transform:scale(1)}50%{opacity:.5;transform:scale(.8)}}
+.start-btn{display:inline-flex;align-items:center;gap:10px;background:var(--accent);color:#fff;border:none;border-radius:100px;padding:16px 36px;font-size:17px;font-family:'Tajawal',sans-serif;font-weight:600;cursor:pointer;transition:all .25s ease;margin-top:32px}
+.start-btn:hover{transform:scale(1.04);box-shadow:0 8px 30px rgba(41,151,255,.4)}
+.live-stats{display:flex;gap:20px;align-items:center;justify-content:center;flex-wrap:wrap;margin-top:20px}
+.live-pill{display:flex;align-items:center;gap:6px;background:rgba(255,255,255,.05);border:1px solid var(--border);border-radius:100px;padding:6px 14px;font-size:13px;color:var(--muted)}
+.live-dot{width:6px;height:6px;border-radius:50%;background:var(--accent2);animation:pulse 2s ease infinite}
+#survey{max-width:680px;margin:0 auto;padding:0 20px 100px;position:relative;z-index:1}
+.step{background:var(--surface);border:1px solid var(--border);border-radius:var(--radius);padding:clamp(28px,5vw,48px);margin-bottom:24px;display:none;animation:slideIn .5s cubic-bezier(.34,1.56,.64,1) both}
+.step.active{display:block}
+.step-header{display:flex;align-items:center;gap:14px;margin-bottom:28px}
+.step-num{width:32px;height:32px;border-radius:50%;background:linear-gradient(135deg,#d4a843,#f0c96c);display:flex;align-items:center;justify-content:center;font-size:13px;font-weight:700;color:#000;flex-shrink:0}
+.step-title{font-size:22px;font-weight:700;color:var(--text)}
+.step-optional{font-size:12px;color:var(--muted);background:rgba(134,134,139,.12);border-radius:6px;padding:2px 8px;font-weight:400;margin-right:8px}
+.choices{display:flex;flex-wrap:wrap;gap:10px}
+.choice{flex:1;min-width:120px;background:var(--surface2);border:1.5px solid var(--border);border-radius:var(--radius-sm);padding:16px 20px;text-align:center;cursor:pointer;transition:all .22s ease;font-family:'Tajawal',sans-serif;font-size:15px;font-weight:500;color:var(--muted)}
+.choice:hover{border-color:rgba(255,255,255,.2);color:var(--text);transform:translateY(-2px)}
+.choice.selected{border-color:var(--gold);color:var(--text);background:rgba(212,168,67,.1)}
+.choice.cheap.selected{border-color:var(--accent2);background:rgba(48,209,88,.08)}
+.choice.normal.selected{border-color:var(--accent);background:rgba(41,151,255,.08)}
+.choice.expensive.selected{border-color:var(--danger);background:rgba(255,69,58,.08)}
+.choice-icon{font-size:24px;display:block;margin-bottom:6px}
+textarea{width:100%;background:var(--surface2);border:1.5px solid var(--border);border-radius:var(--radius-sm);padding:14px 18px;font-family:'Tajawal',sans-serif;font-size:15px;color:var(--text);outline:none;transition:border-color .2s ease;resize:none;height:120px;line-height:1.6}
+textarea:focus{border-color:var(--gold)}
+.nav-row{display:flex;gap:12px;margin-top:28px;justify-content:space-between;align-items:center}
+.btn{border:none;border-radius:100px;padding:13px 28px;font-family:'Tajawal',sans-serif;font-size:15px;font-weight:600;cursor:pointer;transition:all .22s ease}
+.btn-primary{background:var(--accent);color:#fff;flex:1}
+.btn-primary:hover{background:#1a8fe8;transform:translateY(-1px)}
+.btn-gold{background:linear-gradient(135deg,#d4a843,#f0c96c);color:#000;flex:1}
+.btn-gold:hover{transform:translateY(-1px);box-shadow:0 6px 20px rgba(212,168,67,.4)}
+.btn-ghost{background:transparent;color:var(--muted);border:1.5px solid var(--border)}
+.btn-ghost:hover{border-color:rgba(255,255,255,.2);color:var(--text)}
+.progress-bar{width:100%;height:3px;background:var(--border);border-radius:2px;margin-bottom:32px;overflow:hidden}
+.progress-fill{height:100%;background:linear-gradient(90deg,#d4a843,#f0c96c);border-radius:2px;transition:width .5s cubic-bezier(.4,0,.2,1)}
+.results-hero{text-align:center;padding:60px 0 48px}
+.results-icon{font-size:64px;display:block;margin-bottom:20px;animation:bounceIn .6s cubic-bezier(.34,1.56,.64,1) both}
+.results-title{font-size:clamp(28px,5vw,42px);font-weight:800;background:linear-gradient(135deg,#d4a843,#f0c96c);-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text;margin-bottom:10px}
+.results-sub{color:var(--muted);font-size:16px}
+.stats-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:16px;margin-bottom:24px}
+@media(max-width:540px){.stats-grid{grid-template-columns:1fr}}
+.stat-card{background:var(--surface);border:1px solid var(--border);border-radius:var(--radius);padding:24px 20px;text-align:center;transition:transform .2s}
+.stat-card:hover{transform:translateY(-3px)}
+.stat-num{font-size:36px;font-weight:800;display:block;line-height:1;margin-bottom:8px}
+.stat-label{font-size:13px;color:var(--muted);font-weight:500}
+.stat-card.cheap .stat-num{color:var(--accent2)}
+.stat-card.normal .stat-num{color:var(--accent)}
+.stat-card.expensive .stat-num{color:var(--danger)}
+.chart-card{background:var(--surface);border:1px solid var(--border);border-radius:var(--radius);padding:32px;margin-bottom:24px}
+.chart-title{font-size:18px;font-weight:700;margin-bottom:24px;color:var(--text)}
+.chart-wrap{position:relative;max-width:480px;margin:0 auto}
+.comment-card{background:var(--surface2);border:1px solid var(--border);border-radius:var(--radius-sm);padding:18px 20px;margin-bottom:12px;transition:border-color .2s}
+.comment-card:hover{border-color:rgba(255,255,255,.14)}
+.comment-header{display:flex;align-items:center;gap:10px;margin-bottom:10px;flex-wrap:wrap}
+.comment-badge{display:inline-flex;align-items:center;gap:4px;border-radius:100px;padding:3px 10px;font-size:12px;font-weight:600}
+.comment-meta{font-size:12px;color:var(--muted)}
+.comment-text{color:var(--text);font-size:14px;line-height:1.7;margin-bottom:14px}
+.comment-actions{display:flex;align-items:center;gap:10px}
+.vote-btn{display:inline-flex;align-items:center;gap:6px;background:rgba(255,255,255,.04);border:1px solid var(--border);border-radius:100px;padding:5px 14px;font-family:'Tajawal',sans-serif;font-size:13px;color:var(--muted);cursor:pointer;transition:all .2s ease}
+.vote-btn:hover{border-color:rgba(255,255,255,.2);color:var(--text)}
+.vote-up-active{border-color:rgba(48,209,88,.5)!important;background:rgba(48,209,88,.1)!important;color:var(--accent2)!important}
+.vote-down-active{border-color:rgba(255,69,58,.5)!important;background:rgba(255,69,58,.1)!important;color:var(--danger)!important}
+.vote-count{font-weight:600}
+.vote-score{font-size:13px;font-weight:700;margin-right:4px}
+.toast{position:fixed;bottom:28px;left:50%;transform:translateX(-50%) translateY(100px);background:rgba(30,30,30,.95);backdrop-filter:blur(20px);border:1px solid var(--border);border-radius:100px;padding:12px 24px;font-size:14px;color:var(--text);z-index:9999;transition:transform .4s cubic-bezier(.34,1.56,.64,1);white-space:nowrap}
+.toast.show{transform:translateX(-50%) translateY(0)}
+.toast.success{border-color:rgba(48,209,88,.4)}
+.toast.error{border-color:rgba(255,69,58,.4)}
+.spinner{width:20px;height:20px;border:2px solid rgba(255,255,255,.2);border-top-color:var(--accent);border-radius:50%;animation:spin .7s linear infinite;display:inline-block}
+.overlay{position:fixed;inset:0;background:rgba(0,0,0,.75);backdrop-filter:blur(12px);z-index:999;display:flex;align-items:center;justify-content:center;flex-direction:column;gap:16px;color:var(--muted);font-size:16px}
+.overlay.hidden{display:none}
+.setup-screen{max-width:540px;margin:0 auto;padding:60px 20px}
+.setup-card{background:var(--surface);border:1px solid var(--border);border-radius:var(--radius);padding:40px}
+.setup-card h2{font-size:24px;font-weight:700;margin-bottom:8px;color:var(--text)}
+.setup-card p{color:var(--muted);font-size:14px;margin-bottom:24px;line-height:1.7}
+.setup-input{width:100%;background:var(--surface2);border:1.5px solid var(--border);border-radius:var(--radius-sm);padding:14px 18px;font-family:'Tajawal',sans-serif;font-size:15px;color:var(--text);outline:none;transition:border-color .2s;margin-bottom:12px}
+.setup-input:focus{border-color:var(--gold)}
+.setup-step{display:flex;align-items:flex-start;gap:12px;margin-bottom:14px;font-size:13px;color:var(--muted);line-height:1.6}
+.setup-step-num{min-width:22px;height:22px;border-radius:50%;background:var(--gold);color:#000;font-size:11px;font-weight:700;display:flex;align-items:center;justify-content:center;margin-top:1px}
+.setup-step a{color:var(--accent);text-decoration:none}
+.setup-step a:hover{text-decoration:underline}
+.site-footer{text-align:center;padding:40px 20px;color:var(--muted);font-size:13px;border-top:1px solid var(--border)}
+.hint-box{background:rgba(212,168,67,.08);border:1px solid rgba(212,168,67,.2);border-radius:var(--radius-sm);padding:14px 18px;font-size:13px;color:var(--gold);margin-bottom:20px;line-height:1.7}
 </style>
 </head>
 <body>
 
-<!-- HERO -->
-<section class="hero">
+<div id="setupScreen" class="setup-screen" style="display:none">
+  <div class="setup-card">
+    <h2>🔧 إعداد قاعدة البيانات</h2>
+    <p>بما أنك أضفت API Key، فقط اضغط على الزر أدناه لتهيئة قاعدة البيانات وبدء الاستطلاع.</p>
+
+    <div class="hint-box">💡 المفتاح يُحفظ في متصفحك فقط. شارك ملف HTML مع الآخرين وهم يدخلون نفس المفتاح لترى أصواتهم.</div>
+
+    <input class="setup-input" id="apiKeyInput" type="password" placeholder="$2a$10$xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx" dir="ltr" autocomplete="off">
+    <input class="setup-input" id="binIdInput" placeholder="Bin ID موجود (اتركه فارغاً لإنشاء جديد)" dir="ltr" autocomplete="off" style="margin-top:8px">
+    <button class="btn btn-gold" style="width:100%;margin-top:8px" onclick="setupBin()">تهيئة قاعدة البيانات ✓</button>
+
+    <p style="margin-top:16px;font-size:12px;color:var(--muted)">إذا أردت مشاركة الاستطلاع مع أشخاص آخرين: بعد الإعداد ستظهر معك Bin ID — شاركه معهم مع API Key ليستطيعوا التصويت على نفس قاعدة البيانات.</p>
+  </div>
+</div>
+
+<section class="hero" id="heroSection" style="display:none">
   <div class="hero-glow"></div>
   <div class="badge">عيد الأضحى المبارك ١٤٤٦</div>
   <h1>أسعار <span>كبش العيد</span><br>كيف تراها؟</h1>
@@ -256,492 +138,496 @@
     <div class="live-pill"><div class="live-dot"></div><span id="heroTotal">—</span> مشارك حتى الآن</div>
     <div class="live-pill">🔴 غالية: <strong id="heroPct" style="color:var(--danger);margin-right:4px">—</strong></div>
   </div>
-  <button class="start-btn" onclick="startSurvey()" style="margin-top:32px">شارك رأيك الآن ←</button>
+  <button class="start-btn" onclick="startSurvey()">شارك رأيك الآن ←</button>
 </section>
 
-<!-- SURVEY -->
-<section id="survey">
-  <div class="progress-bar"><div class="progress-fill" id="progressFill" style="width:0%"></div></div>
+<section id="survey" style="display:none">
+  <div id="surveyInner">
+    <div class="progress-bar"><div class="progress-fill" id="progressFill" style="width:0%"></div></div>
 
-  <!-- STEP 1: Age -->
-  <div class="step active" id="step1">
-    <div class="step-header"><div class="step-num">١</div><div class="step-title">عمرك <span class="step-optional">اختياري</span></div></div>
-    <div class="choices" id="ageChoices">
-      <div class="choice" onclick="selectChoice('age','18-25','ageChoices',this)"><span class="choice-icon">🧑</span>18–25</div>
-      <div class="choice" onclick="selectChoice('age','26-35','ageChoices',this)"><span class="choice-icon">👨</span>26–35</div>
-      <div class="choice" onclick="selectChoice('age','36-50','ageChoices',this)"><span class="choice-icon">👨‍💼</span>36–50</div>
-      <div class="choice" onclick="selectChoice('age','50+','ageChoices',this)"><span class="choice-icon">👴</span>+50</div>
+    <div class="step active" id="step1">
+      <div class="step-header"><div class="step-num">١</div><div class="step-title">عمرك <span class="step-optional">اختياري</span></div></div>
+      <div class="choices" id="ageChoices">
+        <div class="choice" onclick="selectChoice('age','18-25','ageChoices',this)"><span class="choice-icon">🧑</span>18–25</div>
+        <div class="choice" onclick="selectChoice('age','26-35','ageChoices',this)"><span class="choice-icon">👨</span>26–35</div>
+        <div class="choice" onclick="selectChoice('age','36-50','ageChoices',this)"><span class="choice-icon">👨‍💼</span>36–50</div>
+        <div class="choice" onclick="selectChoice('age','50+','ageChoices',this)"><span class="choice-icon">👴</span>+50</div>
+      </div>
+      <div class="nav-row">
+        <button class="btn btn-ghost" onclick="skipStep()">تخطي</button>
+        <button class="btn btn-primary" onclick="nextStep()">التالي →</button>
+      </div>
     </div>
-    <div class="nav-row">
-      <button class="btn btn-ghost" onclick="skipStep()">تخطي</button>
-      <button class="btn btn-primary" onclick="nextStep()">التالي →</button>
-    </div>
-  </div>
 
-  <!-- STEP 2: Sex -->
-  <div class="step" id="step2">
-    <div class="step-header"><div class="step-num">٢</div><div class="step-title">جنسك <span class="step-optional">اختياري</span></div></div>
-    <div class="choices" id="sexChoices">
-      <div class="choice" onclick="selectChoice('sex','ذكر','sexChoices',this)"><span class="choice-icon">👨</span>ذكر</div>
-      <div class="choice" onclick="selectChoice('sex','أنثى','sexChoices',this)"><span class="choice-icon">👩</span>أنثى</div>
-      <div class="choice" onclick="selectChoice('sex','أفضل عدم الإفصاح','sexChoices',this)"><span class="choice-icon">🤐</span>أفضل عدم الإفصاح</div>
+    <div class="step" id="step2">
+      <div class="step-header"><div class="step-num">٢</div><div class="step-title">جنسك <span class="step-optional">اختياري</span></div></div>
+      <div class="choices" id="sexChoices">
+        <div class="choice" onclick="selectChoice('sex','ذكر','sexChoices',this)"><span class="choice-icon">👨</span>ذكر</div>
+        <div class="choice" onclick="selectChoice('sex','أنثى','sexChoices',this)"><span class="choice-icon">👩</span>أنثى</div>
+        <div class="choice" onclick="selectChoice('sex','أفضل عدم الإفصاح','sexChoices',this)"><span class="choice-icon">🤐</span>أفضل عدم الإفصاح</div>
+      </div>
+      <div class="nav-row">
+        <button class="btn btn-ghost" onclick="prevStep()">← رجوع</button>
+        <button class="btn btn-ghost" onclick="skipStep()">تخطي</button>
+        <button class="btn btn-primary" onclick="nextStep()">التالي →</button>
+      </div>
     </div>
-    <div class="nav-row">
-      <button class="btn btn-ghost" onclick="prevStep()">← رجوع</button>
-      <button class="btn btn-ghost" onclick="skipStep()">تخطي</button>
-      <button class="btn btn-primary" onclick="nextStep()">التالي →</button>
-    </div>
-  </div>
 
-  <!-- STEP 3: Job -->
-  <div class="step" id="step3">
-    <div class="step-header"><div class="step-num">٣</div><div class="step-title">وضعك المهني <span class="step-optional">اختياري</span></div></div>
-    <div class="choices" id="jobChoices" style="flex-direction:column">
-      <div class="choice" style="text-align:right;min-width:100%" onclick="selectChoice('job','موظف / عامل','jobChoices',this)">💼 موظف / عامل</div>
-      <div class="choice" style="text-align:right;min-width:100%" onclick="selectChoice('job','صاحب عمل / تاجر','jobChoices',this)">🏪 صاحب عمل / تاجر</div>
-      <div class="choice" style="text-align:right;min-width:100%" onclick="selectChoice('job','طالب','jobChoices',this)">🎓 طالب</div>
-      <div class="choice" style="text-align:right;min-width:100%" onclick="selectChoice('job','بدون عمل','jobChoices',this)">🔍 بدون عمل</div>
-      <div class="choice" style="text-align:right;min-width:100%" onclick="selectChoice('job','متقاعد','jobChoices',this)">🏡 متقاعد</div>
+    <div class="step" id="step3">
+      <div class="step-header"><div class="step-num">٣</div><div class="step-title">وضعك المهني <span class="step-optional">اختياري</span></div></div>
+      <div class="choices" id="jobChoices" style="flex-direction:column">
+        <div class="choice" style="text-align:right;min-width:100%" onclick="selectChoice('job','موظف / عامل','jobChoices',this)">💼 موظف / عامل</div>
+        <div class="choice" style="text-align:right;min-width:100%" onclick="selectChoice('job','صاحب عمل / تاجر','jobChoices',this)">🏪 صاحب عمل / تاجر</div>
+        <div class="choice" style="text-align:right;min-width:100%" onclick="selectChoice('job','طالب','jobChoices',this)">🎓 طالب</div>
+        <div class="choice" style="text-align:right;min-width:100%" onclick="selectChoice('job','بدون عمل','jobChoices',this)">🔍 بدون عمل</div>
+        <div class="choice" style="text-align:right;min-width:100%" onclick="selectChoice('job','متقاعد','jobChoices',this)">🏡 متقاعد</div>
+      </div>
+      <div class="nav-row">
+        <button class="btn btn-ghost" onclick="prevStep()">← رجوع</button>
+        <button class="btn btn-ghost" onclick="skipStep()">تخطي</button>
+        <button class="btn btn-primary" onclick="nextStep()">التالي →</button>
+      </div>
     </div>
-    <div class="nav-row">
-      <button class="btn btn-ghost" onclick="prevStep()">← رجوع</button>
-      <button class="btn btn-ghost" onclick="skipStep()">تخطي</button>
-      <button class="btn btn-primary" onclick="nextStep()">التالي →</button>
-    </div>
-  </div>
 
-  <!-- STEP 4: Price (REQUIRED) -->
-  <div class="step" id="step4">
-    <div class="step-header"><div class="step-num">٤</div><div class="step-title">كيف تجد أسعار كبش العيد هذا العام؟</div></div>
-    <div class="choices" id="priceChoices">
-      <div class="choice cheap" onclick="selectChoice('price','رخيصة','priceChoices',this)"><span class="choice-icon">💚</span>رخيصة</div>
-      <div class="choice normal" onclick="selectChoice('price','عادية','priceChoices',this)"><span class="choice-icon">💙</span>عادية</div>
-      <div class="choice expensive" onclick="selectChoice('price','غالية','priceChoices',this)"><span class="choice-icon">🔴</span>غالية جداً</div>
+    <div class="step" id="step4">
+      <div class="step-header"><div class="step-num">٤</div><div class="step-title">كيف تجد أسعار كبش العيد هذا العام؟</div></div>
+      <div class="choices" id="priceChoices">
+        <div class="choice cheap" onclick="selectChoice('price','رخيصة','priceChoices',this)"><span class="choice-icon">💚</span>رخيصة</div>
+        <div class="choice normal" onclick="selectChoice('price','عادية','priceChoices',this)"><span class="choice-icon">💙</span>عادية</div>
+        <div class="choice expensive" onclick="selectChoice('price','غالية','priceChoices',this)"><span class="choice-icon">🔴</span>غالية جداً</div>
+      </div>
+      <p id="priceError" style="color:var(--danger);font-size:13px;margin-top:12px;display:none">⚠️ هذا السؤال إلزامي، رجاءً اختر إجابة</p>
+      <div class="nav-row">
+        <button class="btn btn-ghost" onclick="prevStep()">← رجوع</button>
+        <button class="btn btn-primary" onclick="nextStep()">التالي →</button>
+      </div>
     </div>
-    <p id="priceError" style="color:var(--danger);font-size:13px;margin-top:12px;display:none">⚠️ هذا السؤال إلزامي، رجاءً اختر إجابة</p>
-    <div class="nav-row">
-      <button class="btn btn-ghost" onclick="prevStep()">← رجوع</button>
-      <button class="btn btn-primary" onclick="nextStep()">التالي →</button>
-    </div>
-  </div>
 
-  <!-- STEP 5: Justification -->
-  <div class="step" id="step5">
-    <div class="step-header"><div class="step-num">٥</div><div class="step-title">لماذا تعتقد ذلك؟ <span class="step-optional">اختياري</span></div></div>
-    <p style="color:var(--muted);font-size:14px;margin-bottom:20px">شاركنا رأيك بحرية</p>
-    <textarea id="justification" placeholder="مثلاً: غلاء تكاليف التربية، ضعف القدرة الشرائية..." dir="rtl"></textarea>
-    <div class="nav-row">
-      <button class="btn btn-ghost" onclick="prevStep()">← رجوع</button>
-      <button class="btn btn-ghost" onclick="submitSurvey(true)">تخطي وإرسال</button>
-      <button class="btn btn-gold" onclick="submitSurvey(false)">إرسال ✓</button>
+    <div class="step" id="step5">
+      <div class="step-header"><div class="step-num">٥</div><div class="step-title">لماذا تعتقد ذلك؟ <span class="step-optional">اختياري</span></div></div>
+      <p style="color:var(--muted);font-size:14px;margin-bottom:20px">شاركنا رأيك بحرية</p>
+      <textarea id="justification" placeholder="مثلاً: غلاء تكاليف التربية، ضعف القدرة الشرائية..." dir="rtl"></textarea>
+      <div class="nav-row">
+        <button class="btn btn-ghost" onclick="prevStep()">← رجوع</button>
+        <button class="btn btn-ghost" onclick="submitSurvey(true)">تخطي وإرسال</button>
+        <button class="btn btn-gold" onclick="submitSurvey(false)">إرسال ✓</button>
+      </div>
     </div>
   </div>
 </section>
 
-<!-- RESULTS -->
-<section id="results">
-  <div class="results-hero">
-    <span class="results-icon">🐑</span>
-    <div class="results-title">شكراً لمشاركتك!</div>
-    <p class="results-sub">إليك نتائج الاستطلاع في الوقت الحقيقي</p>
-  </div>
-  <div class="stats-grid">
-    <div class="stat-card cheap"><span class="stat-num" id="countCheap">0</span><span class="stat-label">💚 رخيصة</span></div>
-    <div class="stat-card normal"><span class="stat-num" id="countNormal">0</span><span class="stat-label">💙 عادية</span></div>
-    <div class="stat-card expensive"><span class="stat-num" id="countExpensive">0</span><span class="stat-label">🔴 غالية</span></div>
-  </div>
-  <div class="chart-card">
-    <div class="chart-title">📊 توزيع الآراء</div>
-    <div class="chart-wrap"><canvas id="resultsChart"></canvas></div>
-  </div>
-  <div class="chart-card" id="commentsSection">
-    <div class="chart-title">💬 تعليقات المشاركين</div>
-    <div id="commentsList"><p style="color:var(--muted);font-size:14px;text-align:center;padding:20px 0">لا توجد تعليقات بعد. كن أول من يعلق!</p></div>
-  </div>
-  <div style="text-align:center;padding:20px 0">
-    <button class="btn btn-ghost" onclick="shareSurvey()">📤 شارك الاستطلاع مع أصدقائك</button>
+<section id="results" style="display:none">
+  <div style="max-width:760px;margin:0 auto;padding:0 20px 100px">
+    <div class="results-hero">
+      <span class="results-icon">🐑</span>
+      <div class="results-title">شكراً لمشاركتك!</div>
+      <p class="results-sub">إليك نتائج الاستطلاع في الوقت الحقيقي</p>
+    </div>
+    <div class="stats-grid">
+      <div class="stat-card cheap"><span class="stat-num" id="countCheap">0</span><span class="stat-label">💚 رخيصة</span></div>
+      <div class="stat-card normal"><span class="stat-num" id="countNormal">0</span><span class="stat-label">💙 عادية</span></div>
+      <div class="stat-card expensive"><span class="stat-num" id="countExpensive">0</span><span class="stat-label">🔴 غالية</span></div>
+    </div>
+    <div class="chart-card">
+      <div class="chart-title">📊 توزيع الآراء</div>
+      <div class="chart-wrap"><canvas id="resultsChart"></canvas></div>
+    </div>
+    <div class="chart-card">
+      <div class="chart-title">💬 تعليقات المشاركين</div>
+      <div id="commentsList"><p style="color:var(--muted);font-size:14px;text-align:center;padding:20px 0">لا توجد تعليقات بعد.</p></div>
+    </div>
+
+    <div class="chart-card" id="shareConfigBox">
+      <div class="chart-title">🔗 شارك الاستطلاع</div>
+      <p style="color:var(--muted);font-size:13px;margin-bottom:14px">لكي يصوت الآخرون على نفس قاعدة البيانات، انسخ هذا الـ Bin ID وضعه في الكود في المتغير `HARDCODED_BIN_ID`</p>
+      <div style="background:var(--surface2);border:1px solid var(--border);border-radius:var(--radius-sm);padding:12px 16px;font-family:monospace;font-size:13px;color:var(--accent);word-break:break-all" id="binIdDisplay">—</div>
+      <button class="btn btn-ghost" style="margin-top:12px;width:100%" onclick="copyBinId()">📋 نسخ Bin ID</button>
+    </div>
+
+    <div style="display:flex;gap:12px;flex-wrap:wrap;justify-content:center;padding:20px 0">
+      <button class="btn btn-ghost" onclick="shareSurvey()">📤 شارك الرابط</button>
+      <button class="btn btn-ghost" onclick="resetSetup()">⚙️ إعادة الإعداد</button>
+    </div>
   </div>
 </section>
 
 <footer class="site-footer"><p>استطلاع مغربي مستقل · عيد الأضحى ١٤٤٦</p></footer>
 <div class="toast" id="toast"></div>
-<div class="loading-overlay hidden" id="loadingOverlay">
-  <div class="spinner" style="width:40px;height:40px;border-width:3px"></div>
-  <span>جارٍ إرسال رأيك...</span>
+<div class="overlay hidden" id="loadingOverlay">
+  <div class="spinner" style="width:44px;height:44px;border-width:3px"></div>
+  <span id="loadingMsg">جارٍ التحميل...</span>
 </div>
 
 <script>
-// ─── CONFIG ────────────────────────────────────────────────────────────────
-const STORAGE_KEY = 'eid-survey-v3-data';
-const VOTES_KEY   = 'eid-survey-v3-votes';
+// ════════════════════════════════════════════════════════════════
+//  GLOBAL SETTINGS
+// ════════════════════════════════════════════════════════════════
+const HARDCODED_API_KEY = '$2a$10$S0R4jQwx0v4JLA0rTcNnHuKf6/E4q2dUfq1qwRKCfiioQDFJ.HmmC';
 
-// ─── STATE ─────────────────────────────────────────────────────────────────
-let currentStep = 1;
-const totalSteps = 5;
-const answers = { age: null, sex: null, job: null, price: null };
+// NOTE: After you run this once and get a Bin ID from the results page, paste it inside these quotes to make the poll public!
+const HARDCODED_BIN_ID = '';
 
-// ─── STORAGE HELPERS ───────────────────────────────────────────────────────
-// Detects window.storage API (artifact persistent storage) at call-time, not load-time.
-// Falls back to localStorage for standalone HTML usage.
+// ════════════════════════════════════════════════════════════════
+//  STORAGE (localStorage — per browser)
+// ════════════════════════════════════════════════════════════════
+const LS_CFG   = 'eid_cfg_v1';
+const LS_VOTES = 'eid_votes_v1';
+const JSONBIN  = 'https://api.jsonbin.io/v3';
 
-function hasWindowStorage() {
-  return typeof window !== 'undefined' &&
-         window.storage &&
-         typeof window.storage.get === 'function';
+function getCfg()    { try { return JSON.parse(localStorage.getItem(LS_CFG)||'null') } catch(e){ return null } }
+function saveCfg(c)  { localStorage.setItem(LS_CFG, JSON.stringify(c)) }
+function getVotes()  { try { return JSON.parse(localStorage.getItem(LS_VOTES)||'{}') } catch(e){ return {} } }
+function saveVotes(v){ localStorage.setItem(LS_VOTES, JSON.stringify(v)) }
+
+// ════════════════════════════════════════════════════════════════
+//  JSONBIN HELPERS
+// ════════════════════════════════════════════════════════════════
+async function jbFetch(method, path, body) {
+  const cfg = getCfg();
+  if (!cfg) throw new Error('لا يوجد إعداد');
+  const opts = {
+    method,
+    headers: {
+      'Content-Type':    'application/json',
+      'X-Master-Key':    cfg.apiKey,
+      'X-Bin-Versioning':'false'
+    }
+  };
+  if (body !== undefined) opts.body = JSON.stringify(body);
+  const res = await fetch(JSONBIN + path, opts);
+  if (!res.ok) {
+    const txt = await res.text();
+    throw new Error('JSONBin ' + res.status + ': ' + txt.slice(0,120));
+  }
+  return res.json();
 }
 
-async function dbGet(key, shared) {
-  try {
-    if (hasWindowStorage()) {
-      const res = await window.storage.get(key, shared);
-      if (res && res.value != null) return JSON.parse(res.value);
-    } else {
-      const raw = localStorage.getItem(key);
-      if (raw != null) return JSON.parse(raw);
-    }
-  } catch(e) { console.warn('dbGet error', e); }
-  return null;
+async function createBin(apiKey) {
+  const res = await fetch(JSONBIN + '/b', {
+    method: 'POST',
+    headers: {
+      'Content-Type': 'application/json',
+      'X-Master-Key': apiKey,
+      'X-Bin-Name':   'eid-survey',
+      'X-Bin-Versioning': 'false'
+    },
+    body: JSON.stringify({ cheap:0, normal:0, expensive:0, comments:[] })
+  });
+  if (!res.ok) {
+    const t = await res.text();
+    throw new Error('إنشاء Bin فشل ' + res.status + ': ' + t.slice(0,120));
+  }
+  const data = await res.json();
+  return data.metadata.id;
 }
 
-async function dbSet(key, value, shared) {
-  const str = JSON.stringify(value);
-  try {
-    if (hasWindowStorage()) {
-      await window.storage.set(key, str, shared);
-    } else {
-      localStorage.setItem(key, str);
-    }
-    return true;
-  } catch(e) {
-    console.warn('dbSet error', e);
-    return false;
+async function readBin() {
+  const cfg = getCfg();
+  const data = await jbFetch('GET', '/b/' + cfg.binId + '/latest');
+  return data.record;
+}
+
+async function writeBin(record) {
+  const cfg = getCfg();
+  await jbFetch('PUT', '/b/' + cfg.binId, record);
+}
+
+// ════════════════════════════════════════════════════════════════
+//  SETUP & INIT
+// ════════════════════════════════════════════════════════════════
+function init() {
+  // If user provided both Hardcoded vars, auto-configure!
+  if (HARDCODED_API_KEY && HARDCODED_BIN_ID) {
+    saveCfg({ apiKey: HARDCODED_API_KEY, binId: HARDCODED_BIN_ID });
+  }
+
+  const cfg = getCfg();
+  if (!cfg || !cfg.apiKey || !cfg.binId) {
+    // Fill the API input with the hardcoded API key
+    document.getElementById('apiKeyInput').value = HARDCODED_API_KEY;
+    document.getElementById('setupScreen').style.display = 'block';
+  } else {
+    launchApp();
   }
 }
 
-// ─── RESULTS DATA ──────────────────────────────────────────────────────────
-async function loadResults() {
-  // shared=true → same data for ALL users worldwide
-  const data = await dbGet(STORAGE_KEY, true);
-  if (data && typeof data.cheap === 'number') return data;
-  return { cheap: 0, normal: 0, expensive: 0, comments: [] };
+async function setupBin() {
+  const apiKey = document.getElementById('apiKeyInput').value.trim();
+  const existingBinId = document.getElementById('binIdInput').value.trim();
+  if (!apiKey) { showToast('أدخل API Key أولاً', 'error'); return; }
+
+  showLoading('جارٍ الإعداد...');
+  try {
+    let binId = existingBinId;
+    if (!binId) {
+      binId = await createBin(apiKey);
+    }
+    saveCfg({ apiKey, binId });
+    hideLoading();
+    showToast('✅ تم الإعداد! Bin ID: ' + binId, 'success');
+    launchApp();
+  } catch(e) {
+    hideLoading();
+    console.error(e);
+    showToast('❌ ' + e.message, 'error');
+  }
 }
 
-async function saveResults(data) {
-  return await dbSet(STORAGE_KEY, data, true);
+function resetSetup() {
+  if (confirm('هل تريد إعادة الإعداد؟ ستحتاج إلى API Key مرة أخرى.')) {
+    localStorage.removeItem(LS_CFG);
+    location.reload();
+  }
 }
 
-// ─── PERSONAL VOTES ────────────────────────────────────────────────────────
-async function loadMyVotes() {
-  // shared=false → only this user's votes
-  const data = await dbGet(VOTES_KEY, false);
-  return data && typeof data === 'object' ? data : {};
+function launchApp() {
+  document.getElementById('setupScreen').style.display  = 'none';
+  document.getElementById('heroSection').style.display  = 'flex';
+  loadHeroStats();
 }
 
-async function saveMyVotes(votes) {
-  return await dbSet(VOTES_KEY, votes, false);
-}
-
-// ─── HERO STATS ────────────────────────────────────────────────────────────
+// ════════════════════════════════════════════════════════════════
+//  HERO STATS
+// ════════════════════════════════════════════════════════════════
 async function loadHeroStats() {
-  const data = await loadResults();
-  const total = data.cheap + data.normal + data.expensive;
-  if (total === 0) return;
-  const pct = Math.round(data.expensive / total * 100);
-  document.getElementById('heroTotal').textContent = total.toLocaleString('ar');
-  document.getElementById('heroPct').textContent = pct + '%';
-  document.getElementById('heroStats').style.display = 'flex';
+  try {
+    const d = await readBin();
+    const total = d.cheap + d.normal + d.expensive;
+    if (!total) return;
+    document.getElementById('heroTotal').textContent = total.toLocaleString('ar');
+    document.getElementById('heroPct').textContent = Math.round(d.expensive/total*100) + '%';
+    document.getElementById('heroStats').style.display = 'flex';
+  } catch(e) { console.warn('hero stats', e); }
 }
 
-// ─── NAVIGATION ────────────────────────────────────────────────────────────
+// ════════════════════════════════════════════════════════════════
+//  SURVEY NAVIGATION
+// ════════════════════════════════════════════════════════════════
+let currentStep = 1;
+const totalSteps = 5;
+const answers = { age:null, sex:null, job:null, price:null };
+
 function startSurvey() {
-  document.getElementById('survey').scrollIntoView({ behavior: 'smooth' });
+  document.getElementById('survey').style.display = 'block';
+  document.getElementById('survey').scrollIntoView({ behavior:'smooth' });
   updateProgress();
 }
 
 function updateProgress() {
-  const pct = ((currentStep - 1) / totalSteps) * 100;
-  document.getElementById('progressFill').style.width = pct + '%';
+  document.getElementById('progressFill').style.width = ((currentStep-1)/totalSteps*100)+'%';
 }
 
 function showStep(n) {
-  document.querySelectorAll('.step').forEach(s => s.classList.remove('active'));
-  const el = document.getElementById('step' + n);
-  if (el) {
-    el.classList.add('active');
-    el.scrollIntoView({ behavior: 'smooth', block: 'start' });
-  }
+  document.querySelectorAll('.step').forEach(s=>s.classList.remove('active'));
+  const el = document.getElementById('step'+n);
+  if (el) { el.classList.add('active'); el.scrollIntoView({behavior:'smooth',block:'start'}); }
   updateProgress();
 }
 
 function nextStep() {
-  if (currentStep === 4 && !answers.price) {
-    document.getElementById('priceError').style.display = 'block';
-    return;
+  if (currentStep===4 && !answers.price) {
+    document.getElementById('priceError').style.display='block'; return;
   }
-  const errEl = document.getElementById('priceError');
-  if (errEl) errEl.style.display = 'none';
-  if (currentStep < totalSteps) { currentStep++; showStep(currentStep); }
+  const e=document.getElementById('priceError');
+  if(e) e.style.display='none';
+  if (currentStep<totalSteps) { currentStep++; showStep(currentStep); }
 }
 
-function prevStep() {
-  if (currentStep > 1) { currentStep--; showStep(currentStep); }
-}
+function prevStep() { if(currentStep>1){currentStep--;showStep(currentStep);} }
+function skipStep() { if(currentStep<totalSteps){currentStep++;showStep(currentStep);} }
 
-function skipStep() {
-  if (currentStep < totalSteps) { currentStep++; showStep(currentStep); }
-}
-
-// ─── CHOICE SELECTION ──────────────────────────────────────────────────────
-function selectChoice(field, value, groupId, el) {
-  answers[field] = value;
-  document.querySelectorAll('#' + groupId + ' .choice').forEach(c => c.classList.remove('selected'));
+function selectChoice(field,value,groupId,el) {
+  answers[field]=value;
+  document.querySelectorAll('#'+groupId+' .choice').forEach(c=>c.classList.remove('selected'));
   el.classList.add('selected');
-  const errEl = document.getElementById('priceError');
-  if (errEl) errEl.style.display = 'none';
+  const e=document.getElementById('priceError'); if(e) e.style.display='none';
 }
 
-// ─── CHART ─────────────────────────────────────────────────────────────────
-let surveyChart = null;
+// ════════════════════════════════════════════════════════════════
+//  SUBMIT
+// ════════════════════════════════════════════════════════════════
+async function submitSurvey(skipJustification) {
+  const txt = skipJustification ? '' : document.getElementById('justification').value.trim();
+  if (!answers.price) {
+    showToast('⚠️ اختر رأيك في الأسعار أولاً','error');
+    currentStep=4; showStep(4); return;
+  }
+  showLoading('جارٍ إرسال صوتك...');
+  try {
+    const data = await readBin();
+    const key = answers.price==='رخيصة'?'cheap':answers.price==='عادية'?'normal':'expensive';
+    data[key]++;
+    if (txt) {
+      if (!Array.isArray(data.comments)) data.comments=[];
+      data.comments.push({
+        id: Date.now().toString(36)+Math.random().toString(36).slice(2,6),
+        price:answers.price, age:answers.age||'', text:txt,
+        ts:Date.now(), upvotes:0, downvotes:0
+      });
+      if (data.comments.length>100) data.comments=data.comments.slice(-100);
+    }
+    await writeBin(data);
+    hideLoading();
 
-function renderChart(data) {
-  const ctx = document.getElementById('resultsChart').getContext('2d');
-  if (surveyChart) surveyChart.destroy();
-  surveyChart = new Chart(ctx, {
-    type: 'doughnut',
-    data: {
-      labels: ['رخيصة 💚', 'عادية 💙', 'غالية جداً 🔴'],
-      datasets: [{
-        data: [data.cheap, data.normal, data.expensive],
-        backgroundColor: ['rgba(48,209,88,0.8)', 'rgba(41,151,255,0.8)', 'rgba(255,69,58,0.8)'],
-        borderColor: ['#30d158', '#2997ff', '#ff453a'],
-        borderWidth: 2, hoverOffset: 8,
+    document.getElementById('heroSection').style.display='none';
+    document.getElementById('survey').style.display='none';
+    const r=document.getElementById('results');
+    r.style.display='block';
+    r.scrollIntoView({behavior:'smooth'});
+
+    animateCount('countCheap',data.cheap);
+    animateCount('countNormal',data.normal);
+    animateCount('countExpensive',data.expensive);
+    renderChart(data);
+    renderComments(data);
+    document.getElementById('binIdDisplay').textContent = getCfg().binId;
+    showToast('✅ تم إرسال رأيك!','success');
+  } catch(e) {
+    hideLoading(); console.error(e);
+    showToast('❌ فشل الإرسال: '+e.message,'error');
+  }
+}
+
+// ════════════════════════════════════════════════════════════════
+//  CHART
+// ════════════════════════════════════════════════════════════════
+let chart=null;
+function renderChart(d){
+  const ctx=document.getElementById('resultsChart').getContext('2d');
+  if(chart) chart.destroy();
+  chart=new Chart(ctx,{
+    type:'doughnut',
+    data:{
+      labels:['رخيصة 💚','عادية 💙','غالية جداً 🔴'],
+      datasets:[{
+        data:[d.cheap,d.normal,d.expensive],
+        backgroundColor:['rgba(48,209,88,.8)','rgba(41,151,255,.8)','rgba(255,69,58,.8)'],
+        borderColor:['#30d158','#2997ff','#ff453a'],
+        borderWidth:2,hoverOffset:8
       }]
     },
-    options: {
-      responsive: true,
-      plugins: {
-        legend: {
-          position: 'bottom',
-          labels: { color: '#86868b', font: { family: 'Tajawal', size: 14 }, padding: 20 }
-        },
-        tooltip: {
-          callbacks: {
-            label: ctx => {
-              const total = ctx.dataset.data.reduce((a, b) => a + b, 0);
-              const pct = total ? Math.round(ctx.raw / total * 100) : 0;
-              return ' ' + ctx.raw + ' صوت (' + pct + '%)';
-            }
-          },
-          bodyFont: { family: 'Tajawal' }, titleFont: { family: 'Tajawal' }
-        }
+    options:{
+      responsive:true,
+      plugins:{
+        legend:{position:'bottom',labels:{color:'#86868b',font:{family:'Tajawal',size:14},padding:20}},
+        tooltip:{callbacks:{label:c=>{
+          const t=c.dataset.data.reduce((a,b)=>a+b,0);
+          const p=t?Math.round(c.raw/t*100):0;
+          return ' '+c.raw+' صوت ('+p+'%)';
+        }},bodyFont:{family:'Tajawal'},titleFont:{family:'Tajawal'}}
       },
-      animation: { animateRotate: true, duration: 900 }
+      animation:{animateRotate:true,duration:900}
     }
   });
 }
 
-// ─── COMMENTS ──────────────────────────────────────────────────────────────
-function escapeHtml(str) {
-  return String(str || '')
-    .replace(/&/g, '&amp;').replace(/</g, '&lt;')
-    .replace(/>/g, '&gt;').replace(/"/g, '&quot;');
+// ════════════════════════════════════════════════════════════════
+//  COMMENTS
+// ════════════════════════════════════════════════════════════════
+const esc=s=>String(s||'').replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;');
+function timeAgo(ts){
+  if(!ts) return '';
+  const m=Math.floor((Date.now()-ts)/60000);
+  if(m<1) return 'الآن';
+  if(m<60) return 'منذ '+m+' دقيقة';
+  const h=Math.floor(m/60);
+  if(h<24) return 'منذ '+h+' ساعة';
+  return 'منذ '+Math.floor(h/24)+' يوم';
 }
+const pc=p=>p==='رخيصة'?'var(--accent2)':p==='عادية'?'var(--accent)':'var(--danger)';
+const pi=p=>p==='رخيصة'?'💚':p==='عادية'?'💙':'🔴';
 
-function formatTimeAgo(ts) {
-  if (!ts) return '';
-  const diff = Date.now() - ts;
-  const m = Math.floor(diff / 60000);
-  if (m < 1) return 'الآن';
-  if (m < 60) return 'منذ ' + m + ' دقيقة';
-  const h = Math.floor(m / 60);
-  if (h < 24) return 'منذ ' + h + ' ساعة';
-  return 'منذ ' + Math.floor(h / 24) + ' يوم';
-}
-
-function getPriceColor(price) {
-  if (price === 'رخيصة') return 'var(--accent2)';
-  if (price === 'عادية') return 'var(--accent)';
-  return 'var(--danger)';
-}
-
-function getPriceIcon(price) {
-  if (price === 'رخيصة') return '💚';
-  if (price === 'عادية') return '💙';
-  return '🔴';
-}
-
-function renderCommentCard(c, myVote) {
-  const upActive = myVote === 'up';
-  const downActive = myVote === 'down';
-  const score = (c.upvotes || 0) - (c.downvotes || 0);
-  const scoreColor = score > 0 ? 'var(--accent2)' : score < 0 ? 'var(--danger)' : 'var(--muted)';
-  const priceColor = getPriceColor(c.price);
-  const priceIcon = getPriceIcon(c.price);
-  return `
-  <div class="comment-card" id="comment-${c.id}">
-    <div class="comment-header">
-      <span class="comment-badge" style="background:${priceColor}22;color:${priceColor};border:1px solid ${priceColor}44">
-        ${priceIcon} ${escapeHtml(c.price)}
-      </span>
-      ${c.age ? `<span class="comment-meta">· ${escapeHtml(c.age)}</span>` : ''}
-      <span class="comment-meta" style="margin-right:auto">${formatTimeAgo(c.ts)}</span>
-    </div>
-    <p class="comment-text">${escapeHtml(c.text)}</p>
-    <div class="comment-actions">
-      <button class="vote-btn ${upActive ? 'vote-up-active' : ''}" onclick="voteComment('${c.id}','up')" title="مفيد">
-        👍 <span class="vote-count" id="up-${c.id}">${c.upvotes || 0}</span>
-      </button>
-      <button class="vote-btn ${downActive ? 'vote-down-active' : ''}" onclick="voteComment('${c.id}','down')" title="غير مفيد">
-        👎 <span class="vote-count" id="down-${c.id}">${c.downvotes || 0}</span>
-      </button>
-      <span class="vote-score" style="color:${scoreColor}">${score > 0 ? '+' : ''}${score}</span>
-    </div>
-  </div>`;
-}
-
-async function renderComments(data) {
-  const myVotes = await loadMyVotes();
-  const comments = (data.comments || []).slice().reverse();
-  const listEl = document.getElementById('commentsList');
-  if (!comments.length) {
-    listEl.innerHTML = '<p style="color:var(--muted);font-size:14px;text-align:center;padding:20px 0">لا توجد تعليقات بعد. كن أول من يعلق!</p>';
-    return;
-  }
-  listEl.innerHTML = comments.map(c => renderCommentCard(c, myVotes[c.id])).join('');
+function renderComments(data){
+  const myV=getVotes();
+  const list=(data.comments||[]).slice().reverse();
+  const el=document.getElementById('commentsList');
+  if(!list.length){el.innerHTML='<p style="color:var(--muted);font-size:14px;text-align:center;padding:20px 0">لا توجد تعليقات بعد.</p>';return;}
+  el.innerHTML=list.map(c=>{
+    const v=myV[c.id], sc=(c.upvotes||0)-(c.downvotes||0);
+    const scColor=sc>0?'var(--accent2)':sc<0?'var(--danger)':'var(--muted)';
+    const pColor=pc(c.price);
+    return `<div class="comment-card" id="comment-${c.id}">
+      <div class="comment-header">
+        <span class="comment-badge" style="background:${pColor}22;color:${pColor};border:1px solid ${pColor}44">${pi(c.price)} ${esc(c.price)}</span>
+        ${c.age?`<span class="comment-meta">· ${esc(c.age)}</span>`:''}
+        <span class="comment-meta" style="margin-right:auto">${timeAgo(c.ts)}</span>
+      </div>
+      <p class="comment-text">${esc(c.text)}</p>
+      <div class="comment-actions">
+        <button class="vote-btn ${v==='up'?'vote-up-active':''}" onclick="voteComment('${c.id}','up')">👍 <span class="vote-count" id="up-${c.id}">${c.upvotes||0}</span></button>
+        <button class="vote-btn ${v==='down'?'vote-down-active':''}" onclick="voteComment('${c.id}','down')">👎 <span class="vote-count" id="down-${c.id}">${c.downvotes||0}</span></button>
+        <span class="vote-score" style="color:${scColor}" id="score-${c.id}">${sc>0?'+':''}${sc}</span>
+      </div>
+    </div>`;
+  }).join('');
 }
 
 async function voteComment(commentId, direction) {
-  const [myVotes, data] = await Promise.all([loadMyVotes(), loadResults()]);
-  const prev = myVotes[commentId];
-  const newVote = prev === direction ? null : direction;
-
-  const idx = (data.comments || []).findIndex(c => c.id === commentId);
-  if (idx === -1) return;
-  const c = data.comments[idx];
-  c.upvotes = c.upvotes || 0;
-  c.downvotes = c.downvotes || 0;
-
-  if (prev === 'up') c.upvotes = Math.max(0, c.upvotes - 1);
-  if (prev === 'down') c.downvotes = Math.max(0, c.downvotes - 1);
-  if (newVote === 'up') c.upvotes++;
-  if (newVote === 'down') c.downvotes++;
-
-  data.comments[idx] = c;
-  if (newVote) myVotes[commentId] = newVote;
-  else delete myVotes[commentId];
-
-  await Promise.all([saveResults(data), saveMyVotes(myVotes)]);
-
-  // Update UI in-place
-  const score = c.upvotes - c.downvotes;
-  const scoreColor = score > 0 ? 'var(--accent2)' : score < 0 ? 'var(--danger)' : 'var(--muted)';
-  const card = document.getElementById('comment-' + commentId);
-  if (card) {
-    card.querySelector('#up-' + commentId).textContent = c.upvotes;
-    card.querySelector('#down-' + commentId).textContent = c.downvotes;
-    const scoreEl = card.querySelector('.vote-score');
-    scoreEl.textContent = (score > 0 ? '+' : '') + score;
-    scoreEl.style.color = scoreColor;
-    const btns = card.querySelectorAll('.vote-btn');
-    btns[0].className = 'vote-btn' + (newVote === 'up' ? ' vote-up-active' : '');
-    btns[1].className = 'vote-btn' + (newVote === 'down' ? ' vote-down-active' : '');
-  }
-}
-
-// ─── SUBMIT ────────────────────────────────────────────────────────────────
-async function submitSurvey(skipJustification) {
-  const justification = skipJustification ? '' : document.getElementById('justification').value.trim();
-
-  if (!answers.price) {
-    showToast('⚠️ يجب اختيار رأيك في الأسعار', 'error');
-    currentStep = 4;
-    showStep(4);
-    return;
-  }
-
-  document.getElementById('loadingOverlay').classList.remove('hidden');
-
+  const myVotes=getVotes();
+  const prev=myVotes[commentId];
+  const newVote=prev===direction?null:direction;
+  showLoading('جارٍ التحديث...');
   try {
-    const data = await loadResults();
-    const key = answers.price === 'رخيصة' ? 'cheap' : answers.price === 'عادية' ? 'normal' : 'expensive';
-    data[key]++;
-
-    if (justification) {
-      if (!Array.isArray(data.comments)) data.comments = [];
-      data.comments.push({
-        id: Date.now().toString(36) + Math.random().toString(36).slice(2, 6),
-        price: answers.price,
-        age: answers.age || '',
-        text: justification,
-        ts: Date.now(),
-        upvotes: 0,
-        downvotes: 0
-      });
-      if (data.comments.length > 50) data.comments = data.comments.slice(-50);
+    const data=await readBin();
+    const idx=(data.comments||[]).findIndex(c=>c.id===commentId);
+    if(idx===-1){hideLoading();return;}
+    const c=data.comments[idx];
+    c.upvotes=c.upvotes||0; c.downvotes=c.downvotes||0;
+    if(prev==='up') c.upvotes=Math.max(0,c.upvotes-1);
+    if(prev==='down') c.downvotes=Math.max(0,c.downvotes-1);
+    if(newVote==='up') c.upvotes++;
+    if(newVote==='down') c.downvotes++;
+    data.comments[idx]=c;
+    await writeBin(data);
+    if(newVote) myVotes[commentId]=newVote; else delete myVotes[commentId];
+    saveVotes(myVotes);
+    hideLoading();
+    const score=c.upvotes-c.downvotes;
+    const scColor=score>0?'var(--accent2)':score<0?'var(--danger)':'var(--muted)';
+    const card=document.getElementById('comment-'+commentId);
+    if(card){
+      document.getElementById('up-'+commentId).textContent=c.upvotes;
+      document.getElementById('down-'+commentId).textContent=c.downvotes;
+      const s=document.getElementById('score-'+commentId);
+      s.textContent=(score>0?'+':'')+score; s.style.color=scColor;
+      const btns=card.querySelectorAll('.vote-btn');
+      btns[0].className='vote-btn'+(newVote==='up'?' vote-up-active':'');
+      btns[1].className='vote-btn'+(newVote==='down'?' vote-down-active':'');
     }
+  } catch(e){hideLoading();console.error(e);showToast('❌ فشل التحديث','error');}
+}
 
-    const ok = await saveResults(data);
-    document.getElementById('loadingOverlay').classList.add('hidden');
-
-    if (!ok) {
-      showToast('⚠️ حدث خطأ في الحفظ، جرب مرة أخرى', 'error');
-      return;
-    }
-
-    document.getElementById('survey').style.display = 'none';
-    const resultsEl = document.getElementById('results');
-    resultsEl.style.display = 'block';
-    resultsEl.scrollIntoView({ behavior: 'smooth' });
-
-    animateCount('countCheap', data.cheap);
-    animateCount('countNormal', data.normal);
-    animateCount('countExpensive', data.expensive);
-    renderChart(data);
-    renderComments(data);
-    showToast('✅ تم إرسال رأيك بنجاح!', 'success');
-  } catch(e) {
-    console.error(e);
-    document.getElementById('loadingOverlay').classList.add('hidden');
-    showToast('⚠️ حدث خطأ غير متوقع', 'error');
+// ════════════════════════════════════════════════════════════════
+//  UTILITIES
+// ════════════════════════════════════════════════════════════════
+function animateCount(id,target){
+  const el=document.getElementById(id);
+  const t0=performance.now();
+  function upd(now){
+    const p=Math.min((now-t0)/800,1);
+    const ease=1-Math.pow(1-p,3);
+    el.textContent=Math.round(target*ease);
+    if(p<1) requestAnimationFrame(upd);
   }
+  requestAnimationFrame(upd);
+}
+function showLoading(m){document.getElementById('loadingMsg').textContent=m||'جارٍ التحميل...';document.getElementById('loadingOverlay').classList.remove('hidden');}
+function hideLoading(){document.getElementById('loadingOverlay').classList.add('hidden');}
+function showToast(msg,type){
+  const t=document.getElementById('toast');
+  t.textContent=msg; t.className='toast '+(type||''); t.classList.add('show');
+  setTimeout(()=>t.classList.remove('show'),4000);
+}
+function shareSurvey(){
+  if(navigator.share){navigator.share({title:'استطلاع أسعار كبش العيد',url:location.href}).catch(()=>{});}
+  else navigator.clipboard&&navigator.clipboard.writeText(location.href).then(()=>showToast('📋 تم نسخ الرابط!','success'));
+}
+function copyBinId(){
+  const id=getCfg()&&getCfg().binId;
+  if(id) navigator.clipboard&&navigator.clipboard.writeText(id).then(()=>showToast('📋 تم نسخ Bin ID!','success'));
 }
 
-// ─── UTILITIES ─────────────────────────────────────────────────────────────
-function animateCount(id, target) {
-  const el = document.getElementById(id);
-  const duration = 800;
-  const startTime = performance.now();
-  function update(now) {
-    const elapsed = now - startTime;
-    const progress = Math.min(elapsed / duration, 1);
-    const ease = 1 - Math.pow(1 - progress, 3);
-    el.textContent = Math.round(target * ease);
-    if (progress < 1) requestAnimationFrame(update);
-  }
-  requestAnimationFrame(update);
-}
-
-function showToast(msg, type) {
-  const t = document.getElementById('toast');
-  t.textContent = msg;
-  t.className = 'toast ' + (type || '');
-  t.classList.add('show');
-  setTimeout(() => t.classList.remove('show'), 3500);
-}
-
-function shareSurvey() {
-  const text = 'شارك رأيك في أسعار كبش العيد هذا العام! 🐑';
-  if (navigator.share) {
-    navigator.share({ title: 'استطلاع أسعار كبش العيد', text, url: location.href }).catch(() => {});
-  } else {
-    navigator.clipboard && navigator.clipboard.writeText(location.href)
-      .then(() => showToast('📋 تم نسخ الرابط!', 'success'))
-      .catch(() => showToast('تعذّر نسخ الرابط', 'error'));
-  }
-}
-
-// ─── INIT ──────────────────────────────────────────────────────────────────
-window.addEventListener('load', loadHeroStats);
+window.addEventListener('load', init);
 </script>
 </body>
 </html>
