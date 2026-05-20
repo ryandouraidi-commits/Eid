@@ -98,36 +98,10 @@ textarea:focus{border-color:var(--gold)}
 .spinner{width:20px;height:20px;border:2px solid rgba(255,255,255,.2);border-top-color:var(--accent);border-radius:50%;animation:spin .7s linear infinite;display:inline-block}
 .overlay{position:fixed;inset:0;background:rgba(0,0,0,.75);backdrop-filter:blur(12px);z-index:999;display:flex;align-items:center;justify-content:center;flex-direction:column;gap:16px;color:var(--muted);font-size:16px}
 .overlay.hidden{display:none}
-.setup-screen{max-width:540px;margin:0 auto;padding:60px 20px}
-.setup-card{background:var(--surface);border:1px solid var(--border);border-radius:var(--radius);padding:40px}
-.setup-card h2{font-size:24px;font-weight:700;margin-bottom:8px;color:var(--text)}
-.setup-card p{color:var(--muted);font-size:14px;margin-bottom:24px;line-height:1.7}
-.setup-input{width:100%;background:var(--surface2);border:1.5px solid var(--border);border-radius:var(--radius-sm);padding:14px 18px;font-family:'Tajawal',sans-serif;font-size:15px;color:var(--text);outline:none;transition:border-color .2s;margin-bottom:12px}
-.setup-input:focus{border-color:var(--gold)}
-.setup-step{display:flex;align-items:flex-start;gap:12px;margin-bottom:14px;font-size:13px;color:var(--muted);line-height:1.6}
-.setup-step-num{min-width:22px;height:22px;border-radius:50%;background:var(--gold);color:#000;font-size:11px;font-weight:700;display:flex;align-items:center;justify-content:center;margin-top:1px}
-.setup-step a{color:var(--accent);text-decoration:none}
-.setup-step a:hover{text-decoration:underline}
 .site-footer{text-align:center;padding:40px 20px;color:var(--muted);font-size:13px;border-top:1px solid var(--border)}
-.hint-box{background:rgba(212,168,67,.08);border:1px solid rgba(212,168,67,.2);border-radius:var(--radius-sm);padding:14px 18px;font-size:13px;color:var(--gold);margin-bottom:20px;line-height:1.7}
 </style>
 </head>
 <body>
-
-<div id="setupScreen" class="setup-screen" style="display:none">
-  <div class="setup-card">
-    <h2>🔧 إعداد قاعدة البيانات</h2>
-    <p>بما أنك أضفت API Key، فقط اضغط على الزر أدناه لتهيئة قاعدة البيانات وبدء الاستطلاع.</p>
-
-    <div class="hint-box">💡 المفتاح يُحفظ في متصفحك فقط. شارك ملف HTML مع الآخرين وهم يدخلون نفس المفتاح لترى أصواتهم.</div>
-
-    <input class="setup-input" id="apiKeyInput" type="password" placeholder="$2a$10$xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx" dir="ltr" autocomplete="off">
-    <input class="setup-input" id="binIdInput" placeholder="Bin ID موجود (اتركه فارغاً لإنشاء جديد)" dir="ltr" autocomplete="off" style="margin-top:8px">
-    <button class="btn btn-gold" style="width:100%;margin-top:8px" onclick="setupBin()">تهيئة قاعدة البيانات ✓</button>
-
-    <p style="margin-top:16px;font-size:12px;color:var(--muted)">إذا أردت مشاركة الاستطلاع مع أشخاص آخرين: بعد الإعداد ستظهر معك Bin ID — شاركه معهم مع API Key ليستطيعوا التصويت على نفس قاعدة البيانات.</p>
-  </div>
-</div>
 
 <section class="hero" id="heroSection" style="display:none">
   <div class="hero-glow"></div>
@@ -237,16 +211,15 @@ textarea:focus{border-color:var(--gold)}
       <div id="commentsList"><p style="color:var(--muted);font-size:14px;text-align:center;padding:20px 0">لا توجد تعليقات بعد.</p></div>
     </div>
 
-    <div class="chart-card" id="shareConfigBox">
-      <div class="chart-title">🔗 شارك الاستطلاع</div>
-      <p style="color:var(--muted);font-size:13px;margin-bottom:14px">لكي يصوت الآخرون على نفس قاعدة البيانات، انسخ هذا الـ Bin ID وضعه في الكود في المتغير `HARDCODED_BIN_ID`</p>
+    <div class="chart-card" id="adminShareBox">
+      <div class="chart-title">🔗 رابط المشاركة العام</div>
+      <p style="color:var(--muted);font-size:13px;margin-bottom:14px">لتشارك هذا الاستطلاع مع الجميع وجمع أصواتهم في نفس المكان، انسخ هذا المعرف وضعه داخل المتغير <code>HARDCODED_BIN_ID</code> في الكود الخاص بك.</p>
       <div style="background:var(--surface2);border:1px solid var(--border);border-radius:var(--radius-sm);padding:12px 16px;font-family:monospace;font-size:13px;color:var(--accent);word-break:break-all" id="binIdDisplay">—</div>
       <button class="btn btn-ghost" style="margin-top:12px;width:100%" onclick="copyBinId()">📋 نسخ Bin ID</button>
     </div>
 
     <div style="display:flex;gap:12px;flex-wrap:wrap;justify-content:center;padding:20px 0">
       <button class="btn btn-ghost" onclick="shareSurvey()">📤 شارك الرابط</button>
-      <button class="btn btn-ghost" onclick="resetSetup()">⚙️ إعادة الإعداد</button>
     </div>
   </div>
 </section>
@@ -264,14 +237,14 @@ textarea:focus{border-color:var(--gold)}
 // ════════════════════════════════════════════════════════════════
 const HARDCODED_API_KEY = '$2a$10$S0R4jQwx0v4JLA0rTcNnHuKf6/E4q2dUfq1qwRKCfiioQDFJ.HmmC';
 
-// NOTE: After you run this once and get a Bin ID from the results page, paste it inside these quotes to make the poll public!
+// NOTE: Once you get your Bin ID at the end of the survey, put it here to share the poll!
 const HARDCODED_BIN_ID = '';
 
 // ════════════════════════════════════════════════════════════════
 //  STORAGE (localStorage — per browser)
 // ════════════════════════════════════════════════════════════════
-const LS_CFG   = 'eid_cfg_v1';
-const LS_VOTES = 'eid_votes_v1';
+const LS_CFG   = 'eid_cfg_v2';
+const LS_VOTES = 'eid_votes_v2';
 const JSONBIN  = 'https://api.jsonbin.io/v3';
 
 function getCfg()    { try { return JSON.parse(localStorage.getItem(LS_CFG)||'null') } catch(e){ return null } }
@@ -313,76 +286,50 @@ async function createBin(apiKey) {
     },
     body: JSON.stringify({ cheap:0, normal:0, expensive:0, comments:[] })
   });
-  if (!res.ok) {
-    const t = await res.text();
-    throw new Error('إنشاء Bin فشل ' + res.status + ': ' + t.slice(0,120));
-  }
+  if (!res.ok) throw new Error('إنشاء Bin فشل');
   const data = await res.json();
   return data.metadata.id;
 }
 
 async function readBin() {
-  const cfg = getCfg();
-  const data = await jbFetch('GET', '/b/' + cfg.binId + '/latest');
+  const data = await jbFetch('GET', '/b/' + getCfg().binId + '/latest');
   return data.record;
 }
 
 async function writeBin(record) {
-  const cfg = getCfg();
-  await jbFetch('PUT', '/b/' + cfg.binId, record);
+  await jbFetch('PUT', '/b/' + getCfg().binId, record);
 }
 
 // ════════════════════════════════════════════════════════════════
-//  SETUP & INIT
+//  SILENT INIT
 // ════════════════════════════════════════════════════════════════
-function init() {
-  // If user provided both Hardcoded vars, auto-configure!
-  if (HARDCODED_API_KEY && HARDCODED_BIN_ID) {
-    saveCfg({ apiKey: HARDCODED_API_KEY, binId: HARDCODED_BIN_ID });
-  }
+async function init() {
+  let binId = HARDCODED_BIN_ID;
+  const apiKey = HARDCODED_API_KEY;
 
-  const cfg = getCfg();
-  if (!cfg || !cfg.apiKey || !cfg.binId) {
-    // Fill the API input with the hardcoded API key
-    document.getElementById('apiKeyInput').value = HARDCODED_API_KEY;
-    document.getElementById('setupScreen').style.display = 'block';
-  } else {
-    launchApp();
-  }
-}
-
-async function setupBin() {
-  const apiKey = document.getElementById('apiKeyInput').value.trim();
-  const existingBinId = document.getElementById('binIdInput').value.trim();
-  if (!apiKey) { showToast('أدخل API Key أولاً', 'error'); return; }
-
-  showLoading('جارٍ الإعداد...');
-  try {
-    let binId = existingBinId;
-    if (!binId) {
-      binId = await createBin(apiKey);
+  if (!binId) {
+    const cfg = getCfg();
+    if (cfg && cfg.binId) {
+      binId = cfg.binId;
+    } else {
+      // Auto-create bin on first launch in the background
+      showLoading('جارٍ تهيئة الاستطلاع...');
+      try {
+        binId = await createBin(apiKey);
+        saveCfg({ apiKey, binId });
+        hideLoading();
+      } catch (e) {
+        hideLoading();
+        alert('حدث خطأ في الاتصال. تأكد من الإنترنت.');
+        return;
+      }
     }
+  } else {
+    // Standardize local storage with the hardcoded vars
     saveCfg({ apiKey, binId });
-    hideLoading();
-    showToast('✅ تم الإعداد! Bin ID: ' + binId, 'success');
-    launchApp();
-  } catch(e) {
-    hideLoading();
-    console.error(e);
-    showToast('❌ ' + e.message, 'error');
   }
-}
 
-function resetSetup() {
-  if (confirm('هل تريد إعادة الإعداد؟ ستحتاج إلى API Key مرة أخرى.')) {
-    localStorage.removeItem(LS_CFG);
-    location.reload();
-  }
-}
-
-function launchApp() {
-  document.getElementById('setupScreen').style.display  = 'none';
-  document.getElementById('heroSection').style.display  = 'flex';
+  document.getElementById('heroSection').style.display = 'flex';
   loadHeroStats();
 }
 
@@ -480,7 +427,14 @@ async function submitSurvey(skipJustification) {
     animateCount('countExpensive',data.expensive);
     renderChart(data);
     renderComments(data);
+    
     document.getElementById('binIdDisplay').textContent = getCfg().binId;
+    
+    // Hide the admin box if they already hardcoded it (so users don't see it)
+    if (HARDCODED_BIN_ID !== '') {
+      document.getElementById('adminShareBox').style.display = 'none';
+    }
+
     showToast('✅ تم إرسال رأيك!','success');
   } catch(e) {
     hideLoading(); console.error(e);
