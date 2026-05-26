@@ -256,7 +256,6 @@ textarea:focus{border-color:var(--gold)}
     <div class="live-pill" style="color:var(--danger)">غالية جداً: <strong id="heroPct" style="margin-right:4px">—</strong></div>
   </div>
   <button class="start-btn" id="mainBtn" onclick="startSurvey()">المشاركة في الاستطلاع</button>
-  <button class="btn btn-ghost" style="margin-top: 16px;" onclick="showReportage()">عرض الروبورتاج الميداني</button>
 </section>
 
 <section id="survey" style="display:none">
@@ -357,7 +356,6 @@ textarea:focus{border-color:var(--gold)}
   </div>
   
   <div style="display:flex;gap:12px;flex-wrap:wrap;justify-content:center;padding:20px 0">
-    <button class="btn btn-primary" onclick="showReportage()">عرض الروبورتاج</button>
     <button class="btn btn-ghost" onclick="shareSurvey()">مشاركة الاستطلاع</button>
     <button class="btn btn-ghost" onclick="returnToHome()">الرئيسية</button>
   </div>
@@ -367,7 +365,7 @@ textarea:focus{border-color:var(--gold)}
   <div class="chart-card" style="text-align: right; border-top: 3px solid var(--gold);">
     <div class="chart-title" style="color: var(--text); font-size: 22px; text-align: center; border:none; margin-bottom: 12px; padding-bottom: 0;">روبورتاج استقصائي: واقع أسواق المواشي</div>
     <p style="color: var(--muted); font-size: 15px; line-height: 1.8; text-align: justify;">
-     في ظل توالي سنوات الجفاف السبع التي أثرت بالمملكة مؤخراً، يواجه المغرب أزمة مائية حادة لم يشهد لها مثيلاً في تاريخه المعاصر. ومع مطلع هذه السنة استبشر المغاربة خيراً بالتساقطات المطرية الأخيرة، إلا أن السؤال الجوهري الذي يطرحه سكان مدينة فاس مع اقتراب عيد الأضحى: هل ستساهم هذه الأمطار في استقرار أسعار الأضاحي وتخفيف العبء عن كاهل المواطن؟
+       في ظل توالي سنوات الجفاف السبع التي أثرت بالمملكة مؤخراً، يواجه المغرب أزمة مائية حادة لم يشهد لها مثيلاً في تاريخه المعاصر. ومع مطلع هذه السنة استبشر المغاربة خيراً بالتساقطات المطرية الأخيرة، إلا أن السؤال الجوهري الذي يطرحه سكان مدينة فاس مع اقتراب عيد الأضحى: هل ستساهم هذه الأمطار في استقرار أسعار الأضاحي وتخفيف العبء عن كاهل المواطن؟
     </p>
   </div>
 
@@ -627,181 +625,147 @@ function renderChart(d){
           const p=t?Math.round(c.raw/t*100):0;
           return ' '+c.raw+' مشاركة ('+p+'%)';
         }},bodyFont:{family:'Tajawal'},titleFont:{family:'Tajawal'}}
-      },
-      animation:{animateRotate:true,duration:900}
+      }
     }
   });
 }
 
-function getLocalVotes(){ try{return JSON.parse(localStorage.getItem('my_likes')||'{}')}catch(e){return{}} }
-function saveLocalVotes(v){ localStorage.setItem('my_likes',JSON.stringify(v)) }
-
-const esc=s=>String(s||'').replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;');
-function timeAgo(ts){
-  if(!ts) return '';
-  const m=Math.floor((Date.now()-ts)/60000);
-  if(m<1) return 'الآن';
-  if(m<60) return 'منذ '+m+' دقيقة';
-  const h=Math.floor(m/60);
-  if(h<24) return 'منذ '+h+' ساعة';
-  return 'منذ '+Math.floor(h/24)+' يوم';
-}
-const pc=p=>p==='رخيصة'?'var(--accent2)':p==='عادية'?'var(--accent)':'var(--danger)';
-
-function renderComments(data){
-  const myV=getLocalVotes();
-  const list=(data.comments||[]).slice().reverse();
-  const el=document.getElementById('commentsList');
-  if(!list.length){el.innerHTML='<p style="color:var(--muted);font-size:14px;text-align:center;padding:20px 0">لا توجد تعليقات حتى الآن.</p>';return;}
-  
-  el.innerHTML=list.map(c=>{
-    const v=myV[c.id], sc=(c.upvotes||0)-(c.downvotes||0);
-    const pColor=pc(c.price);
-    return `<div class="comment-card" id="comment-${c.id}">
-      <div class="comment-header">
-        <span class="comment-badge" style="background:${pColor}22;color:${pColor};border:1px solid ${pColor}44">${esc(c.price)}</span>
-        ${c.age?`<span class="comment-meta">· ${esc(c.age)}</span>`:''}
-        <span class="comment-meta" style="margin-right:auto">${timeAgo(c.ts)}</span>
+function renderComments(d){
+  const wrap=document.getElementById('commentsList');
+  if(!d.comments||!d.comments.length){
+    wrap.innerHTML='<p style="color:var(--muted);font-size:14px;text-align:center;padding:20px 0">لا توجد تعليقات حتى الآن.</p>';
+    return;
+  }
+  const votedArr=JSON.parse(localStorage.getItem('voted_cmts')||'[]');
+  const sorted=d.comments.sort((a,b)=>(b.upvotes||0)-(a.upvotes||0));
+  wrap.innerHTML=sorted.map(c=>{
+    const type=c.price==='رخيصة'?'cheap':c.price==='عادية'?'normal':'expensive';
+    const label=c.price==='رخيصة'?'رخيصة':c.price==='عادية'?'عادية':'غالية جداً';
+    const myVote=votedArr.find(v=>v.id===c.id);
+    return `
+      <div class="comment-card">
+        <div class="comment-header">
+          <span class="comment-badge ${type}">${label}</span>
+          <span class="comment-meta">${c.age?'العمر: '+c.age:''} · ${formatTime(c.ts)}</span>
+        </div>
+        <p class="comment-text">${escapeHtml(c.text)}</p>
+        <div class="comment-actions">
+          <button class="vote-btn ${myVote?.type==='up'?'vote-up-active':''}" onclick="voteCmt('${c.id}','up')">👍 <span id="vup-${c.id}">${c.upvotes||0}</span></button>
+          <button class="vote-btn ${myVote?.type==='down'?'vote-down-active':''}" onclick="voteCmt('${c.id}','down')">👎 <span id="vdn-${c.id}">${c.downvotes||0}</span></button>
+        </div>
       </div>
-      <p class="comment-text">${esc(c.text)}</p>
-      <div class="comment-actions">
-        <button class="vote-btn ${v==='up'?'vote-up-active':''}" onclick="voteComment('${c.id}','up')">أوافق <span class="vote-count" id="up-${c.id}">${c.upvotes||0}</span></button>
-        <button class="vote-btn ${v==='down'?'vote-down-active':''}" onclick="voteComment('${c.id}','down')">أعارض <span class="vote-count" id="down-${c.id}">${c.downvotes||0}</span></button>
-      </div>
-    </div>`;
+    `;
   }).join('');
 }
 
-async function voteComment(commentId, direction) {
-  const myVotes=getLocalVotes();
-  const prev=myVotes[commentId];
-  const newVote=prev===direction?null:direction;
-  showLoading('تسجيل التفاعل والتقييم...');
+async function voteCmt(id,type){
+  let local=JSON.parse(localStorage.getItem('voted_cmts')||'[]');
+  const exist=local.find(x=>x.id===id);
+  if(exist){showToast('لقد قمت بالتصويت على هذا التعليق مسبقاً','error');return;}
   
-  try {
-    const data = await getVotesData();
-    const idx = (data.comments||[]).findIndex(c=>c.id===commentId);
-    if(idx===-1){hideLoading();return;}
-    
-    const c=data.comments[idx];
-    c.upvotes=c.upvotes||0; c.downvotes=c.downvotes||0;
-    if(prev==='up') c.upvotes=Math.max(0,c.upvotes-1);
-    if(prev==='down') c.downvotes=Math.max(0,c.downvotes-1);
-    if(newVote==='up') c.upvotes++;
-    if(newVote==='down') c.downvotes++;
-    data.comments[idx]=c;
+  try{
+    let data=await getVotesData();
+    let cmt=data.comments.find(c=>c.id===id);
+    if(!cmt)return;
+    if(type==='up') cmt.upvotes=(cmt.upvotes||0)+1;
+    else cmt.downvotes=(cmt.downvotes||0)+1;
     
     await updateVotesData(data);
+    local.push({id,type});
+    localStorage.setItem('voted_cmts',JSON.stringify(local));
     
-    if(newVote) myVotes[commentId]=newVote; else delete myVotes[commentId];
-    saveLocalVotes(myVotes);
-    hideLoading();
-    
-    const card=document.getElementById('comment-'+commentId);
-    if(card){
-      document.getElementById('up-'+commentId).textContent=c.upvotes;
-      document.getElementById('down-'+commentId).textContent=c.downvotes;
-      const upBtn = card.querySelector(`button[onclick*="'up'"]`);
-      const downBtn = card.querySelector(`button[onclick*="'down'"]`);
-      upBtn.className = `vote-btn ${newVote === 'up' ? 'vote-up-active' : ''}`;
-      downBtn.className = `vote-btn ${newVote === 'down' ? 'vote-down-active' : ''}`;
-    }
-  } catch(e) { hideLoading(); }
+    const el=document.getElementById(type==='up'?'vup-'+id:'vdn-'+id);
+    if(el) el.innerText=parseInt(el.innerText)+1;
+    el.parentElement.classList.add(type==='up'?'vote-up-active':'vote-down-active');
+    showToast('تم تسجيل تصويتك','success');
+  }catch(e){showToast('خطأ في الاتصال بالخادم','error');}
 }
 
-// HELPERS & ANIMATIONS
-function animateCount(id, end) {
-  let start = 0;
-  const duration = 1200; 
-  let current = 0;
-  const step = end > 0 ? Math.max(1, Math.floor(end / (duration / 16))) : 0;
-  const el = document.getElementById(id);
-  if(!el) return;
-  if(end === 0) { el.innerText = 0; return; }
-  
-  const timer = setInterval(() => {
-    current += step;
-    if (current >= end) {
-      el.innerText = end;
-      clearInterval(timer);
-    } else { el.innerText = current; }
-  }, 16);
+// VIEW HANDLERS
+function returnToHome(){
+  document.getElementById('results').style.display='none';
+  document.getElementById('reportage').style.display='none';
+  document.getElementById('survey').style.display='none';
+  loadGlobalStats();
 }
 
-function showLoading(msg) {
-  document.getElementById('loadingMsg').innerText = msg || 'يتم التحميل...';
-  document.getElementById('loadingOverlay').classList.remove('hidden');
-}
-function hideLoading() { document.getElementById('loadingOverlay').classList.add('hidden'); }
-function showToast(msg, type='success') {
-  const t = document.getElementById('toast');
-  t.innerText = msg;
-  t.className = 'toast show ' + type;
-  setTimeout(() => t.className = 'toast', 3000);
-}
-
-function shareSurvey() {
-  if (navigator.share) {
-    navigator.share({ title: 'تقرير أسعار كبش العيد الميداني', url: window.location.href }).catch(console.error);
-  } else {
-    navigator.clipboard.writeText(window.location.href);
-    showToast('تم نسخ رابط الاستطلاع إلى الحافظة بنجاح', 'success');
-  }
-}
-
-function returnToHome() {
-  document.getElementById('results').style.display = 'none';
-  document.getElementById('reportage').style.display = 'none';
-  document.getElementById('survey').style.display = 'none';
-  document.getElementById('heroSection').style.display = 'flex';
-  window.scrollTo({top: 0, behavior: 'smooth'});
-  stopAllMedia();
-}
-
-function showReportage() {
-  document.getElementById('results').style.display = 'none';
-  document.getElementById('heroSection').style.display = 'none';
-  document.getElementById('survey').style.display = 'none';
-  
-  const rep = document.getElementById('reportage');
-  rep.style.display = 'block';
-  rep.scrollIntoView({behavior: 'smooth'});
-  updateCarousel();
+function showReportage(){
+  document.getElementById('heroSection').style.display='none';
+  document.getElementById('results').style.display='none';
+  document.getElementById('survey').style.display='none';
+  const rep=document.getElementById('reportage');
+  rep.style.display='block';
+  rep.scrollIntoView({behavior:'smooth'});
 }
 
 // CAROUSEL LOGIC
-let currentSlide = 0;
-const totalSlides = 3;
-
-function moveSlide(direction) {
-  currentSlide += direction;
-  if (currentSlide < 0) currentSlide = totalSlides - 1;
-  if (currentSlide >= totalSlides) currentSlide = 0;
-  updateCarousel();
+let currentSlide=0;
+function moveSlide(dir){
+  const track=document.getElementById('carouselTrack');
+  const slides=document.querySelectorAll('.carousel-slide');
+  currentSlide=(currentSlide+dir+slides.length)%slides.length;
+  track.style.transform=`translateX(${currentSlide*100}%)`;
+  updateIndicators();
 }
-
-function goToSlide(index) {
-  currentSlide = index;
-  updateCarousel();
+function goToSlide(n){
+  const track=document.getElementById('carouselTrack');
+  currentSlide=n;
+  track.style.transform=`translateX(${currentSlide*100}%)`;
+  updateIndicators();
 }
-
-function updateCarousel() {
-  const track = document.getElementById('carouselTrack');
-  track.style.transform = `translateX(-${currentSlide * 100}%)`;
-  
-  const indicators = document.querySelectorAll('.indicator');
-  indicators.forEach((ind, index) => {
-    ind.classList.toggle('active', index === currentSlide);
+function updateIndicators(){
+  document.querySelectorAll('.indicator').forEach((ind,idx)=>{
+    if(idx===currentSlide)ind.classList.add('active');
+    else ind.classList.remove('active');
   });
 }
 
-function stopAllMedia() {
-  // Reload iframes to stop video/audio stream playback completely on exit
-  document.querySelectorAll('iframe').forEach(frame => {
-    const src = frame.src;
-    frame.src = '';
-    frame.src = src;
-  });
+// UTILS
+function animateCount(id,target){
+  const el=document.getElementById(id);
+  if(!el)return;
+  let current=0;
+  const duration=1000;
+  const start=performance.now();
+  function update(now){
+    const elapsed=now-start;
+    const progress=Math.min(elapsed/duration,1);
+    current=Math.floor(progress*target);
+    el.textContent=current.toLocaleString('ar');
+    if(progress<1)requestAnimationFrame(update);
+  }
+  requestAnimationFrame(update);
+}
+
+function shareSurvey(){
+  if(navigator.share){
+    navigator.share({title:'استطلاع أسعار كبش العيد',url:window.location.href});
+  }else{
+    navigator.clipboard.writeText(window.location.href);
+    showToast('تم نسخ رابط الاستطلاع للمشاركة','success');
+  }
+}
+
+function showToast(m,type='success'){
+  const t=document.getElementById('toast');
+  t.className='toast show '+type;
+  t.textContent=m;
+  setTimeout(()=>{t.classList.remove('show');},3500);
+}
+function showLoading(m){
+  document.getElementById('loadingMsg').textContent=m;
+  document.getElementById('loadingOverlay').classList.remove('hidden');
+}
+function hideLoading(){document.getElementById('loadingOverlay').classList.add('hidden');}
+function formatTime(ts){
+  const diff=Date.now()-ts;
+  if(diff<60000)return 'الآن';
+  if(diff<3600000)return 'قبل '+Math.floor(diff/60000)+' دقيقة';
+  if(diff<86400000)return 'قبل '+Math.floor(diff/3600000)+' ساعة';
+  return new Date(ts).toLocaleDateString('ar-MA',{month:'short',day:'numeric'});
+}
+function escapeHtml(str) {
+  return str.replace(/&/g, "&amp;").replace(/</g, "&lt;").replace(/>/g, "&gt;").replace(/"/g, "&quot;").replace(/'/g, "&#039;");
 }
 </script>
 </body>
