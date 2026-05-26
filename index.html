@@ -37,9 +37,9 @@ h1 span{background:linear-gradient(135deg,#d4a843 0%,#f0c96c 50%,#d4a843 100%);-
 
 /* Forms & Survey Flow */
 #survey{max-width:720px;margin:0 auto;padding:40px 20px 100px;position:relative;z-index:1}
-.step{background:var(--surface);border:1px solid var(--border);border-radius:var(--radius);padding:clamp(24px, 4.5vw, 44px);margin-bottom:24px;display:none;animation:slideIn .4s cubic-bezier(.25, 1, .5, 1) both}
+.step{background:var(--surface);border:1px solid var(--border);border-radius:var(--radius);padding:clamp(24px, 4.5vw, 44px);margin-bottom:24px;display:none;animation:slideIn .25s cubic-bezier(.25, 1, .5, 1) both}
 .step.active{display:block}
-@keyframes slideIn{from{opacity:0;transform:translateY(16px)}to{opacity:1;transform:translateY(0)}}
+@keyframes slideIn{from{opacity:0;transform:translateY(10px)}to{opacity:1;transform:translateY(0)}}
 .step-header{display:flex;align-items:center;gap:14px;margin-bottom:28px}
 .step-num{width:34px;height:34px;border-radius:50%;background:linear-gradient(135deg,#d4a843,#f0c96c);display:flex;align-items:center;justify-content:center;font-size:14px;font-weight:700;color:#000;flex-shrink:0}
 .step-title{font-size:clamp(18px, 2.5vw, 22px);font-weight:700;color:var(--text);display:flex;align-items:center;flex-wrap:wrap;gap:8px}
@@ -47,7 +47,7 @@ h1 span{background:linear-gradient(135deg,#d4a843 0%,#f0c96c 50%,#d4a843 100%);-
 
 .choices{display:grid;grid-template-columns:repeat(auto-fit, minmax(140px, 1fr));gap:12px;width:100%}
 #jobChoices {grid-template-columns: 1fr;}
-.choice{background:var(--surface2);border:1.5px solid var(--border);border-radius:var(--radius-sm);padding:18px 16px;text-align:center;cursor:pointer;transition:all .2s ease;font-family:'Tajawal',sans-serif;font-size:16px;font-weight:600;color:var(--muted)}
+.choice{background:var(--surface2);border:1.5px solid var(--border);border-radius:var(--radius-sm);padding:18px 16px;text-align:center;cursor:pointer;transition:all .15s ease;font-family:'Tajawal',sans-serif;font-size:16px;font-weight:600;color:var(--muted)}
 .choice:hover{border-color:rgba(255,255,255,.15);color:var(--text);transform:translateY(-1px)}
 .choice.selected{border-color:var(--gold);color:var(--text);background:rgba(212,168,67,.08)}
 .choice.cheap.selected{border-color:var(--accent2);background:rgba(48,209,88,.08)}
@@ -59,7 +59,7 @@ textarea:focus{border-color:var(--gold)}
 .nav-row{display:flex;gap:12px;margin-top:32px;justify-content:space-between;align-items:center;flex-wrap:wrap}
 
 /* Buttons */
-.btn{border:none;border-radius:100px;padding:14px 28px;font-family:'Tajawal',sans-serif;font-size:15px;font-weight:600;cursor:pointer;transition:all .2s ease;display:inline-flex;align-items:center;justify-content:center;gap:8px;min-width:100px}
+.btn{border:none;border-radius:100px;padding:14px 28px;font-family:'Tajawal',sans-serif;font-size:15px;font-weight:600;cursor:pointer;transition:all .15s ease;display:inline-flex;align-items:center;justify-content:center;gap:8px;min-width:100px}
 @media(max-width:480px){.btn{flex:1;width:100%;padding:14px 16px}}
 .btn-primary{background:var(--accent);color:#fff;flex:1}
 .btn-primary:hover{background:#1a8fe8;transform:translateY(-1px)}
@@ -69,7 +69,7 @@ textarea:focus{border-color:var(--gold)}
 .btn-ghost:hover{border-color:rgba(255,255,255,.15);background:rgba(255,255,255,.08)}
 
 .progress-bar{width:100%;height:4px;background:var(--border);border-radius:100px;margin-bottom:36px;overflow:hidden}
-.progress-fill{height:100%;background:linear-gradient(90deg,#d4a843,#f0c96c);transition:width .4s cubic-bezier(.4,0,.2,1)}
+.progress-fill{height:100%;background:linear-gradient(90deg,#d4a843,#f0c96c);transition:width .25s ease}
 
 /* Results View */
 #results {max-width:820px;margin:0 auto;padding:0 20px 100px}
@@ -77,7 +77,7 @@ textarea:focus{border-color:var(--gold)}
 .results-title{font-size:clamp(26px, 4.5vw, 40px);font-weight:800;background:linear-gradient(135deg,#d4a843,#f0c96c);-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text;margin-bottom:12px}
 .results-sub{color:var(--muted);font-size:16px}
 .stats-grid{display:grid;grid-template-columns:repeat(auto-fit, minmax(220px, 1fr));gap:16px;margin-bottom:32px}
-.stat-card{background:var(--surface);border:1px solid var(--border);border-radius:var(--radius);padding:28px 20px;text-align:center;transition:transform .2s ease}
+.stat-card{background:var(--surface);border:1px solid var(--border);border-radius:var(--radius);padding:28px 20px;text-align:center;transition:transform .15s ease}
 .stat-card:hover{transform:translateY(-2px)}
 .stat-num{font-size:38px;font-weight:800;display:block;line-height:1;margin-bottom:10px}
 .stat-label{font-size:14px;font-weight:600}
@@ -96,13 +96,13 @@ textarea:focus{border-color:var(--gold)}
 .comment-meta{font-size:12px;color:var(--muted)}
 .comment-text{color:var(--text);font-size:15px;line-height:1.7;margin-bottom:16px;word-break:break-word}
 .comment-actions{display:flex;align-items:center;gap:12px}
-.vote-btn{display:inline-flex;align-items:center;gap:6px;background:rgba(255,255,255,.03);border:1px solid var(--border);border-radius:100px;padding:8px 18px;font-family:'Tajawal',sans-serif;font-size:13px;color:var(--muted);cursor:pointer;transition:all .2s ease;font-weight:600}
+.vote-btn{display:inline-flex;align-items:center;gap:6px;background:rgba(255,255,255,.03);border:1px solid var(--border);border-radius:100px;padding:8px 18px;font-family:'Tajawal',sans-serif;font-size:13px;color:var(--muted);cursor:pointer;transition:all .15s ease;font-weight:600}
 .vote-btn:hover{border-color:rgba(255,255,255,.15);color:var(--text)}
 .vote-up-active{border-color:rgba(48,209,88,.4)!important;background:rgba(48,209,88,.08)!important;color:var(--accent2)!important}
 .vote-down-active{border-color:rgba(255,69,58,.4)!important;background:rgba(255,69,58,.08)!important;color:var(--danger)!important}
 
 /* Global Utilities */
-.toast{position:fixed;bottom:28px;left:50%;transform:translateX(-50%) translateY(100px);background:rgba(20,20,20,.95);backdrop-filter:blur(20px);border:1px solid var(--border);border-radius:100px;padding:14px 28px;font-size:14px;color:var(--text);z-index:9999;transition:transform .4s cubic-bezier(.34,1.56,.64,1);white-space:nowrap;font-weight:500;box-shadow:0 10px 40px rgba(0,0,0,0.5)}
+.toast{position:fixed;bottom:28px;left:50%;transform:translateX(-50%) translateY(100px);background:rgba(20,20,20,.95);backdrop-filter:blur(20px);border:1px solid var(--border);border-radius:100px;padding:14px 28px;font-size:14px;color:var(--text);z-index:9999;transition:transform .3s ease;white-space:nowrap;font-weight:500;box-shadow:0 10px 40px rgba(0,0,0,0.5)}
 .toast.show{transform:translateX(-50%) translateY(0)}
 .toast.success{border-color:rgba(48,209,88,.4)}
 .toast.error{border-color:rgba(255,69,58,.4)}
@@ -136,7 +136,7 @@ textarea:focus{border-color:var(--gold)}
 }
 .carousel-track {
   display: flex;
-  transition: transform 0.5s cubic-bezier(0.25, 1, 0.5, 1);
+  transition: transform 0.4s ease;
   direction: ltr; 
 }
 .carousel-slide {
@@ -149,7 +149,7 @@ textarea:focus{border-color:var(--gold)}
 .video-responsive-wrapper {
   position: relative;
   width: 100%;
-  padding-bottom: 56.25%; /* 16:9 Aspect Ratio */
+  padding-bottom: 56.25%;
   height: 0;
   background: #000;
 }
@@ -160,7 +160,6 @@ textarea:focus{border-color:var(--gold)}
   width: 100%;
   height: 100%;
   border: 0;
-  /* منع المستخدمين من التفاعل أو تشغيل الفيديو */
   pointer-events: none; 
 }
 .media-title {
@@ -174,48 +173,13 @@ textarea:focus{border-color:var(--gold)}
   direction: rtl;
 }
 
-/* Enhanced Navigation Buttons */
 .carousel-btn {
-  /* إخفاء أزرار التبديل تماماً لمنع التنقل بين الفيديوهات */
   display: none !important;
-  position: absolute;
-  top: 50%;
-  transform: translateY(-50%);
-  background: rgba(15, 15, 15, 0.75);
-  color: #fff;
-  border: 1px solid rgba(255,255,255,0.08);
-  border-radius: 50%;
-  width: 48px;
-  height: 48px;
-  cursor: pointer;
-  z-index: 10;
-  align-items: center;
-  justify-content: center;
-  font-size: 20px;
-  backdrop-filter: blur(8px);
-  transition: all 0.2s ease;
 }
 
 .carousel-indicators {
-  /* إخفاء مؤشرات التنقل تماماً */
   display: none !important;
-  justify-content: center;
-  gap: 10px;
-  padding: 18px;
-  background: var(--surface);
-  border-top: 1px solid var(--border);
-  direction: rtl;
 }
-.indicator {
-  width: 9px;
-  height: 9px;
-  border-radius: 50%;
-  background: rgba(255,255,255,0.2);
-  cursor: pointer;
-  transition: all 0.3s ease;
-}
-.indicator:hover { background: rgba(255,255,255,0.4); }
-.indicator.active { background: var(--gold); transform: scale(1.3); }
 
 /* Audio Styling */
 .audio-card {
@@ -371,9 +335,6 @@ textarea:focus{border-color:var(--gold)}
 
   <div class="carousel-wrapper">
     <div class="carousel-container">
-      <button class="carousel-btn next" onclick="moveSlide(1)">&#10095;</button>
-      <button class="carousel-btn prev" onclick="moveSlide(-1)">&#10094;</button>
-      
       <div class="carousel-track" id="carouselTrack">
         <div class="carousel-slide">
           <div class="video-responsive-wrapper">
@@ -381,25 +342,7 @@ textarea:focus{border-color:var(--gold)}
           </div>
           <div class="media-title">جولة ميدانية داخل السوق الأسبوعي للأضاحي (مغلق حالياً)</div>
         </div>
-        <div class="carousel-slide">
-          <div class="video-responsive-wrapper">
-            <iframe src="https://drive.google.com/file/d/1Ig67KqOC5unp3UL2q-V8KKSbJkipG8q_/preview" allow="autoplay; encrypted-media" allowfullscreen></iframe>
-          </div>
-          <div class="media-title">تصريحات الكسابة ومُربي الماشية حول تكلفة الأعلاف (مغلق حالياً)</div>
-        </div>
-        <div class="carousel-slide">
-          <div class="video-responsive-wrapper">
-            <iframe src="https://drive.google.com/file/d/1OCcH9EYA2U3BFQwbBhrhzr7TKxuZcws_/preview" allow="autoplay; encrypted-media" allowfullscreen></iframe>
-          </div>
-          <div class="media-title">انطباعات المواطنين وتقييم القدرة الشرائية في الأسواق (مغلق حالياً)</div>
-        </div>
       </div>
-    </div>
-    
-    <div class="carousel-indicators" id="carouselIndicators">
-      <div class="indicator active" onclick="goToSlide(0)"></div>
-      <div class="indicator" onclick="goToSlide(1)"></div>
-      <div class="indicator" onclick="goToSlide(2)"></div>
     </div>
   </div>
 
@@ -426,102 +369,108 @@ textarea:focus{border-color:var(--gold)}
 </div>
 
 <script>
-// =========================================================================
-// 🚀 DATABASE ID
-// =========================================================================
-let DATABASE_ID = "41c06260e8ed01fa68e3"; // معرف قاعدة البيانات الفعّال الخاص بك
-// =========================================================================
-
+let DATABASE_ID = "41c06260e8ed01fa68e3"; 
 const NPOINT_API = "https://api.npoint.io/";
 
-// SYSTEM INIT
-window.addEventListener('load', async () => {
+// Fast Cache loading setup
+let cachedData = JSON.parse(localStorage.getItem('survey_cache_data')) || { cheap: 0, normal: 0, expensive: 0, comments: [] };
+
+window.addEventListener('DOMContentLoaded', () => {
   if (DATABASE_ID !== "") {
-    await loadGlobalStats();
+    // Instantly setup view with cache, then fetch network update in background silently
+    loadGlobalStats(true);
+    fetchCachedDataInBackground();
   } else {
-    let localGeneratedId = localStorage.getItem('magic_db_id');
-    if (!localGeneratedId) {
-      showLoading("إعداد قاعدة البيانات اللامركزية...");
-      try {
-        let res = await fetch(NPOINT_API, {
-          method: 'POST',
-          headers: { 'Content-Type': 'application/json' },
-          body: JSON.stringify({ cheap: 0, normal: 0, expensive: 0, comments: [] })
-        });
-        let data = await res.json();
-        localGeneratedId = data.id;
-        localStorage.setItem('magic_db_id', localGeneratedId);
-        hideLoading();
-      } catch(e) {
-        hideLoading();
-        alert("فشل الاتصال بالشبكة الرقمية، يرجى تحديث الصفحة.");
-        return;
-      }
-    }
-    document.getElementById('newDbId').innerText = localGeneratedId;
-    document.getElementById('adminSetup').style.display = 'block';
+    setupDecentralizedDB();
   }
 });
+
+async function fetchCachedDataInBackground() {
+  try {
+    let data = await getVotesData();
+    localStorage.setItem('survey_cache_data', JSON.stringify(data));
+    cachedData = data;
+    updateLiveHeroStats(data);
+  } catch(e) { console.warn("Background data sync missed."); }
+}
+
+async function setupDecentralizedDB() {
+  let localGeneratedId = localStorage.getItem('magic_db_id');
+  if (!localGeneratedId) {
+    showLoading("إعداد قاعدة البيانات...");
+    try {
+      let res = await fetch(NPOINT_API, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(cachedData)
+      });
+      let data = await res.json();
+      localGeneratedId = data.id;
+      localStorage.setItem('magic_db_id', localGeneratedId);
+      hideLoading();
+    } catch(e) {
+      hideLoading();
+      return;
+    }
+  }
+  document.getElementById('newDbId').innerText = localGeneratedId;
+  document.getElementById('adminSetup').style.display = 'block';
+}
 
 function skipAdminAndTest() {
   DATABASE_ID = localStorage.getItem('magic_db_id');
   document.getElementById('adminSetup').style.display = 'none';
-  loadGlobalStats();
+  loadGlobalStats(false);
 }
 
 async function getVotesData() {
-  let res = await fetch(NPOINT_API + DATABASE_ID + "?nocache=" + Date.now());
+  let res = await fetch(`${NPOINT_API}${DATABASE_ID}?nocache=${Date.now()}`);
   return await res.json();
 }
 
 async function updateVotesData(newData) {
-  await fetch(NPOINT_API + DATABASE_ID, {
+  fetch(`${NPOINT_API}${DATABASE_ID}`, {
     method: 'POST',
     headers: { 'Content-Type': 'application/json' },
     body: JSON.stringify(newData)
   });
 }
 
-// HERO & LIVE STATS
-async function loadGlobalStats() {
+function loadGlobalStats(useCache = false) {
   document.getElementById('heroSection').style.display = 'flex';
   
   if (localStorage.getItem('has_voted_global')) {
     let btn = document.getElementById('mainBtn');
     btn.innerText = "عرض النتائج والإحصائيات المباشرة";
-    btn.classList.remove('btn-primary');
-    btn.classList.add('btn-ghost');
+    btn.className = "start-btn btn-ghost";
     btn.style.borderColor = "var(--gold)";
     btn.style.color = "var(--gold)";
-    btn.onclick = async () => {
+    btn.onclick = () => {
       document.getElementById('heroSection').style.display = 'none';
       document.getElementById('resultsTitle').innerText = "نتائج الاستطلاع المباشرة";
-      showLoading("يتم جلب الإحصائيات الحالية...");
-      let data = await getVotesData();
-      hideLoading();
-      displayResultsUI(data);
+      displayResultsUI(cachedData);
     };
   }
-
-  try {
-    const d = await getVotesData();
-    const total = (d.cheap || 0) + (d.normal || 0) + (d.expensive || 0);
-    if (total > 0) {
-      document.getElementById('heroTotal').textContent = total.toLocaleString('ar');
-      document.getElementById('heroPct').textContent = Math.round((d.expensive/total)*100) + '%';
-      document.getElementById('heroStats').style.display = 'flex';
-    }
-  } catch(e) { console.warn("Could not load initial stats", e); }
+  updateLiveHeroStats(cachedData);
 }
 
-// SURVEY FLOW NAVIGATION
+function updateLiveHeroStats(d) {
+  const total = (d.cheap || 0) + (d.normal || 0) + (d.expensive || 0);
+  if (total > 0) {
+    document.getElementById('heroTotal').textContent = total.toLocaleString('ar');
+    document.getElementById('heroPct').textContent = Math.round((d.expensive/total)*100) + '%';
+    document.getElementById('heroStats').style.display = 'flex';
+  }
+}
+
+// SURVEY FLOW
 let currentStep = 1;
 const totalSteps = 5;
 const answers = { age:null, sex:null, job:null, price:null };
 
 function startSurvey() {
   document.getElementById('survey').style.display = 'block';
-  document.getElementById('survey').scrollIntoView({ behavior:'smooth' });
+  document.getElementById('survey').scrollIntoView({ behavior:'auto' });
   updateProgress();
 }
 
@@ -530,7 +479,7 @@ function updateProgress() { document.getElementById('progressFill').style.width 
 function showStep(n) {
   document.querySelectorAll('.step').forEach(s=>s.classList.remove('active'));
   const el = document.getElementById('step'+n);
-  if (el) { el.classList.add('active'); el.scrollIntoView({behavior:'smooth',block:'start'}); }
+  if (el) { el.classList.add('active'); el.scrollIntoView({behavior:'auto',block:'start'}); }
   updateProgress();
 }
 
@@ -549,7 +498,7 @@ function selectChoice(field,value,groupId,el) {
   const e=document.getElementById('priceError'); if(e) e.style.display='none';
 }
 
-// SUBMIT DATA
+// OPTIMIZED INSTANT SUBMISSION
 async function submitSurvey(skipJustification) {
   const txt = skipJustification ? '' : document.getElementById('justification').value.trim();
   if (!answers.price) {
@@ -557,45 +506,39 @@ async function submitSurvey(skipJustification) {
     currentStep=4; showStep(4); return;
   }
   
-  showLoading('جاري تسجيل مساهمتك الوطنية...');
+  // Predict and simulate vote locally instantly for zero perceived latency
+  const key = answers.price==='رخيصة' ? 'cheap' : answers.price==='عادية' ? 'normal' : 'expensive';
+  cachedData[key] = (cachedData[key] || 0) + 1;
   
-  try {
-    let globalData = await getVotesData();
-    const key = answers.price==='رخيصة' ? 'cheap' : answers.price==='عادية' ? 'normal' : 'expensive';
-    globalData[key] = (globalData[key] || 0) + 1;
-    
-    if (txt) {
-      if (!Array.isArray(globalData.comments)) globalData.comments=[];
-      globalData.comments.push({
-        id: Date.now().toString(36)+Math.random().toString(36).slice(2,6),
-        price:answers.price, age:answers.age||'', text:txt, ts:Date.now(), upvotes:0, downvotes:0
-      });
-      if (globalData.comments.length>100) globalData.comments=globalData.comments.slice(-100);
-    }
-    
-    await updateVotesData(globalData);
-    localStorage.setItem('has_voted_global', 'true');
-    hideLoading();
-    displayResultsUI(globalData);
-    showToast('تم تسجيل تقييمك بنجاح وبأمان كامل','success');
-  } catch(e) {
-    hideLoading();
-    console.error(e);
-    showToast('حدث خطأ أثناء الاتصال بالخادم','error');
+  if (txt) {
+    if (!Array.isArray(cachedData.comments)) cachedData.comments=[];
+    cachedData.comments.push({
+      id: Date.now().toString(36),
+      price:answers.price, age:answers.age||'', text:txt, ts:Date.now(), upvotes:0, downvotes:0
+    });
   }
+  
+  localStorage.setItem('survey_cache_data', JSON.stringify(cachedData));
+  localStorage.setItem('has_voted_global', 'true');
+  
+  // Transition views immediately
+  displayResultsUI(cachedData);
+  showToast('تم تسجيل تقييمك بنجاح وبأمان كامل','success');
+  
+  // Dispatched in background asynchronously
+  updateVotesData(cachedData);
 }
 
-// RENDER CHARTS & COMMENTS
 function displayResultsUI(data) {
     document.getElementById('heroSection').style.display='none';
     document.getElementById('survey').style.display='none';
     const r = document.getElementById('results');
     r.style.display = 'block';
-    r.scrollIntoView({behavior:'smooth'});
+    r.scrollIntoView({behavior:'auto'});
 
-    animateCount('countCheap', data.cheap || 0);
-    animateCount('countNormal', data.normal || 0);
-    animateCount('countExpensive', data.expensive || 0);
+    document.getElementById('countCheap').textContent = data.cheap || 0;
+    document.getElementById('countNormal').textContent = data.normal || 0;
+    document.getElementById('countExpensive').textContent = data.expensive || 0;
     
     renderChart(data);
     renderComments(data);
@@ -613,18 +556,19 @@ function renderChart(d){
         data:[d.cheap||0, d.normal||0, d.expensive||0],
         backgroundColor:['rgba(48,209,88,.8)','rgba(41,151,255,.8)','rgba(255,69,58,.8)'],
         borderColor:['#30d158','#2997ff','#ff453a'],
-        borderWidth:2,hoverOffset:8
+        borderWidth:2
       }]
     },
     options:{
       responsive:true,
+      animation: { duration: 400 },
       plugins:{
-        legend:{position:'bottom',labels:{color:'#86868b',font:{family:'Tajawal',size:14},padding:20}},
+        legend:{position:'bottom',labels:{color:'#86868b',font:{family:'Tajawal',size:14}}},
         tooltip:{callbacks:{label:c=>{
           const t=c.dataset.data.reduce((a,b)=>a+b,0);
           const p=t?Math.round(c.raw/t*100):0;
           return ' '+c.raw+' مشاركة ('+p+'%)';
-        }},bodyFont:{family:'Tajawal'},titleFont:{family:'Tajawal'}}
+        }}}
       }
     }
   });
@@ -660,81 +604,30 @@ function renderComments(d){
 
 async function voteCmt(id,type){
   let local=JSON.parse(localStorage.getItem('voted_cmts')||'[]');
-  const exist=local.find(x=>x.id===id);
-  if(exist){showToast('لقد قمت بالتصويت على هذا التعليق مسبقاً','error');return;}
+  if(local.find(x=>x.id===id)){showToast('لقد قمت بالتصويت مسبقاً','error');return;}
   
-  try{
-    let data=await getVotesData();
-    let cmt=data.comments.find(c=>c.id===id);
-    if(!cmt)return;
+  const el=document.getElementById(type==='up'?'vup-'+id:'vdn-'+id);
+  if(el) el.innerText=parseInt(el.innerText)+1;
+  el.parentElement.classList.add(type==='up'?'vote-up-active':'vote-down-active');
+  
+  local.push({id,type});
+  localStorage.setItem('voted_cmts',JSON.stringify(local));
+  showToast('تم تسجيل تصويتك','success');
+
+  let cmt=cachedData.comments.find(c=>c.id===id);
+  if(cmt){
     if(type==='up') cmt.upvotes=(cmt.upvotes||0)+1;
     else cmt.downvotes=(cmt.downvotes||0)+1;
-    
-    await updateVotesData(data);
-    local.push({id,type});
-    localStorage.setItem('voted_cmts',JSON.stringify(local));
-    
-    const el=document.getElementById(type==='up'?'vup-'+id:'vdn-'+id);
-    if(el) el.innerText=parseInt(el.innerText)+1;
-    el.parentElement.classList.add(type==='up'?'vote-up-active':'vote-down-active');
-    showToast('تم تسجيل تصويتك','success');
-  }catch(e){showToast('خطأ في الاتصال بالخادم','error');}
+    localStorage.setItem('survey_cache_data', JSON.stringify(cachedData));
+    updateVotesData(cachedData);
+  }
 }
 
-// VIEW HANDLERS
 function returnToHome(){
   document.getElementById('results').style.display='none';
   document.getElementById('reportage').style.display='none';
   document.getElementById('survey').style.display='none';
-  loadGlobalStats();
-}
-
-function showReportage(){
-  document.getElementById('heroSection').style.display='none';
-  document.getElementById('results').style.display='none';
-  document.getElementById('survey').style.display='none';
-  const rep=document.getElementById('reportage');
-  rep.style.display='block';
-  rep.scrollIntoView({behavior:'smooth'});
-}
-
-// CAROUSEL LOGIC
-let currentSlide=0;
-function moveSlide(dir){
-  const track=document.getElementById('carouselTrack');
-  const slides=document.querySelectorAll('.carousel-slide');
-  currentSlide=(currentSlide+dir+slides.length)%slides.length;
-  track.style.transform=`translateX(${currentSlide*100}%)`;
-  updateIndicators();
-}
-function goToSlide(n){
-  const track=document.getElementById('carouselTrack');
-  currentSlide=n;
-  track.style.transform=`translateX(${currentSlide*100}%)`;
-  updateIndicators();
-}
-function updateIndicators(){
-  document.querySelectorAll('.indicator').forEach((ind,idx)=>{
-    if(idx===currentSlide)ind.classList.add('active');
-    else ind.classList.remove('active');
-  });
-}
-
-// UTILS
-function animateCount(id,target){
-  const el=document.getElementById(id);
-  if(!el)return;
-  let current=0;
-  const duration=1000;
-  const start=performance.now();
-  function update(now){
-    const elapsed=now-start;
-    const progress=Math.min(elapsed/duration,1);
-    current=Math.floor(progress*target);
-    el.textContent=current.toLocaleString('ar');
-    if(progress<1)requestAnimationFrame(update);
-  }
-  requestAnimationFrame(update);
+  loadGlobalStats(true);
 }
 
 function shareSurvey(){
@@ -750,7 +643,7 @@ function showToast(m,type='success'){
   const t=document.getElementById('toast');
   t.className='toast show '+type;
   t.textContent=m;
-  setTimeout(()=>{t.classList.remove('show');},3500);
+  setTimeout(()=>{t.classList.remove('show');},2000);
 }
 function showLoading(m){
   document.getElementById('loadingMsg').textContent=m;
@@ -761,11 +654,10 @@ function formatTime(ts){
   const diff=Date.now()-ts;
   if(diff<60000)return 'الآن';
   if(diff<3600000)return 'قبل '+Math.floor(diff/60000)+' دقيقة';
-  if(diff<86400000)return 'قبل '+Math.floor(diff/3600000)+' ساعة';
-  return new Date(ts).toLocaleDateString('ar-MA',{month:'short',day:'numeric'});
+  return 'اليوم';
 }
 function escapeHtml(str) {
-  return str.replace(/&/g, "&amp;").replace(/</g, "&lt;").replace(/>/g, "&gt;").replace(/"/g, "&quot;").replace(/'/g, "&#039;");
+  return str.replace(/&/g, "&amp;").replace(/</g, "&lt;").replace(/>/g, "&gt;").replace(/"/g, "&quot;");
 }
 </script>
 </body>
