@@ -28,9 +28,9 @@ h1 span{background:linear-gradient(135deg,#d4a843 0%,#f0c96c 50%,#d4a843 100%);-
 .subtitle{font-size:clamp(16px,2.2vw,20px);color:var(--muted);max-width:600px;font-weight:300;margin-bottom:40px;padding:0 16px}
 
 /* Interactive Elements */
-.start-btn{display:inline-flex;align-items:center;gap:10px;background:var(--accent);color:#fff;border:none;border-radius:100px;padding:16px 40px;font-size:17px;font-family:'Tajawal',sans-serif;font-weight:600;cursor:pointer;transition:all .25s cubic-bezier(0.4, 0, 0.2, 1);margin-top:20px}
+.start-btn{display:inline-flex;align-items:center;gap:10px;background:var(--accent);color:#fff;border:none;border-radius:100px;padding:16px 40px;font-size:17px;font-family:'Tajawal',sans-serif;font-weight:600;cursor:pointer;transition:all .25s cubic-bezier(0.4, 0, 0.2, 1);margin-top:0;}
 .start-btn:hover{transform:scale(1.03);box-shadow:0 10px 30px rgba(41,151,255,.35)}
-.live-stats{display:flex;gap:16px;align-items:center;justify-content:center;flex-wrap:wrap;margin-top:24px}
+.live-stats{display:flex;gap:16px;align-items:center;justify-content:center;flex-wrap:wrap;margin-top:24px;width: 100%;}
 .live-pill{display:flex;align-items:center;gap:8px;background:rgba(255,255,255,.04);border:1px solid var(--border);border-radius:100px;padding:8px 16px;font-size:13px;color:var(--muted);backdrop-filter:blur(10px)}
 .live-dot{width:8px;height:8px;border-radius:50%;background:var(--accent2);animation:pulse 2s cubic-bezier(0.4, 0, 0.6, 1) infinite}
 @keyframes pulse{0%,100%{opacity:1;transform:scale(1)}50%{opacity:.4;transform:scale(0.8)}}
@@ -117,71 +117,9 @@ textarea:focus{border-color:var(--gold)}
 .code-block{background:#000;padding:16px;font-size:18px;color:var(--gold);letter-spacing:1px;margin:20px 0;border-radius:12px;direction:ltr;font-family:monospace;border:1px solid var(--border)}
 
 /* ---------------------------------------------------
-   Reportage Media Styles (Carousel & Audio)
+   Reportage Media Styles (Audio Only)
    --------------------------------------------------- */
 #reportage {max-width:900px;margin:0 auto;padding:40px 20px 100px}
-.carousel-wrapper {
-  position: relative;
-  width: 100%;
-  background: #000;
-  border: 1px solid var(--border);
-  border-radius: var(--radius);
-  overflow: hidden;
-  box-shadow: 0 20px 50px rgba(0,0,0,0.4);
-}
-.carousel-container {
-  position: relative;
-  width: 100%;
-  overflow: hidden;
-}
-.carousel-track {
-  display: flex;
-  transition: transform 0.4s ease;
-  direction: ltr; 
-}
-.carousel-slide {
-  min-width: 100%;
-  box-sizing: border-box;
-  display: flex;
-  flex-direction: column;
-  background: #000;
-}
-.video-responsive-wrapper {
-  position: relative;
-  width: 100%;
-  padding-bottom: 56.25%;
-  height: 0;
-  background: #000;
-}
-.video-responsive-wrapper iframe {
-  position: absolute;
-  top: 0;
-  left: 0;
-  width: 100%;
-  height: 100%;
-  border: 0;
-  pointer-events: none; 
-}
-.media-title {
-  padding: 18px 20px;
-  font-size: 16px;
-  font-weight: 600;
-  color: var(--text);
-  background: var(--surface);
-  border-top: 1px solid var(--border);
-  text-align: center;
-  direction: rtl;
-}
-
-.carousel-btn {
-  display: none !important;
-}
-
-.carousel-indicators {
-  display: none !important;
-}
-
-/* Audio Styling */
 .audio-card {
   margin-top: 32px;
   background: var(--surface);
@@ -197,6 +135,9 @@ textarea:focus{border-color:var(--gold)}
   display: flex;
   align-items: center;
   justify-content: center;
+}
+.action-buttons {
+  display:flex; gap:12px; flex-wrap:wrap; justify-content:center; margin-top:20px;
 }
 </style>
 </head>
@@ -215,11 +156,16 @@ textarea:focus{border-color:var(--gold)}
   <div class="badge">تقرير عيد الأضحى ١٤٤٦</div>
   <h1>أسعار <span>كبش العيد</span><br>كيف تراها؟</h1>
   <p class="subtitle">استطلاع رأي وطني موجّه للمغاربة لتقييم ومناقشة أسعار الأضاحي في الأسواق الحالية بكل شفافية.</p>
+  
+  <div class="action-buttons">
+    <button class="start-btn" id="mainBtn" onclick="startSurvey()">المشاركة في الاستطلاع</button>
+    <button class="btn btn-ghost" style="border-color: var(--gold); color: var(--gold);" onclick="showReportage()">الاستماع للتسجيلات الميدانية</button>
+  </div>
+
   <div class="live-stats" id="heroStats" style="display:none">
     <div class="live-pill"><div class="live-dot"></div><span id="heroTotal">—</span> مشارك</div>
     <div class="live-pill" style="color:var(--danger)">غالية جداً: <strong id="heroPct" style="margin-right:4px">—</strong></div>
   </div>
-  <button class="start-btn" id="mainBtn" onclick="startSurvey()">المشاركة في الاستطلاع</button>
 </section>
 
 <section id="survey" style="display:none">
@@ -321,37 +267,19 @@ textarea:focus{border-color:var(--gold)}
   
   <div style="display:flex;gap:12px;flex-wrap:wrap;justify-content:center;padding:20px 0">
     <button class="btn btn-ghost" onclick="shareSurvey()">مشاركة الاستطلاع</button>
+    <button class="btn btn-ghost" onclick="showReportage()">تسجيلات ميدانية</button>
     <button class="btn btn-ghost" onclick="returnToHome()">الرئيسية</button>
   </div>
 </section>
 
 <section id="reportage" style="display:none">
-  <div class="chart-card" style="text-align: right; border-top: 3px solid var(--gold);">
-    <div class="chart-title" style="color: var(--text); font-size: 22px; text-align: center; border:none; margin-bottom: 12px; padding-bottom: 0;">روبورتاج استقصائي: واقع أسواق المواشي</div>
-    <p style="color: var(--muted); font-size: 15px; line-height: 1.8; text-align: justify;">
-       في ظل توالي سنوات الجفاف السبع التي أثرت بالمملكة مؤخراً، يواجه المغرب أزمة مائية حادة لم يشهد لها مثيلاً في تاريخه المعاصر. ومع مطلع هذه السنة استبشر المغاربة خيراً بالتساقطات المطرية الأخيرة، إلا أن السؤال الجوهري الذي يطرحه سكان مدينة فاس مع اقتراب عيد الأضحى: هل ستساهم هذه الأمطار في استقرار أسعار الأضاحي وتخفيف العبء عن كاهل المواطن؟
-    </p>
-  </div>
-
-  <div class="carousel-wrapper">
-    <div class="carousel-container">
-      <div class="carousel-track" id="carouselTrack">
-        <div class="carousel-slide">
-          <div class="video-responsive-wrapper">
-            <iframe src="https://drive.google.com/file/d/1NvQyZcQgBWh-_eZJqbx_YEhp2m8YPT75/preview" allow="autoplay; encrypted-media" allowfullscreen></iframe>
-          </div>
-          <div class="media-title">جولة ميدانية داخل السوق الأسبوعي للأضاحي (مغلق حالياً)</div>
-        </div>
-      </div>
-    </div>
-  </div>
-
-  <div class="audio-card">
-    <div class="chart-title" style="margin-bottom: 12px; font-size: 18px;">تسجيلات صوتية ميدانية</div>
-    <p style="color:var(--muted); font-size:14px; margin-bottom: 20px;">استمع إلى آراء المواطنين وتغطية حصرية لأسعار كبش العيد.</p>
+  
+  <div class="audio-card" style="border-top: 3px solid var(--gold);">
+    <div class="chart-title" style="margin-bottom: 12px; font-size: 22px; text-align: center; border:none;">تسجيلات صوتية ميدانية من الشارع</div>
+    <p style="color:var(--muted); font-size:15px; margin-bottom: 30px; text-align:center; line-height: 1.6;">استمع إلى آراء المواطنين وتغطية حصرية لأسعار كبش العيد، والتحديات التي تواجه الأسر المغربية في هذه المناسبة.</p>
 
     <div style="margin-bottom: 24px;">
-      <p style="color: var(--text); font-size: 15px; margin-bottom: 10px; font-weight: 600;">تقرير السوق:</p>
+      <p style="color: var(--text); font-size: 15px; margin-bottom: 10px; font-weight: 600;">تقرير السوق (الأسعار والأرقام):</p>
       <div class="audio-player-container" style="padding: 8px;">
         <audio controls style="width: 100%; outline: none;">
           <source src="New%20Recording.m4a" type="audio/mp4">
@@ -361,7 +289,7 @@ textarea:focus{border-color:var(--gold)}
     </div>
 
     <div style="margin-bottom: 24px;">
-      <p style="color: var(--text); font-size: 15px; margin-bottom: 10px; font-weight: 600;">حي الأدراج - الجزء الأول:</p>
+      <p style="color: var(--text); font-size: 15px; margin-bottom: 10px; font-weight: 600;">حي الأدراج - حوار المواطنين (الجزء الأول):</p>
       <div class="audio-player-container" style="padding: 8px;">
         <audio controls style="width: 100%; outline: none;">
           <source src="Rue%20El%20Adraj%205.m4a" type="audio/mp4">
@@ -371,7 +299,7 @@ textarea:focus{border-color:var(--gold)}
     </div>
 
     <div style="margin-bottom: 10px;">
-      <p style="color: var(--text); font-size: 15px; margin-bottom: 10px; font-weight: 600;">حي الأدراج - الجزء الثاني:</p>
+      <p style="color: var(--text); font-size: 15px; margin-bottom: 10px; font-weight: 600;">حي الأدراج - حوار المواطنين (الجزء الثاني):</p>
       <div class="audio-player-container" style="padding: 8px;">
         <audio controls style="width: 100%; outline: none;">
           <source src="Rue%20El%20Adraj%206.m4a" type="audio/mp4">
@@ -380,6 +308,7 @@ textarea:focus{border-color:var(--gold)}
       </div>
     </div>
   </div>
+
   <div style="text-align: center; margin-top: 40px;">
     <button class="btn btn-ghost" style="width: min(300px, 100%)" onclick="returnToHome()">العودة للصفحة الرئيسية</button>
   </div>
@@ -647,6 +576,15 @@ async function voteCmt(id,type){
     localStorage.setItem('survey_cache_data', JSON.stringify(cachedData));
     updateVotesData(cachedData);
   }
+}
+
+function showReportage() {
+  document.getElementById('heroSection').style.display = 'none';
+  document.getElementById('survey').style.display = 'none';
+  document.getElementById('results').style.display = 'none';
+  const r = document.getElementById('reportage');
+  r.style.display = 'block';
+  r.scrollIntoView({behavior: 'auto'});
 }
 
 function returnToHome(){
